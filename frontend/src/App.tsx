@@ -103,6 +103,7 @@ export default function App() {
     [answer, setAnswer] = useState(""),
     [citations, setCitations] = useState<string[]>([]),
     [asking, setAsking] = useState(false);
+  const [batchQuestionOpen, setBatchQuestionOpen] = useState(false);
   const [batchFiles, setBatchFiles] = useState<File[] | null>(null);
   const [addingData, setAddingData] = useState(false);
   const mergeBase = useRef<string | null>(null);
@@ -466,6 +467,7 @@ export default function App() {
     });
   }
   function reset() {
+    setBatchQuestionOpen(false);
     setBatchFiles(null);
     mergeBase.current = null;
     setAddingData(false);
@@ -543,7 +545,7 @@ export default function App() {
       if (contextRef.current === sourceContext) setAsking(false);
     }
   }
-  const batchPanel = batchFiles && <BatchUpload embedded={phase === "upload"} files={batchFiles} maxBytes={serverPolicy.max_upload_bytes} onCancel={() => { setBatchFiles(null); mergeBase.current = null; }} onReady={(id, uploadId, count) => {
+  const batchPanel = batchFiles && <BatchUpload onQuestionChange={setBatchQuestionOpen} embedded={phase === "upload"} files={batchFiles} maxBytes={serverPolicy.max_upload_bytes} onCancel={() => { setBatchFiles(null); mergeBase.current = null; }} onReady={(id, uploadId, count) => {
           setBatchFiles(null);
           automatic.current = true;
           missingAnswered.current = false;
@@ -584,6 +586,7 @@ export default function App() {
       </header>
       <main id="main" tabIndex={-1} ref={main} className="main live-main">
         <div id="batch-question-root" />
+        <div hidden={batchQuestionOpen} style={batchQuestionOpen ? {display: "none"} : undefined}>
         <input ref={extraFileInput} type="file" multiple accept=".csv,text/csv" hidden onChange={e => { const files = Array.from(e.target.files || []); if (files.length) { setAddingData(false); setBatchFiles(files); } e.target.value = ""; }} />
         {phase !== "upload" && batchPanel}
         {addingData && <section className="panel">
@@ -1129,6 +1132,7 @@ export default function App() {
             </div>
           </>
         )}
+        </div>
       </main>
       <footer>
         <span>Retail Planner</span>

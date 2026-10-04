@@ -1,10 +1,10 @@
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useLayoutEffect, useRef, useState} from "react";
 import {createPortal} from "react-dom";
 import {api, post, type Upload} from "./data";
 import GuidedImport, {type Guidance} from "./GuidedImport";
 import {Button, Notice} from "./UI";
 type Reply = Guidance & {file_index?: number; file_name?: string; row_count?: number; id?: string; upload_id?: string; file_count?: number};
-export default function BatchUpload({files, maxBytes, onCancel, onReady, embedded = false}: {embedded?: boolean; files: File[]; maxBytes: number; onCancel: () => void; onReady: (id: string, uploadId: string, count: number) => void}) {
+export default function BatchUpload({files, maxBytes, onCancel, onReady, onQuestionChange, embedded = false}: {onQuestionChange: (open: boolean) => void; embedded?: boolean; files: File[]; maxBytes: number; onCancel: () => void; onReady: (id: string, uploadId: string, count: number) => void}) {
   const active = useRef(true);
   useEffect(() => {active.current=true; return () => {active.current=false;};}, []);
   const [items, setItems] = useState(files);
@@ -14,6 +14,10 @@ export default function BatchUpload({files, maxBytes, onCancel, onReady, embedde
   useEffect(() => {
     if (reply && !reply.ready) document.getElementById("batch-question-root")?.scrollIntoView({block:"start"});
   }, [reply?.question?.id, reply?.blocked]);
+  useLayoutEffect(() => {
+    onQuestionChange(Boolean(reply && !reply.ready));
+  }, [reply, onQuestionChange]);
+  useEffect(() => () => onQuestionChange(false), [onQuestionChange]);
   const [answers, setAnswers] = useState<Record<string,string>>({});
   const uploaded = useRef(new Map<File, Upload>());
   const addInput = useRef<HTMLInputElement>(null);

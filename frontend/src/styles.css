@@ -2219,7 +2219,6 @@ details summary {
 .batch-inline .guided-card h1 { font-size: 24px; }
 
 /* Keep selection mounted while questions occupy their own screen. */
-.live-main:has(> #batch-question-root:not(:empty)) > :not(#batch-question-root) { display: none; }
 #batch-question-root:empty { display: none; }
 .batch-question-page { max-width: 760px; margin: 0 auto; }
 .batch-question-page > .muted { margin: 16px 0; overflow-wrap: anywhere; }
