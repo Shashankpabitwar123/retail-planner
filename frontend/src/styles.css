@@ -2335,3 +2335,24 @@ details summary {
 .restock-result-actions { display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-top:24px; }
 .restock-page .scenario { border-color:#b4cdbd; background:#f5f8f5; }
 @media(max-width:700px) { .forecast-summary-heading { flex-direction:column; } .restock-shortcut { max-width:none; width:100%; } .restock-input-card, .forecast-summary-card { padding:18px; } .forecast-summary-card .metric-strip strong { font-size:1.45rem; } }
+
+.restock-fields { border:0; padding:0; margin:0; min-width:0; }
+.restock-table { width:100%; }
+.restock-table td { vertical-align:top; padding:16px 12px; }
+.restock-table td small { display:block; color:var(--muted); margin-top:5px; }
+.restock-table input[type=number] { width:110px; }
+.restock-table details { min-width:130px; max-width:260px; }
+.store-restock .check-row { margin:24px 0 18px; }
+.print-only { display:none; }
+@media print {
+ body * { visibility:hidden; }
+ .store-restock, .store-restock * { visibility:visible; }
+ .store-restock { position:absolute; inset:0; width:100%; background:white; color:black; font-size:10pt; }
+ .store-restock .restock-edit-area { display:none!important; }
+ .store-restock .print-only { display:block; }
+ .store-restock .table-scroll { overflow:visible; }
+ .restock-table { table-layout:fixed; }
+ .restock-table td, .restock-table th { overflow-wrap:anywhere; padding:8px; }
+ .restock-table thead { display:table-header-group; }
+ .restock-table tr { break-inside:avoid; }
+}

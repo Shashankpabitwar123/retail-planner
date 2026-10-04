@@ -33,7 +33,7 @@ export default function BulkInventory({
       );
       onImport(r.products);
       setMessage(
-        `${Object.keys(r.products).length} products matched. Select each product to review its imported settings before applying a plan.`,
+        `${Object.keys(r.products).length} products matched. Review the stock counts in the table.`,
       );
     } catch (e) {
       setMessage((e as Error).message);
@@ -43,7 +43,7 @@ export default function BulkInventory({
   }
   return (
     <details className="panel">
-      <summary>Have a stock file? Import it here</summary>
+      <summary>Upload a stock file</summary>
       <label className="field">
         Inventory CSV
         <input
@@ -62,7 +62,7 @@ export default function BulkInventory({
       </label>
       <div className="inline-actions">
         <Button disabled={!stock || busy} onClick={run}>
-          {busy ? "Checking stock files…" : "Match inventory files"}
+          {busy ? "Checking stock files…" : "Fill stock table"}
         </Button>
         <button
           className="text-link"

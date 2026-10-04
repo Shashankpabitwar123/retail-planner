@@ -10,14 +10,13 @@ import {
   type Plan,
 } from "./data";
 import { QualityView } from "./Review";
-import BulkInventory, { type InventoryDraft } from "./BulkInventory";
-import Inventory from "./Inventory";
+import StoreRestock from "./StoreRestock";
+
 export default function Results({
   result,
   jobId,
   plans,
-  onPlan,
-  onExplain,
+  onSaveAll,
   onBackup,
   onSelected,
   onAddData,
@@ -27,6 +26,7 @@ export default function Results({
   result: Result;
   jobId: string | null;
   plans: Record<string, Plan>;
+  onSaveAll: (plans: Record<string, Plan>) => Promise<void>;
   onPlan: (id: string, p: Plan) => Promise<void>;
   onExplain: (p: Plan) => void;
   onBackup: () => void;
@@ -42,8 +42,7 @@ export default function Results({
         result.products[0]?.product_id ||
         "",
     );
-  const [drafts, setDrafts] = useState<Record<string, InventoryDraft>>({});
-  const [importRevision, setImportRevision] = useState(0);
+
   useEffect(() => {
     if (requestedTab) setTab(requestedTab.name);
   }, [requestedTab]);
@@ -115,12 +114,12 @@ export default function Results({
         <div className="inline-actions">
           <Button
             variant="secondary"
-            onClick={() => download("sales-forecast.csv", forecastCSV(result))}
+            onClick={() => download(`sales-forecast-${result.forecast_start}-to-${result.forecast_end}.csv`, forecastCSV(result))}
           >
-            Download forecast
+            Download sales forecast
           </Button>
-          <Button variant="secondary" onClick={onBackup}>
-            Download full analysis
+          <Button variant="secondary" title="Save a file you can reopen in Retail Planner" onClick={onBackup}>
+            Download backup
           </Button>
         </div>
       </div>
@@ -130,73 +129,10 @@ export default function Results({
         role="tabpanel"
         aria-labelledby={`tab-${tab.replaceAll(" ", "-")}`}
       >
-        {tab === "Inventory" && Object.keys(plans).length > 0 && (
-          <details className="panel">
-            <summary>Saved stock plans ({Object.keys(plans).length})</summary>
-            <p>
-              Your saved recommendations. No orders have been placed.
-            </p>
-            <div className="table-scroll">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Product</th>
-                    <th>Action</th>
-                    <th>Order units</th>
-                    <th>Unmet before arrival</th>
-                    <th>Arrival</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {Object.entries(plans)
-                    .sort(
-                      (a, b) =>
-                        b[1].pre_arrival_unmet_units -
-                        a[1].pre_arrival_unmet_units,
-                    )
-                    .map(([pid, p]) => (
-                      <tr key={pid}>
-                        <td>
-                          <button
-                            className="text-link"
-                            onClick={() => {
-                              setId(pid);
-                              onSelected(pid);
-                            }}
-                          >
-                            {result.products.find((x) => x.product_id === pid)
-                              ?.name || pid}
-                          </button>
-                        </td>
-                        <td>
-                          {p.pre_arrival_unmet_units > 0
-                            ? "Review early shortage"
-                            : p.suggested_order_units > 0
-                              ? "Order suggested"
-                              : "No order needed"}
-                        </td>
-                        <td>{num(p.suggested_order_units)}</td>
-                        <td>{num(p.pre_arrival_unmet_units)}</td>
-                        <td>{friendlyDate(p.arrival_date)}</td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
-            </div>
-          </details>
-        )}
-        {tab === "Inventory" && jobId && (
-          <BulkInventory
-            jobId={jobId}
-            onImport={(items) => {
-              setDrafts(items);
-              setImportRevision((n) => n + 1);
-            }}
-          />
-        )}
+        <div hidden={tab !== "Inventory"}><StoreRestock result={result} jobId={jobId} saved={plans} onSave={onSaveAll} onAddData={onAddData}/></div>
         {tab === "Data quality" ? (
           <QualityView quality={quality} />
-        ) : (
+        ) : tab === "Forecasts" ? (
           <div className="forecast-layout">
             <label className="field mobile-product">
               Product
@@ -252,24 +188,11 @@ export default function Results({
               {!filtered.length && <p>No matching products.</p>}
             </aside>
             <div className="forecast-detail">
-              {product &&
-                (tab === "Inventory" ? (
-                  <Inventory
-                    key={product.product_id + importRevision}
-                    product={product}
-                    draft={drafts[product.product_id]}
-                    result={result}
-                    jobId={jobId}
-                    saved={plans[product.product_id]}
-                    onApply={(p) => onPlan(product.product_id, p)}
-                    onExplain={onExplain}
-                  />
-                ) : (
-                  <Forecast key={product.product_id} product={product} onAddData={result.quality.config.synthetic ? onTryOwn : onAddData} onRestock={() => setTab("Inventory")} />
-                ))}
+              {product && <Forecast key={product.product_id} product={product} onAddData={result.quality.config.synthetic ? onTryOwn : onAddData} onRestock={() => setTab("Inventory")} />}
+
             </div>
           </div>
-        )}
+        ) : null}
       </section>
     </>
   );

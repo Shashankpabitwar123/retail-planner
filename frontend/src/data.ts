@@ -226,41 +226,13 @@ export function csv(rows: unknown[][]) {
 }
 export function forecastCSV(result: Result) {
   return csv([
-    [
-      "product_id",
-      "product_name",
-      "date",
-      "predicted_sales_units",
-      "method",
-      "history_status",
-      "sales_data_cutoff",
-      "forecast_period_start",
-      "forecast_period_end",
-      "historical_mae_units",
-      "historical_wape_error_ratio",
-      "daily_range_lower",
-      "daily_range_upper",
-      "reliability_note",
-    ],
-    ...result.products.flatMap((p) =>
-      (p.forecast || []).map((d) => [
-        p.product_id,
-        p.name,
-        d.date,
-        d.units,
-        p.method,
-        p.status,
-        result.quality.coverage_end,
-        result.forecast_start,
-        result.forecast_end,
-        p.evaluation?.windows.at(-1)?.model.mae ?? "",
-        p.evaluation?.windows.at(-1)?.model.wape ?? "",
-        p.range?.daily.find((x) => x.date === d.date)?.lower ?? "",
-        p.range?.daily.find((x) => x.date === d.date)?.upper ?? "",
-        p.forecast_warning ||
-          "Historical error is not future accuracy; ranges are not guaranteed.",
-      ]),
-    ),
+    ["Product", "Product ID", "Date", "Estimated units sold", "Forecast starts", "Forecast ends", "Reliability", "Notes"],
+    ...result.products.flatMap(p => {
+      const reliability = !p.forecast?.length ? "Unavailable" : !p.evaluation ? "Not yet tested" : p.inventory_eligible ? "Passed our checks" : "Use cautiously";
+      const note = p.forecast_warning || "Estimates are not guaranteed sales.";
+      const dates = p.forecast?.length ? p.forecast : [{date:"", units:""}];
+      return dates.map(d => [p.name,p.product_id,d.date ? friendlyDate(d.date) : "",d.units,friendlyDate(result.forecast_start),friendlyDate(result.forecast_end),reliability,note]);
+    }),
   ]);
 }
 // Detect accidental edits/corruption; this checksum is not a security signature.

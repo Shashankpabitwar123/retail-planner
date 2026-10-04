@@ -1085,6 +1085,15 @@ export default function App() {
             onTryOwn={reset}
             jobId={serverId}
             plans={snapshot.plans}
+            onSaveAll={async plans => {
+              const savedPlans: Record<string, Plan> = {};
+              for (const [id, plan] of Object.entries(plans)) {
+                const settings = {...plan.assumptions};
+                delete settings.timezone;
+                savedPlans[id] = serverId ? await post<Plan>(`/jobs/${serverId}/plans`, settings) : plan;
+              }
+              await persist({...snapshot, plans: savedPlans});
+            }}
             requestedTab={requestedTab}
             onExplain={(p) => {
               const assumptions = { ...p.assumptions };
@@ -1114,7 +1123,7 @@ export default function App() {
             }
             onBackup={() =>
               download(
-                "store.retailplan.json",
+                `retail-planner-${snapshot.name.replace(/\.[^.]+$/, "").replace(/[^a-zA-Z0-9_-]+/g, "-").slice(0,60)}-${snapshot.result.forecast_start}.retailplan.json`,
                 backup(snapshot),
                 "application/json",
               )
