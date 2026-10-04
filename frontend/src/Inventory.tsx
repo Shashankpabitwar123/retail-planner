@@ -32,7 +32,7 @@ export default function Inventory({
     setPreview(null);
   }, [saved]);
   const defaults: Record<string, string> = {
-    stock: "",
+    stock: result.quality.config.synthetic ? String(({"0007": 30, "SKU-B": 100, "SKU-C": 5} as Record<string, number>)[product.product_id] ?? 20) : "",
     snapshot_date: result.forecast_start,
     lead_days: "5",
     review_days: "7",
@@ -163,6 +163,7 @@ export default function Inventory({
         </Notice>
       ) : (
         <>
+          {result.quality.config.synthetic && <Notice>Example stock values are filled in. Change them if you like, confirm the details, then click Calculate restock amount. No orders are placed.</Notice>}
           <Notice>
             Add your stock and delivery time to see how much you may need. This
             creates a plan; it won’t place an order.

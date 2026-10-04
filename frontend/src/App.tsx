@@ -105,6 +105,7 @@ export default function App() {
     [citations, setCitations] = useState<string[]>([]),
     [asking, setAsking] = useState(false);
   const [batchQuestionOpen, setBatchQuestionOpen] = useState(false);
+  const [exampleFile, setExampleFile] = useState<File | null>(null);
   const [batchFiles, setBatchFiles] = useState<File[] | null>(null);
   const [addingData, setAddingData] = useState(false);
   const mergeBase = useRef<string | null>(null);
@@ -462,13 +463,15 @@ export default function App() {
     await run(async () => {
       const response = await fetch("/samples/" + file);
       if (!response.ok) throw Error("Sample unavailable.");
-      await loadFile(
-        new File([await response.blob()], file, { type: "text/csv" }),
-      );
+      const example = new File([await response.blob()], file, { type: "text/csv" });
+      mergeBase.current = null;
+      setExampleFile(example);
+      setBatchFiles([example]);
     });
   }
   function reset() {
     setBatchQuestionOpen(false);
+    setExampleFile(null);
     setBatchFiles(null);
     mergeBase.current = null;
     setAddingData(false);
@@ -642,6 +645,7 @@ export default function App() {
                   }
                 }}
               >
+                {batchFiles?.length === 1 && batchFiles[0] === exampleFile && <p className="sample-context">Sample sales for a fictional store: 3 products over 196 days. Click <strong>Analyze sales</strong> to see the results.</p>}
                 {batchFiles ? batchPanel : <>
                 <div className="upload-empty">
                 <UploadCloud size={32} strokeWidth={1.5} aria-hidden="true" />
@@ -713,22 +717,23 @@ export default function App() {
               )}
             </div>
             <section className="sample-section simple-sample">
-              <span>Just looking around?</span>
+              <div><strong>Try an example</strong><p className="muted">See how it works using sample store sales.</p></div>
               <button
                 className="text-link"
                 disabled={!ready || busy}
                 onClick={() => sample("01-daily.csv")}
               >
-                Try sample sales
+                Try example
               </button>
-              <span className="muted">Example data, no upload needed.</span>
+
             </section>
             <section className="restore-line">
+              <div><strong>Open a downloaded analysis</strong><p className="muted">Continue from an analysis you previously downloaded.</p></div>
               <button
                 className="text-link"
                 onClick={() => backupInput.current?.click()}
               >
-                Open saved results
+                Choose saved analysis
               </button>
               <input
                 type="file"
@@ -1069,6 +1074,7 @@ export default function App() {
           <Results
             key={snapshot.id}
             result={snapshot.result}
+            onTryOwn={reset}
             jobId={serverId}
             plans={snapshot.plans}
             requestedTab={requestedTab}

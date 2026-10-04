@@ -21,6 +21,7 @@ export default function Results({
   onBackup,
   onSelected,
   onAddData,
+  onTryOwn,
   requestedTab,
 }: {
   result: Result;
@@ -31,6 +32,7 @@ export default function Results({
   onBackup: () => void;
   onSelected: (id: string) => void;
   onAddData: () => void;
+  onTryOwn: () => void;
   requestedTab?: { name: string; revision: number };
 }) {
   const [tab, setTab] = useState("Forecasts"),
@@ -55,7 +57,7 @@ export default function Results({
       <div className="page-heading results-heading">
         <p className="eyebrow">
           {result.quality.config.synthetic
-            ? "SAMPLE SALES"
+            ? "SAMPLE RESULTS"
             : "YOUR SALES OUTLOOK"}
         </p>
         <h1>{tab === "Inventory" ? "What should I restock?" : tab === "Data quality" ? "Can I use this data?" : "How much will sell?"}</h1>
@@ -64,7 +66,12 @@ export default function Results({
           {result.products.filter((p) => p.forecast?.length).length} products
         </p>
       </div>
-      {result.forecast_start < new Date().toISOString().slice(0, 10) && (
+      {result.quality.config.synthetic && <div className="sample-results-intro">
+        <p>{tab === "Inventory" ? "Try a stock plan using the example values below. You can change them to see how the plan changes." : tab === "Data quality" ? "See how we checked the sample sales for missing or incomplete records." : "These estimates use fictional store sales. Select a product to see what it may sell over the next 28 days."}</p>
+        <p className="muted">This example uses fixed dates and repeating sales patterns. Real sales may be less predictable.</p>
+        <Button variant="secondary" onClick={onTryOwn}>Try your own sales files</Button>
+      </div>}
+      {!result.quality.config.synthetic && result.forecast_start < new Date().toISOString().slice(0, 10) && (
         <p className="muted historical-note">
           This forecast uses older sales. Upload your latest sales to plan ahead.
         </p>
