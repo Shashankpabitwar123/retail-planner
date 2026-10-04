@@ -66,10 +66,10 @@ export default function Results({
           {result.products.filter((p) => p.forecast?.length).length} products
         </p>
       </div>
-      {result.quality.config.synthetic && <div className="sample-results-intro">
-        <p>{tab === "Inventory" ? "Try a stock plan using the example values below. You can change them to see how the plan changes." : tab === "Data quality" ? "See how we checked the sample sales for missing or incomplete records." : "These estimates use fictional store sales. Select a product to see what it may sell over the next 28 days."}</p>
-        <p className="muted">This example uses fixed dates and repeating sales patterns. Real sales may be less predictable.</p>
-        <Button variant="secondary" onClick={onTryOwn}>Try your own sales files</Button>
+      {result.quality.config.synthetic && <div className="sample-results-intro compact-sample">
+        <span>You’re exploring sample store sales.</span>
+        <Button variant="text" onClick={onTryOwn}>Use my own files</Button>
+        <details><summary>About this example</summary><p>Fictional sales with fixed dates and repeating patterns. Real sales may be less predictable. Example stock values can be edited in Restock.</p></details>
       </div>}
       {!result.quality.config.synthetic && result.forecast_start < new Date().toISOString().slice(0, 10) && (
         <p className="muted historical-note">
@@ -120,11 +120,11 @@ export default function Results({
             Download forecast
           </Button>
           <Button variant="secondary" onClick={onBackup}>
-            Save full analysis
+            Download full analysis
           </Button>
         </div>
       </div>
-      <div className="data-update-action"><Button variant="secondary" onClick={onAddData}>Add or update sales data</Button><p className="muted">Add missing days or upload a more complete sales file.</p></div>
+      {!result.quality.config.synthetic && <div className="data-update-action"><Button variant="text" onClick={onAddData}>Add or update sales data</Button></div>}
       <section
         id="result-panel"
         role="tabpanel"
@@ -240,7 +240,7 @@ export default function Results({
                 >
                   <span>
                     <strong>{p.name}</strong>
-                    <small>ID: {p.product_id}</small>
+
                   </span>
                   <span>
                     {p.forecast?.length
@@ -265,7 +265,7 @@ export default function Results({
                     onExplain={onExplain}
                   />
                 ) : (
-                  <Forecast product={product} onAddData={onAddData} onRestock={() => setTab("Inventory")} />
+                  <Forecast key={product.product_id} product={product} onAddData={result.quality.config.synthetic ? onTryOwn : onAddData} onRestock={() => setTab("Inventory")} />
                 ))}
             </div>
           </div>
@@ -275,8 +275,10 @@ export default function Results({
   );
 }
 function Forecast({ product: p, onRestock, onAddData }: { product: Product; onRestock: () => void; onAddData: () => void }) {
+  const [expanded, setExpanded] = useState(false);
+  const [activePoint, setActivePoint] = useState<string>("");
   const last = p.evaluation?.windows.at(-1);
-  const history = p.history || [],
+  const history = (p.history || []).slice(-28),
     future = p.forecast || [];
   const values = [
     ...history.map((x) => x.units),
@@ -311,12 +313,13 @@ function Forecast({ product: p, onRestock, onAddData }: { product: Product; onRe
             : p.status === "summary_only"
               ? "We need more sales history before forecasting this product."
               : "Some sales records need fixing before we can forecast this product. Open Data check to see what to fix."}
+          <Button variant="text" onClick={onAddData}>Add more sales</Button>
         </Notice>
       ) : (
         <>
           <div className="metric-strip">
             <div>
-              <small>Predicted sales · next 28 days</small>
+              <small>Estimated sales · these 28 days</small>
               <strong>{num(p.forecast_total)} units</strong>
             </div>
             <div>
@@ -329,16 +332,40 @@ function Forecast({ product: p, onRestock, onAddData }: { product: Product; onRe
             {!last && <p>Based on {p.usable_days} complete days. {p.usable_days < 84 ? `Add at least ${84 - p.usable_days} more complete days so we can test this estimate.` : "There is not enough usable history for a complete test."} Passing is not guaranteed.</p>}
             {!last && <Button variant="secondary" onClick={onAddData}>Add sales data</Button>}
             <p>{last ? `In a past test, daily predictions differed from actual sales by about ${num(last.model.mae)} units on average.` : "This estimate has not been tested against enough past sales yet."} Future sales may differ.</p>
-            {p.inventory_eligible ? <Button onClick={onRestock}>Check how much to restock</Button> : <p>Stock recommendations aren’t available for this product yet. Review the forecast details before using this estimate.</p>}
+            {!p.inventory_eligible && <p>Stock recommendations aren’t available for this product yet.</p>}
           </div>
           {p.forecast_warning && <Notice tone="warning">{p.forecast_warning}</Notice>}
-          <details className="quiet-details">
-            <summary>View sales trend</summary>
+          <section className="daily-preview">
+            <h3>Daily sales estimate</h3>
+            <div className="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Estimated units</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(expanded ? future : future.slice(0, 5)).map((d) => (
+                    <tr key={d.date}>
+                      <td>{friendlyDate(d.date)}</td>
+                      <td>{num(d.units)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <Button variant="text" aria-expanded={expanded} onClick={() => setExpanded(!expanded)}>{expanded ? "Show fewer days" : `Show all ${future.length} days`}</Button>
+          </section>
+          <section className="forecast-chart-section">
+            <h3>Past sales and estimated sales</h3>
+            <p className="chart-legend">Gray solid: actual sales · Green dashed: estimates</p>
+            <p className="chart-readout" aria-live="polite">{activePoint || "Select a point to see its date and units."}</p>
           <svg
             className="live-chart"
             viewBox="0 0 740 260"
             role="img"
-            aria-label="Historical sales in gray and forecast in green. Exact values are in the table below."
+            aria-label="Recent actual sales in gray and estimates in green. Units sold by date."
           >
             <line x1="40" y1="215" x2="710" y2="215" stroke="#dce4de" />
             <path
@@ -358,6 +385,7 @@ function Forecast({ product: p, onRestock, onAddData }: { product: Product; onRe
               fill="none"
               stroke="#27624d"
               strokeWidth="3"
+              strokeDasharray="6 4"
             />
             <line
               x1={40 + (history.length * 660) / (values.length - 1)}
@@ -368,10 +396,10 @@ function Forecast({ product: p, onRestock, onAddData }: { product: Product; onRe
               strokeDasharray="4"
             />
             <text x="40" y="245">
-              Recent history
+              {history.length ? friendlyDate(history[0].date) : friendlyDate(future[0].date)}
             </text>
             <text x="590" y="245">
-              Forecast
+              {friendlyDate(future.at(-1)!.date)}
             </text>
             <text x="5" y="215">
               0
@@ -379,12 +407,16 @@ function Forecast({ product: p, onRestock, onAddData }: { product: Product; onRe
             <text x="5" y="45">
               {Math.ceil(max)}
             </text>
+            <text x="40" y="18">Units sold</text>
+            <text x={40 + (history.length * 660) / Math.max(1, values.length - 1)} y="35">Forecast starts</text>
+            {[...history, ...future].map((d, i) => d.units == null ? null : <circle key={i} cx={40 + i * 660 / Math.max(1, values.length - 1)} cy={215 - d.units / max * 170} r="5" fill={i < history.length ? "#98a39b" : "#27624d"} tabIndex={0} role="button" onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setActivePoint(`${friendlyDate(d.date)} · ${num(d.units)} ${i < history.length ? "sold" : "estimated"} units`); } }} aria-label={`${friendlyDate(d.date)}: ${num(d.units)} ${i < history.length ? "sold" : "estimated"} units`} onMouseEnter={() => setActivePoint(`${friendlyDate(d.date)} · ${num(d.units)} ${i < history.length ? "sold" : "estimated"} units`)} onFocus={() => setActivePoint(`${friendlyDate(d.date)} · ${num(d.units)} ${i < history.length ? "sold" : "estimated"} units`)} onClick={() => setActivePoint(`${friendlyDate(d.date)} · ${num(d.units)} ${i < history.length ? "sold" : "estimated"} units`)} />)}
           </svg>
-          </details>
+          </section>
+          {p.inventory_eligible && <div className="forecast-next"><Button onClick={onRestock}>Check how much to restock</Button></div>}
           <details className="quiet-details">
-            <summary>How reliable is this forecast?</summary>
+            <summary>How we checked this</summary>
             <p>
-              Based on {p.usable_days} complete days of sales history. We tested the method on past sales that were kept out of training.
+              Based on {p.usable_days} complete days of sales history. {last ? "We tested the method on past sales that were kept out of training." : "There is not enough history for a full test."}
               Future sales can still differ. Selected method:{" "}
               {p.method?.replaceAll("_", " ")}.
             </p>
@@ -448,27 +480,7 @@ function Forecast({ product: p, onRestock, onAddData }: { product: Product; onRe
               )}
             </section>
           </details>
-          <details className="panel">
-            <summary>View daily forecast values</summary>
-            <div className="table-scroll">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Predicted units</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {future.map((d) => (
-                    <tr key={d.date}>
-                      <td>{friendlyDate(d.date)}</td>
-                      <td>{num(d.units)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </details>
+
         </>
       )}
     </>
