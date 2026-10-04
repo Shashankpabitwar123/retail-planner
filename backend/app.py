@@ -279,6 +279,16 @@ def public_job(row, result=True):
     if result and row["result"]:
         data = json.loads(row["result"])
         if row["kind"] == "normalize":
+            missing_examples = {}
+            for record in data.get("canonical", []):
+                if record.get("observation_status") == "unknown":
+                    dates = missing_examples.setdefault(record["product_id"], [])
+                    if len(dates) < 5:
+                        dates.append(record["date"])
+            for product in data["products"]:
+                product["missing_date_examples"] = missing_examples.get(
+                    product["product_id"], []
+                )
             data.pop("canonical", None)
             data["products"] = [
                 {k: v for k, v in p.items() if k != "series"} for p in data["products"]
@@ -523,6 +533,20 @@ def create_app(db_path=None, worker=True):
             "duplicate": True,
             **inspect_csv(source["raw"]),
         }
+
+    @app.post("/api/uploads/{uid}/guide")
+    async def guided_import(uid: str, request: Request):
+        from .guidance import guide
+        import asyncio
+
+        source = store.owned("uploads", uid, owner(request))
+        data = await body(request)
+        return await asyncio.to_thread(
+            guide,
+            source["raw"],
+            data.get("answers", {}),
+            data.get("timezone", "Etc/UTC"),
+        )
 
     @app.post("/api/uploads/{uid}/suggest-mapping")
     async def suggest_mapping(uid: str, request: Request):

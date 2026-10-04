@@ -9,6 +9,7 @@ import {
 import { Button, Notice, Steps } from "./UI";
 import { Setup, QualityView } from "./Review";
 import Results from "./Results";
+import GuidedImport, { type Guidance } from "./GuidedImport";
 import {
   api,
   post,
@@ -42,9 +43,23 @@ const initial: Config = {
   store_id: "",
 };
 export default function App() {
-  const [rowEvidence,setRowEvidence]=useState<{date:string;product_id:string;units_sold:number|null;observation_status:string}[]|null>(null);
-  const [rowError,setRowError]=useState('');
-  const [previewContext,setPreviewContext]=useState<Plan|null>(null);
+  const [guidance, setGuidance] = useState<Guidance | null>(null);
+  const [guideAnswers, setGuideAnswers] = useState<Record<string, string>>({});
+  const automatic = useRef(true);
+  const importGeneration = useRef(0);
+  const missingAnswered = useRef(false);
+  const [missingQuestion, setMissingQuestion] = useState(false);
+  const [rowEvidence, setRowEvidence] = useState<
+    | {
+        date: string;
+        product_id: string;
+        units_sold: number | null;
+        observation_status: string;
+      }[]
+    | null
+  >(null);
+  const [rowError, setRowError] = useState("");
+  const [previewContext, setPreviewContext] = useState<Plan | null>(null);
   const [serverPolicy, setServerPolicy] = useState({
     max_upload_bytes: 10485760,
     max_rows: 200000,
@@ -94,19 +109,35 @@ export default function App() {
   const liveContext =
     phase === "results" ? serverId : phase === "review" ? reviewId : null;
   contextRef.current = String(liveContext) + ":" + activePid;
-  function evidenceLink(source: string, sourceQuestion=question) {
-    if(source==='rows'){
-      const dates=[...new Set(sourceQuestion.match(/\b\d{4}-\d{2}-\d{2}\b/g)||[])].sort();
-      if(!dates.length){setRowError('Include a YYYY-MM-DD date to open its normalized rows.');return}
-      const context=contextRef.current;setRowEvidence(null);setRowError('');
-      api<NonNullable<typeof rowEvidence>>(`/jobs/${liveContext}/rows?product_id=${encodeURIComponent(activePid)}&start=${dates[0]}&end=${dates.at(-1)}`).then(r=>{if(contextRef.current===context)setRowEvidence(r)}).catch(e=>{if(contextRef.current===context)setRowError(e.message)});return;
+  function evidenceLink(source: string, sourceQuestion = question) {
+    if (source === "rows") {
+      const dates = [
+        ...new Set(sourceQuestion.match(/\b\d{4}-\d{2}-\d{2}\b/g) || []),
+      ].sort();
+      if (!dates.length) {
+        setRowError("Include a YYYY-MM-DD date to open its normalized rows.");
+        return;
+      }
+      const context = contextRef.current;
+      setRowEvidence(null);
+      setRowError("");
+      api<NonNullable<typeof rowEvidence>>(
+        `/jobs/${liveContext}/rows?product_id=${encodeURIComponent(activePid)}&start=${dates[0]}&end=${dates.at(-1)}`,
+      )
+        .then((r) => {
+          if (contextRef.current === context) setRowEvidence(r);
+        })
+        .catch((e) => {
+          if (contextRef.current === context) setRowError(e.message);
+        });
+      return;
     }
     setDrawer(null);
     setRequestedTab({
       name:
-        (source === "inventory"||source==="scenario")
+        source === "inventory" || source === "scenario"
           ? "Inventory"
-          : (source === "quality"||source==="rows")
+          : source === "quality" || source === "rows"
             ? "Data quality"
             : "Forecasts",
       revision: Date.now(),
@@ -115,7 +146,9 @@ export default function App() {
   useEffect(() => {
     let current = true;
     setConversation([]);
-    setPreviewContext(null);setRowEvidence(null);setRowError('');
+    setPreviewContext(null);
+    setRowEvidence(null);
+    setRowError("");
     setAnswer("");
     setAsking(false);
     if (liveContext)
@@ -187,10 +220,40 @@ export default function App() {
           if (next.kind === "normalize") {
             setReviewId(next.id);
             setReview(next.result as Quality);
-            setPhase("review");
             setConfig((next.result as Quality).config);
             setSubset(false);
             setAckChanges(false);
+            const quality = next.result as Quality;
+            const changed =
+              quality.comparison?.changed_keys ||
+              quality.comparison?.removed_keys;
+            if (changed) automatic.current = false;
+            if (automatic.current && !changed) {
+              if (
+                !quality.global_block &&
+                quality.products.some((p) => p.missing_days > 0) &&
+                !missingAnswered.current &&
+                !quality.config.missing_days_zero
+              ) {
+                setMissingQuestion(true);
+                setPhase("review");
+              } else if (
+                quality.eligible_products > 0 &&
+                !quality.global_block
+              ) {
+                try {
+                  const f = await post<{ id: string }>(
+                    `/jobs/${next.id}/forecast`,
+                  );
+                  if (!stopped) start(f.id);
+                } catch (e) {
+                  if (!stopped) {
+                    setError((e as Error).message);
+                    setPhase("review");
+                  }
+                }
+              } else setPhase("review");
+            } else setPhase("review");
           } else {
             const result = next.result as Result;
             const existing = await historyList()
@@ -213,7 +276,11 @@ export default function App() {
             };
             setSnapshot(saved);
             setServerId(next.id);
-            setSelected(result.products[0]?.product_id || "");
+            setSelected(
+              result.products.find((p) => p.forecast?.length)?.product_id ||
+                result.products[0]?.product_id ||
+                "",
+            );
             setPhase("results");
             await historySave(saved)
               .then((summary) => {
@@ -272,7 +339,8 @@ export default function App() {
     localStorage.setItem("retail-active-job", id);
     setPhase("processing");
   }
-  async function loadFile(file: File, synthetic = false) {
+  async function loadFile(file: File) {
+    const generation = ++importGeneration.current;
     await run(async () => {
       if (file.size > serverPolicy.max_upload_bytes)
         throw Error(
@@ -282,22 +350,64 @@ export default function App() {
         "/uploads?name=" + encodeURIComponent(file.name),
         { method: "POST", body: file },
       );
+      if (generation !== importGeneration.current) return;
       setUpload(u);
       setName(file.name);
-      setConfig({
-        ...initial,
-        synthetic,
-        mapping: u.suggested_mapping,
-        layout: u.suggested_layout,
-        coverage_start: u.suggested_range?.[0] || "",
-        coverage_end: u.suggested_range?.[1] || "",
-      });
+      automatic.current = true;
+      missingAnswered.current = false;
+      setMissingQuestion(false);
+      setGuideAnswers({});
+      setGuidance(null);
       setReview(null);
       setReviewId(null);
       setJobId(null);
       localStorage.removeItem("retail-active-job");
-      setPhase("setup");
+      setPhase("guide");
+      await inspectGuide(u, {});
     });
+  }
+  async function inspectGuide(u: Upload, answers: Record<string, string>) {
+    const generation = importGeneration.current;
+    const result = await post<Guidance>(`/uploads/${u.id}/guide`, {
+      answers,
+      timezone: initial.timezone,
+    });
+    if (generation !== importGeneration.current) return;
+    setGuidance(result);
+    setConfig(result.config);
+    if (result.ready) {
+      const r = await post<{ id: string }>(
+        `/uploads/${u.id}/review`,
+        result.config,
+      );
+      if (generation === importGeneration.current) start(r.id);
+    }
+  }
+  async function answerGuide(key: string, value: string) {
+    if (!upload) return;
+    const answers = { ...guideAnswers, [key]: value };
+    setGuideAnswers(answers);
+    await run(() => inspectGuide(upload, answers));
+  }
+  async function answerMissing(zero: boolean) {
+    missingAnswered.current = true;
+    setMissingQuestion(false);
+    if (zero && upload && review) {
+      await run(async () => {
+        const cfg = { ...review.config, missing_days_zero: true };
+        setConfig(cfg);
+        const r = await post<{ id: string }>(
+          `/uploads/${upload.id}/review`,
+          cfg,
+        );
+        start(r.id);
+      });
+    } else if (review?.eligible_products && !review.global_block) {
+      await run(async () => {
+        const r = await post<{ id: string }>(`/jobs/${reviewId}/forecast`);
+        start(r.id);
+      });
+    }
   }
   async function sample(file: string) {
     await run(async () => {
@@ -305,11 +415,11 @@ export default function App() {
       if (!response.ok) throw Error("Sample unavailable.");
       await loadFile(
         new File([await response.blob()], file, { type: "text/csv" }),
-        true,
       );
     });
   }
   function reset() {
+    importGeneration.current++;
     setJobId(null);
     localStorage.removeItem("retail-active-job");
     setPhase("upload");
@@ -338,7 +448,11 @@ export default function App() {
     localStorage.removeItem("retail-active-job");
     setSnapshot(s);
     setServerId(null);
-    setSelected(s.result.products[0]?.product_id || "");
+    setSelected(
+      s.result.products.find((p) => p.forecast?.length)?.product_id ||
+        s.result.products[0]?.product_id ||
+        "",
+    );
     setPhase(s.summaryOnly ? "summary" : "results");
     setDrawer(null);
     setError("");
@@ -359,7 +473,7 @@ export default function App() {
           question: q,
           product_id: selected || review?.products[0]?.product_id,
           consent,
-          ...(previewContext?{preview:previewContext.assumptions}:{}),
+          ...(previewContext ? { preview: previewContext.assumptions } : {}),
         },
       );
       if (contextRef.current !== sourceContext) return;
@@ -418,6 +532,14 @@ export default function App() {
           <div role="alert">
             <Notice tone="warning">
               {error}
+              {phase === "guide" && upload && !busy && (
+                <Button
+                  variant="text"
+                  onClick={() => run(() => inspectGuide(upload, guideAnswers))}
+                >
+                  Try again
+                </Button>
+              )}
               {!ready && (
                 <Button variant="text" onClick={() => location.reload()}>
                   Reconnect
@@ -428,14 +550,13 @@ export default function App() {
         )}
         {phase === "upload" && (
           <>
-            <Steps active={0} />
             <div className="page-heading">
               <p className="eyebrow">LESS GUESSWORK. BETTER STOCK DECISIONS.</p>
               <h1>Know what to stock next.</h1>
               <p>
                 Turn your store’s sales history into a practical forecast.
                 <br />
-                Start with your data. We’ll help you check it first.
+                Upload your sales file. We’ll take care of the rest.
               </p>
             </div>
             <div className="live-columns">
@@ -449,7 +570,7 @@ export default function App() {
                 }}
               >
                 <UploadCloud size={32} strokeWidth={1.5} />
-                <h2>Start with your sales CSV</h2>
+                <h2>Upload your sales file</h2>
                 <p>Drop your file here, or choose it below.</p>
                 <Button
                   disabled={!ready || busy}
@@ -487,14 +608,14 @@ export default function App() {
                 <h2>A clear path from data to decisions</h2>
                 <ol className="journey-list">
                   <li>
-                    <strong>Check your data</strong>
-                    <p>Match columns, confirm dates, and see what’s missing.</p>
+                    <strong>Upload your sales</strong>
+                    <p>
+                      We’ll read your file and ask only if something is unclear.
+                    </p>
                   </li>
                   <li>
                     <strong>See future sales</strong>
-                    <p>
-                      A 28-day forecast with honestly measured historical error.
-                    </p>
+                    <p>See what’s likely to sell over the next four weeks.</p>
                   </li>
                   <li>
                     <strong>Make a stock plan</strong>
@@ -504,45 +625,28 @@ export default function App() {
                   </li>
                 </ol>
                 <p className="muted">
-                  No account needed.{" "}
-                  {serverPolicy.ephemeral
-                    ? "Free demo: temporary server files and chats can disappear when the server sleeps or restarts."
-                    : "Server files expire after 7 days."}{" "}
-                  Compact results can stay in this browser or be downloaded.
+                  No account needed. Download your results whenever you’re
+                  ready.
                 </p>
               </section>
             </div>
-            <section className="sample-section">
-              <h2>Try a sample store</h2>
-              <p>
-                Clearly labelled synthetic sales. These run through the real
-                processing engine.
-              </p>
-              <div className="sample-actions">
-                {[
-                  ["01-daily.csv", "Complete history"],
-                  ["05-missing-period.csv", "Missing dates"],
-                  ["11-short-history.csv", "Short history"],
-                  ["02-transactions.csv", "Transaction format"],
-                  ["03-wide-dates.csv", "Wide format"],
-                ].map(([f, label]) => (
-                  <Button
-                    key={f}
-                    variant="secondary"
-                    disabled={!ready || busy}
-                    onClick={() => sample(f)}
-                  >
-                    {label}
-                  </Button>
-                ))}
-              </div>
+            <section className="sample-section simple-sample">
+              <span>Just looking around?</span>
+              <button
+                className="text-link"
+                disabled={!ready || busy}
+                onClick={() => sample("01-daily.csv")}
+              >
+                Try sample sales
+              </button>
+              <span className="muted">Example data, no upload needed.</span>
             </section>
             <section className="restore-line">
               <button
                 className="text-link"
                 onClick={() => backupInput.current?.click()}
               >
-                Restore a downloaded workspace
+                Open saved results
               </button>
               <input
                 type="file"
@@ -565,6 +669,19 @@ export default function App() {
               />
             </section>
           </>
+        )}
+        {phase === "guide" && upload && (
+          <GuidedImport
+            upload={upload}
+            guidance={guidance}
+            busy={busy}
+            onAnswer={answerGuide}
+            onReset={reset}
+            onDetails={() => {
+              automatic.current = false;
+              setPhase("setup");
+            }}
+          />
         )}
         {phase === "setup" && upload && (
           <Setup
@@ -610,8 +727,8 @@ export default function App() {
                 : "Checking your sales history."}
             </h1>
             <p>
-              Progress comes directly from the processing worker. You can return
-              to this analysis after refreshing.
+              We’re checking the file and finding patterns in your sales. Your
+              results will appear here automatically.
             </p>
             <div className="processing-state" role="status">
               {job?.state === "completed" ? (
@@ -619,7 +736,13 @@ export default function App() {
               ) : ["failed", "canceled"].includes(job?.state || "") ? null : (
                 <LoaderCircle className="spin" />
               )}
-              <strong>{job?.stage || "Connecting to worker…"}</strong>
+              <strong>
+                {job?.state === "queued"
+                  ? "Your analysis is next in line…"
+                  : job?.kind === "forecast"
+                    ? "Testing sales patterns and building your forecast…"
+                    : "Checking dates, products and missing sales…"}
+              </strong>
               {!!job?.total && (
                 <span>
                   {job.done} of {job.total}
@@ -627,9 +750,7 @@ export default function App() {
               )}
             </div>
             {job?.cancel === 1 && job.state === "running" && (
-              <p>
-                Cancellation requested. Waiting for the worker to stop safely…
-              </p>
+              <p>Stopping your analysis…</p>
             )}
             {job?.error && <Notice tone="warning">{job.error}</Notice>}
             <div className="inline-actions">
@@ -670,7 +791,7 @@ export default function App() {
                         setPhase("setup");
                       }}
                     >
-                      Edit import settings
+                      Import details
                     </Button>
                   )}
                 </>
@@ -678,7 +799,105 @@ export default function App() {
             </div>
           </section>
         )}
-        {phase === "review" && review && (
+        {phase === "review" && review && automatic.current && (
+          <section className="guided-card">
+            {missingQuestion ? (
+              <>
+                <p className="eyebrow">ONE QUICK QUESTION</p>
+                <h1>Did these products have no sales on the missing days?</h1>
+                <p>
+                  Some days aren’t in the file for{" "}
+                  {review.products.filter((p) => p.missing_days > 0).length}{" "}
+                  product(s). We won’t treat missing records as zero sales
+                  unless you know that’s correct.
+                </p>
+                <ul className="missing-examples">
+                  {review.products
+                    .filter((p) => p.missing_days > 0)
+                    .slice(0, 5)
+                    .map((p) => (
+                      <li key={p.product_id}>
+                        <strong>{p.name}</strong>: {p.missing_days} missing
+                        day(s)
+                        {p.missing_date_examples?.length
+                          ? `, including ${p.missing_date_examples.join(", ")}`
+                          : ""}
+                      </li>
+                    ))}
+                </ul>
+                <div className="answer-options">
+                  <button
+                    className="answer-option"
+                    disabled={busy}
+                    onClick={() => answerMissing(true)}
+                  >
+                    <strong>Yes, there were no sales</strong>
+                    <span>Count the missing days as zero sales.</span>
+                  </button>
+                  <button
+                    className="answer-option"
+                    disabled={busy}
+                    onClick={() => answerMissing(false)}
+                  >
+                    <strong>I’m not sure, or records are missing</strong>
+                    <span>
+                      Keep those days unknown. Show results only where the
+                      history is complete enough.
+                    </span>
+                  </button>
+                </div>
+              </>
+            ) : review.eligible_products > 0 && !review.global_block ? (
+              <>
+                <h1>Your data is ready.</h1>
+                <p>We couldn’t finish connecting. Your file is still here.</p>
+                <Button
+                  disabled={busy}
+                  onClick={() =>
+                    run(async () => {
+                      const r = await post<{ id: string }>(
+                        `/jobs/${reviewId}/forecast`,
+                      );
+                      start(r.id);
+                    })
+                  }
+                >
+                  Try forecast again
+                </Button>
+              </>
+            ) : (
+              <>
+                <p className="eyebrow">LET’S FIX THIS FIRST</p>
+                <h1>
+                  {review.products.every((p) => p.days < 56)
+                    ? "We need a little more sales history."
+                    : "Some sales records need attention."}
+                </h1>
+                <p>
+                  {review.products.every((p) => p.days < 56)
+                    ? "Upload at least 8 weeks of daily sales. Around 6 months gives us more history to test the forecast."
+                    : "We couldn’t make a reliable forecast from this file yet. The details below show what to fix."}
+                </p>
+                <Button onClick={reset}>Upload another file</Button>
+              </>
+            )}
+            <details className="quiet-details">
+              <summary>See affected products and download issues</summary>
+              <QualityView quality={review} />
+            </details>
+            <button
+              className="text-link guided-secondary"
+              onClick={() => {
+                automatic.current = false;
+                setMissingQuestion(false);
+                setPhase("setup");
+              }}
+            >
+              Import details
+            </button>
+          </section>
+        )}
+        {phase === "review" && review && !automatic.current && (
           <>
             <Steps active={1} />
             <div className="page-heading">
@@ -726,7 +945,7 @@ export default function App() {
                       setPhase("setup");
                     }}
                   >
-                    Edit import settings
+                    Import details
                   </Button>
                 )}
                 <a
@@ -770,7 +989,15 @@ export default function App() {
             jobId={serverId}
             plans={snapshot.plans}
             requestedTab={requestedTab}
-            onExplain={p=>{const assumptions={...p.assumptions};delete assumptions.timezone;setPreviewContext({...p,assumptions});setQuestion('Explain this un-applied inventory preview and its risks.');setDrawer('help')}}
+            onExplain={(p) => {
+              const assumptions = { ...p.assumptions };
+              delete assumptions.timezone;
+              setPreviewContext({ ...p, assumptions });
+              setQuestion(
+                "Explain this un-applied inventory preview and its risks.",
+              );
+              setDrawer("help");
+            }}
             onPlan={(id, p) =>
               run(async () => {
                 const settings = { ...p.assumptions };
@@ -830,11 +1057,8 @@ export default function App() {
         )}
       </main>
       <footer>
-        <span>
-          {serverPolicy.ephemeral ? "Free portfolio demo" : "Retail Planner"} ·
-          Statistical forecasts, not guarantees
-        </span>
-        <span>No account needed · Your key stays on the backend</span>
+        <span>Retail Planner</span>
+        <span>Sales insights. Clearer stock decisions.</span>
       </footer>
       {toast && (
         <div className="toast" role="status">
@@ -861,15 +1085,19 @@ export default function App() {
               </p>
               {phase === "processing" && (
                 <Notice>
-                  Current step: {job?.stage || "Connecting to worker…"}. This
-                  status comes from the backend.
+                  Current step:{" "}
+                  {job?.state === "queued"
+                    ? "Your analysis is next in line…"
+                    : job?.kind === "forecast"
+                      ? "Testing sales patterns and building your forecast…"
+                      : "Checking dates, products and missing sales…"}
+                  .
                 </Notice>
               )}
               {!serverPolicy.ai_available ? (
                 <Notice>
-                  The optional AI assistant is not enabled on this server. Data
-                  checks, forecasts, inventory calculations and downloads still
-                  work without an API key.
+                  The assistant is unavailable right now. You can still view
+                  your forecasts, plan stock and download results.
                 </Notice>
               ) : !liveContext ? (
                 <Notice>
@@ -878,7 +1106,19 @@ export default function App() {
                 </Notice>
               ) : (
                 <>
-                  {previewContext&&<Notice>Attached un-applied preview: {num(previewContext.suggested_order_units)} units, arriving {previewContext.arrival_date}. <button className="text-link" onClick={()=>setPreviewContext(null)}>Remove preview context</button></Notice>}
+                  {previewContext && (
+                    <Notice>
+                      Attached un-applied preview:{" "}
+                      {num(previewContext.suggested_order_units)} units,
+                      arriving {previewContext.arrival_date}.{" "}
+                      <button
+                        className="text-link"
+                        onClick={() => setPreviewContext(null)}
+                      >
+                        Remove preview context
+                      </button>
+                    </Notice>
+                  )}
                   <label className="check-row">
                     <input
                       type="checkbox"
@@ -890,8 +1130,7 @@ export default function App() {
                   </label>
                   <p className="muted">
                     Recent messages stay with this product and analysis for up
-                    to 7 days (or until a free-demo reset). AI explanations can
-                    be mistaken; check the cited data.
+                    to 7 days. Check the linked data before making a decision.
                   </p>
                   <div className="button-stack">
                     {[
@@ -972,9 +1211,9 @@ export default function App() {
           ) : (
             <>
               <Notice>
-                Saved results stay in this browser: newest 10, within 25 MiB.
-                Clearing browser data removes them. Download a workspace to keep
-                a copy.
+                Your ten most recent results are saved in this browser. Download
+                a copy to keep them when switching devices or clearing browser
+                data.
               </Notice>
               <h3>Saved results</h3>
               {!history.length && <p>No saved results yet.</p>}
@@ -1020,9 +1259,9 @@ export default function App() {
               ))}
               <h3>Server analyses</h3>
               <p className="muted">
-                Available for up to 7 days in this browser session; free-demo
-                resets may remove them sooner. Deleting a source also deletes
-                its reviews and forecasts.
+                Uploaded files and chats are temporary and may expire sooner
+                than 7 days. Your downloaded results and saved browser history
+                stay separate.
               </p>
               {jobs.map((j) => (
                 <section className="history-item" key={j.id}>

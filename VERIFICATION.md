@@ -1,6 +1,6 @@
 # Verification — October 4, 2026
 
-62 Python tests and 13 TypeScript tests passed. TypeScript checking, Vite production build and production Docker build passed. One TestClient dependency deprecation warning remains. The tests cover normalization, ownership, queue recovery, forecast evaluation, inventory arithmetic, read-only preview explanations, bounded row access, headers-only mapping, validated backups and browser storage failures.
+74 Python tests and 13 TypeScript tests passed. TypeScript checking, Vite production build and production Docker build passed. One TestClient dependency deprecation warning remains. The tests cover normalization, ownership, queue recovery, forecast evaluation, inventory arithmetic, read-only preview explanations, bounded row access, headers-only mapping, validated backups and browser storage failures.
 
 ## Browser and container checks
 
@@ -24,3 +24,7 @@ A fresh production Docker build passed under local free-profile constraints (512
 Public Render deployment passed upload/review/forecast/export and a live AI request, with HTTPS Secure and HttpOnly cookies; see `evidence/public-smoke.json`. No error logs were returned at launch inspection. Concurrent load, complete screen-reader coverage, independent security review and representative business validation are not complete. The 72-item acceptance register records scoped evidence and partial UI checks; it is not 72 automated tests. Backup checksums detect accidental corruption, not authenticity. Free-host records can disappear; browser history and downloads are separate.
 
 Final free-profile browser reset check passed: after recreating the container, the expired-analysis message appeared; saved history reopened all three forecasts, with re-upload required for live AI/recalculation. See `evidence/free-reset-browser.json`.
+
+## Guided experience update
+
+Automatic import guidance adds tests for date ambiguity, whole-file date inference, unknown column choices, multiple stores, timestamps, transaction aggregation, coverage uncertainty and owner isolation. Browser checks verified one-click sample → forecast; a renamed real-file fixture → one export-completeness question → forecast; missing-day fixture → one targeted question → unknown day preserved and only two eligible forecasts; optional stock settings still produced the 132-unit preview. No horizontal overflow at 390px or 1280px. Desktop console inspection was clear. API and statistical algorithms remain governed by the original validation gates. Screen-reader testing is not claimed.

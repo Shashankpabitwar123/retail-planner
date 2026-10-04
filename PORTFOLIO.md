@@ -24,7 +24,7 @@ The original real-data benchmark had high errors. An expanded 30-product develop
 
 ## Demo walkthrough
 
-Open the complete synthetic sample → confirm data meaning → review quality → generate forecasts → select Notebook → enter 25 units in stock, 5-day lead time, 7-day review, 2-day buffer and pack size 12 → preview the 132-unit scenario → apply → ask about the applied order → download the results.
+Choose Try sample sales → automatic checks and forecasting → select Notebook → enter 25 units in stock, 5-day lead time, 7-day review, 2-day buffer and pack size 12 → preview the 132-unit scenario → apply → ask about the applied order → download the results.
 
 A second walkthrough should use the missing-date sample to demonstrate the app declining unsupported predictions. Uploaded historical examples are labelled historical replay.
 

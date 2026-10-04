@@ -1,0 +1,17 @@
+{
+  "date": "2026-10-04",
+  "backend_tests": 74,
+  "frontend_tests": 13,
+  "sample_direct_to_forecast": true,
+  "real_file_single_business_question": true,
+  "missing_dates_kept_unknown_on_uncertainty": true,
+  "partial_forecast_products": 2,
+  "stock_preview_unchanged_units": 132,
+  "viewports": [
+    390,
+    1280
+  ],
+  "horizontal_overflow": false,
+  "desktop_console_errors": [],
+  "capture_note": "Rejected cropped/stitched override screenshots; accepted standard desktop 1280px screenshot and 390px mobile capture."
+}

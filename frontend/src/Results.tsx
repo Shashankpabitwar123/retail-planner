@@ -25,14 +25,18 @@ export default function Results({
   jobId: string | null;
   plans: Record<string, Plan>;
   onPlan: (id: string, p: Plan) => Promise<void>;
-  onExplain:(p:Plan)=>void;
+  onExplain: (p: Plan) => void;
   onBackup: () => void;
   onSelected: (id: string) => void;
   requestedTab?: { name: string; revision: number };
 }) {
   const [tab, setTab] = useState("Forecasts"),
     [query, setQuery] = useState(""),
-    [id, setId] = useState(result.products[0]?.product_id || "");
+    [id, setId] = useState(
+      result.products.find((p) => p.forecast?.length)?.product_id ||
+        result.products[0]?.product_id ||
+        "",
+    );
   const [drafts, setDrafts] = useState<Record<string, InventoryDraft>>({});
   const [importRevision, setImportRevision] = useState(0);
   useEffect(() => {
@@ -48,20 +52,28 @@ export default function Results({
       <div className="page-heading">
         <p className="eyebrow">
           {result.quality.config.synthetic
-            ? "SYNTHETIC SAMPLE · REAL ENGINE RESULTS"
+            ? "SAMPLE SALES"
             : "YOUR SALES OUTLOOK"}
         </p>
-        <h1>A clearer view of what comes next.</h1>
+        <h1>Your sales forecast.</h1>
         <p>
           {result.forecast_start} – {result.forecast_end} · 28-day forecast ·{" "}
           {result.products.filter((p) => p.forecast?.length).length} products
           forecast
         </p>
       </div>
-      <Notice>
-        {result.notice} Dates before today are a historical replay, not a live
-        stock recommendation.
-      </Notice>
+      {result.forecast_start < new Date().toISOString().slice(0, 10) && (
+        <p className="muted historical-note">
+          Based on past sales · This forecast starts on {result.forecast_start}.
+          Upload recent sales for a current plan.
+        </p>
+      )}
+      {result.products.some((p) => !p.forecast?.length) && (
+        <Notice tone="warning">
+          Some products need more complete sales history. Select a product to
+          see what’s missing.
+        </Notice>
+      )}
       <div className="action-row">
         <div className="tabs" role="tablist" aria-label="Result view">
           {["Forecasts", "Inventory", "Data quality"].map((t) => (
@@ -100,7 +112,7 @@ export default function Results({
             Download forecast CSV
           </Button>
           <Button variant="secondary" onClick={onBackup}>
-            Save workspace
+            Save a copy
           </Button>
         </div>
       </div>
@@ -109,8 +121,63 @@ export default function Results({
         role="tabpanel"
         aria-labelledby={`tab-${tab.replaceAll(" ", "-")}`}
       >
-        {tab === "Inventory" && Object.keys(plans).length>0&&<section className="panel"><h2>Applied stock actions</h2><p>Saved scenarios only. Prioritized by unmet sales before delivery; this is a simulation, not an order submission.</p><div className="table-scroll"><table><thead><tr><th>Product</th><th>Action</th><th>Order units</th><th>Unmet before arrival</th><th>Arrival</th></tr></thead><tbody>{Object.entries(plans).sort((a,b)=>b[1].pre_arrival_unmet_units-a[1].pre_arrival_unmet_units).map(([pid,p])=><tr key={pid}><td><button className="text-link" onClick={()=>{setId(pid);onSelected(pid)}}>{result.products.find(x=>x.product_id===pid)?.name||pid}</button></td><td>{p.pre_arrival_unmet_units>0?'Review early shortage':p.suggested_order_units>0?'Order suggested':'No order needed'}</td><td>{num(p.suggested_order_units)}</td><td>{num(p.pre_arrival_unmet_units)}</td><td>{p.arrival_date}</td></tr>)}</tbody></table></div></section>}
-      {tab === "Inventory" && jobId && (
+        {tab === "Inventory" && Object.keys(plans).length > 0 && (
+          <section className="panel">
+            <h2>Applied stock actions</h2>
+            <p>
+              Saved scenarios only. Prioritized by unmet sales before delivery;
+              this is a simulation, not an order submission.
+            </p>
+            <div className="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th>Action</th>
+                    <th>Order units</th>
+                    <th>Unmet before arrival</th>
+                    <th>Arrival</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.entries(plans)
+                    .sort(
+                      (a, b) =>
+                        b[1].pre_arrival_unmet_units -
+                        a[1].pre_arrival_unmet_units,
+                    )
+                    .map(([pid, p]) => (
+                      <tr key={pid}>
+                        <td>
+                          <button
+                            className="text-link"
+                            onClick={() => {
+                              setId(pid);
+                              onSelected(pid);
+                            }}
+                          >
+                            {result.products.find((x) => x.product_id === pid)
+                              ?.name || pid}
+                          </button>
+                        </td>
+                        <td>
+                          {p.pre_arrival_unmet_units > 0
+                            ? "Review early shortage"
+                            : p.suggested_order_units > 0
+                              ? "Order suggested"
+                              : "No order needed"}
+                        </td>
+                        <td>{num(p.suggested_order_units)}</td>
+                        <td>{num(p.pre_arrival_unmet_units)}</td>
+                        <td>{p.arrival_date}</td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
+        {tab === "Inventory" && jobId && (
           <BulkInventory
             jobId={jobId}
             onImport={(items) => {
@@ -123,6 +190,25 @@ export default function Results({
           <QualityView quality={quality} />
         ) : (
           <div className="forecast-layout">
+            <label className="field mobile-product">
+              Product
+              <select
+                value={id}
+                onChange={(e) => {
+                  setId(e.target.value);
+                  onSelected(e.target.value);
+                }}
+              >
+                {result.products.map((p) => (
+                  <option key={p.product_id} value={p.product_id}>
+                    {p.name} ·{" "}
+                    {p.forecast?.length
+                      ? num(p.forecast_total) + " units"
+                      : "Needs attention"}
+                  </option>
+                ))}
+              </select>
+            </label>
             <aside className="product-list">
               <label className="field">
                 Find a product
@@ -168,7 +254,7 @@ export default function Results({
                     jobId={jobId}
                     saved={plans[product.product_id]}
                     onApply={(p) => onPlan(product.product_id, p)}
-                  onExplain={onExplain}
+                    onExplain={onExplain}
                   />
                 ) : (
                   <Forecast product={product} />
@@ -212,10 +298,11 @@ function Forecast({ product: p }: { product: Product }) {
       </div>
       {!future.length ? (
         <Notice tone="warning">
-          Forecast withheld.{" "}
-          {p.status === "summary_only"
-            ? "More complete sales history or positive sales are needed."
-            : "Resolve this product’s data-quality issues first."}
+          {p.missing_days > 0
+            ? `We need the missing ${p.missing_days} day(s) of sales before forecasting this product.`
+            : p.status === "summary_only"
+              ? "We need more sales history before forecasting this product."
+              : "Some sales records need fixing before we can forecast this product. See Data quality for the details."}
         </Notice>
       ) : (
         <>
@@ -225,8 +312,8 @@ function Forecast({ product: p }: { product: Product }) {
               <strong>{num(p.forecast_total)} units</strong>
             </div>
             <div>
-              <small>Selected method</small>
-              <strong>{p.method?.replaceAll("_", " ")}</strong>
+              <small>Sales history</small>
+              <strong>{p.usable_days} days</strong>
             </div>
           </div>
           <svg
@@ -275,68 +362,88 @@ function Forecast({ product: p }: { product: Product }) {
               {Math.ceil(max)}
             </text>
           </svg>
-          {p.range && (
-            <Notice>
-              Estimated 28-day total range: {num(p.range.total.lower)}–
-              {num(p.range.total.upper)} units. Target coverage:{" "}
-              {p.range.nominal_coverage * 100}%; calibration:{" "}
-              {p.range.calibration_windows} periods; final-period daily
-              coverage: {num(p.range.evaluation_daily_coverage * 100)}%.
-              Temporal dependence means coverage is not guaranteed.
-            </Notice>
-          )}
-          {p.forecast_warning && (
-            <Notice tone="warning">{p.forecast_warning}</Notice>
-          )}
-          <p className="muted">
-            {p.range_reason} {!p.range && "No prediction band is shown."}
-          </p>
-          <section className="panel">
-            <h3>How it performed on past sales</h3>
-            {last ? (
-              <>
-                <p>
-                  {p.evaluation?.kind === "untouched_final_holdout"
-                    ? "Final test period, kept separate from method selection"
-                    : "Limited baseline testing"}{" "}
-                  · {last.start} – {last.end}
-                </p>
-                <div className="metric-strip">
-                  <div>
-                    <small>Average daily error (MAE)</small>
-                    <strong>{num(last.model.mae)} units</strong>
-                  </div>
-                  <div>
-                    <small>Weighted absolute error (WAPE)</small>
-                    <strong>
-                      {last.model.wape == null
-                        ? "Undefined: zero actual sales"
-                        : num(last.model.wape * 100) + "%"}
-                    </strong>
-                  </div>
-                  <div>
-                    <small>Weekly baseline MAE</small>
-                    <strong>{num(last.baseline.mae)} units</strong>
-                  </div>
-                </div>
-                <p>
-                  Bias: {num(last.model.bias_units_per_day)} units/day. 28-day
-                  total error: {num(last.model.total_absolute_error)} units.{" "}
-                  {p.evaluation?.windows.length} evaluation window(s).
-                </p>
-                <p className="muted">
-                  Lower error is better. These are historical errors, not a
-                  percentage guarantee of future accuracy.
-                </p>
-              </>
-            ) : (
-              <p>
-                Not enough history for a full 28-day test after 56 training
-                days. Treat this as an untested baseline; inventory
-                recommendations are withheld.
-              </p>
+          <div className="forecast-confidence">
+            <strong>
+              {last
+                ? `Past test: off by about ${num(last.model.mae)} units per day`
+                : "Not enough history to test this forecast yet"}
+            </strong>
+            <p>
+              {p.inventory_eligible
+                ? "Stock planning is available for this product."
+                : "Use this estimate cautiously. Stock recommendations need stronger evidence."}
+            </p>
+          </div>
+          <details className="quiet-details">
+            <summary>How reliable is this forecast?</summary>
+            <p>
+              We tested the method on past sales that were kept out of training.
+              Future sales can still differ. Selected method:{" "}
+              {p.method?.replaceAll("_", " ")}.
+            </p>
+            {p.range && (
+              <Notice>
+                Estimated 28-day total range: {num(p.range.total.lower)}–
+                {num(p.range.total.upper)} units. Target coverage:{" "}
+                {p.range.nominal_coverage * 100}%; calibration:{" "}
+                {p.range.calibration_windows} periods; final-period daily
+                coverage: {num(p.range.evaluation_daily_coverage * 100)}%.
+                Temporal dependence means coverage is not guaranteed.
+              </Notice>
             )}
-          </section>
+            {p.forecast_warning && (
+              <Notice tone="warning">{p.forecast_warning}</Notice>
+            )}
+            <p className="muted">
+              {p.range_reason} {!p.range && "No prediction band is shown."}
+            </p>
+            <section>
+              <h3>Historical test details</h3>
+              {last ? (
+                <>
+                  <p>
+                    {p.evaluation?.kind === "untouched_final_holdout"
+                      ? "Final test period, kept separate from method selection"
+                      : "Limited baseline testing"}{" "}
+                    · {last.start} – {last.end}
+                  </p>
+                  <div className="metric-strip">
+                    <div>
+                      <small>Average daily error</small>
+                      <strong>{num(last.model.mae)} units</strong>
+                    </div>
+                    <div>
+                      <small>Weighted absolute error (WAPE)</small>
+                      <strong>
+                        {last.model.wape == null
+                          ? "Undefined: zero actual sales"
+                          : num(last.model.wape * 100) + "%"}
+                      </strong>
+                    </div>
+                    <div>
+                      <small>Weekly baseline MAE</small>
+                      <strong>{num(last.baseline.mae)} units</strong>
+                    </div>
+                  </div>
+                  <p>
+                    Bias: {num(last.model.bias_units_per_day)} units/day. 28-day
+                    total error: {num(last.model.total_absolute_error)} units.{" "}
+                    {p.evaluation?.windows.length} evaluation window(s).
+                  </p>
+                  <p className="muted">
+                    Lower error is better. These are historical errors, not a
+                    percentage guarantee of future accuracy.
+                  </p>
+                </>
+              ) : (
+                <p>
+                  Not enough history for a full 28-day test after 56 training
+                  days. Treat this as an untested baseline; inventory
+                  recommendations are withheld.
+                </p>
+              )}
+            </section>
+          </details>
           <details className="panel">
             <summary>View daily forecast values</summary>
             <div className="table-scroll">

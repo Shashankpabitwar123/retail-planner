@@ -48,6 +48,7 @@ export type Metric = {
   predicted_total: number;
 };
 export type Product = {
+  missing_date_examples?: string[];
   range?: {
     nominal_coverage: number;
     calibration_windows: number;

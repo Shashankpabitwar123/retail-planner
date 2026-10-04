@@ -6,11 +6,11 @@ A no-login website that turns a store's sales CSV into a checked, explainable 28
 
 ## The user flow
 
-1. Upload daily totals, transaction lines or a wide-date CSV. Optionally request AI column suggestions, then match columns and confirm dates, timezone, store and gross-sales meaning.
-2. Review missing days, duplicates, returns, stockouts and short histories. Optional coverage and daily-status files explain product launch/retirement dates and closed days. The app never silently assumes unknown days had zero sales.
-3. Forecast eligible products. Compare historical error against a weekly baseline. Longer histories can show separately calibrated daily and 28-day total ranges, with measured coverage and limitations.
-4. Enter stock or import inventory/incoming-order CSVs. Review the assumptions, preview a suggestion and its daily stock projection, then explicitly apply it. No purchase order is placed.
-5. Download forecast CSVs with evaluation context, data issue reports, normalized data, inventory plans or a portable workspace. Recent results also stay in this browser. Ask the optional assistant about the selected analysis and follow its source links.
+1. Upload a sales CSV. The app detects supported columns, layout and date/number formats automatically.
+2. Answer one plain-language question at a time only where the file leaves uncertainty: date order, unknown column, store selection, export completeness or missing days. Recognized sample files need no setup.
+3. Clean data continues directly to forecasts. There is no mandatory mapping form or quality approval screen. Products without enough usable data stay clearly labelled.
+4. See the forecast and a plain-language past-error summary. Open reliability details only when needed. Stock planning begins with stock count, date and delivery time; other assumptions are disclosed and adjustable under a collapsed section.
+5. Download results or save a portable copy. History explains temporary uploaded-file storage and how to keep results. Advanced import controls remain available for exceptional files, not as the default onboarding.
 
 A replacement upload can be compared with an earlier normalized review: unchanged, changed, added and removed keys are reported. Changed/removed records require confirmation. Analyses remain separate; records are never blindly appended.
 
