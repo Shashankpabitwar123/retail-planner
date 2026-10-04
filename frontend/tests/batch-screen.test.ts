@@ -32,7 +32,7 @@ test('actual app hides landing page during questions and preserves files on retu
     await click('Analyze sales');
     const portal=w.document.getElementById('batch-question-root')!;
     assert.match(portal.textContent!,/Are these complete daily sales/);
-    const landing=[...w.document.querySelectorAll('h1')].find(h=>h.textContent==='Know what to stock next.')!;
+    const landing=[...w.document.querySelectorAll('h1')].find(h=>h.textContent==='Estimate future sales and plan your stock.')!;
     assert.ok(landing.closest('[hidden]'), 'Landing content must be hidden without CSS selectors');
     assert.equal(portal.closest('[hidden]'),null, 'Question must remain visible');
     await click('← Back to files');

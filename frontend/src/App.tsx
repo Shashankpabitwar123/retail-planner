@@ -623,12 +623,11 @@ export default function App() {
         {phase === "upload" && (
           <>
             <div className="page-heading">
-              <p className="eyebrow">LESS GUESSWORK. BETTER STOCK DECISIONS.</p>
-              <h1>Know what to stock next.</h1>
+              <h1>Estimate future sales and plan your stock.</h1>
               <p>
-                Turn your store’s sales history into a practical forecast.
+                Upload your sales files to see how much each product may sell over the next 28 days.
                 <br />
-                Upload your sales file. We’ll take care of the rest.
+                Add your stock details to see whether you may need to order more.
               </p>
             </div>
             <div className="live-columns">
@@ -645,7 +644,7 @@ export default function App() {
               >
                 {batchFiles ? batchPanel : <>
                 <UploadCloud size={32} strokeWidth={1.5} />
-                <h2>Upload your sales file</h2>
+                <h2>Upload your sales files</h2>
                 <p>Drop your CSV files here, or choose files.</p>
                 <Button
                   disabled={!ready || busy}
@@ -682,22 +681,22 @@ export default function App() {
               </section>
               {batchFiles?.length ? <FilePreviews files={batchFiles} /> : (
               <section className="intro-panel">
-                <h2>A clear path from data to decisions</h2>
+                <h2>How it works</h2>
                 <ol className="journey-list">
                   <li>
-                    <strong>Upload your sales</strong>
+                    <strong>Upload your sales files</strong>
                     <p>
-                      We’ll read your file and ask only if something is unclear.
+                      Add one CSV or several files from the same store.
                     </p>
                   </li>
                   <li>
-                    <strong>See future sales</strong>
-                    <p>See what’s likely to sell over the next four weeks.</p>
+                    <strong>See estimated sales</strong>
+                    <p>See predicted sales for each product and how reliable the estimate is.</p>
                   </li>
                   <li>
-                    <strong>Make a stock plan</strong>
+                    <strong>Plan what to order</strong>
                     <p>
-                      Add stock and delivery times, then download your plan.
+                      Add your current stock and delivery time. Get a restock suggestion when there’s enough reliable data.
                     </p>
                   </li>
                 </ol>
