@@ -3,7 +3,7 @@ import {api, post, type Upload} from "./data";
 import GuidedImport, {type Guidance} from "./GuidedImport";
 import {Button, Notice} from "./UI";
 type Reply = Guidance & {file_index?: number; file_name?: string; row_count?: number; id?: string; upload_id?: string; file_count?: number};
-export default function BatchUpload({files, maxBytes, onCancel, onReady}: {files: File[]; maxBytes: number; onCancel: () => void; onReady: (id: string, uploadId: string, count: number) => void}) {
+export default function BatchUpload({files, maxBytes, onCancel, onReady, embedded = false}: {embedded?: boolean; files: File[]; maxBytes: number; onCancel: () => void; onReady: (id: string, uploadId: string, count: number) => void}) {
   const active = useRef(true);
   useEffect(() => {active.current=true; return () => {active.current=false;};}, []);
   const [items, setItems] = useState(files);
@@ -56,8 +56,8 @@ export default function BatchUpload({files, maxBytes, onCancel, onReady}: {files
     if (next.reduce((sum, f) => sum + f.size, 0) > maxBytes) { setError(`These files would exceed ${maxBytes/1024/1024} MB together. Choose fewer files or smaller exports.`); return; }
     change(next);
   }
-  return <section className="panel batch-upload" onDragOver={e => e.preventDefault()} onDrop={e => {e.preventDefault(); addFiles(Array.from(e.dataTransfer.files));}}>
-    <h2>Your sales files</h2>
+  return <section className={embedded ? "batch-upload batch-inline" : "panel batch-upload"} onDragOver={e => e.preventDefault()} onDrop={e => {e.preventDefault(); e.stopPropagation(); addFiles(Array.from(e.dataTransfer.files));}}>
+    <h2>{embedded ? "Upload your sales files" : "Your sales files"}</h2>
     <p>Up to 12 CSVs · {maxBytes/1024/1024} MB total · Daily sales for one store</p>
     <div className="inline-actions">
       <Button variant="secondary" disabled={busy || items.length >= 12} onClick={() => addInput.current?.click()}>Add more files</Button>
@@ -69,6 +69,6 @@ export default function BatchUpload({files, maxBytes, onCancel, onReady}: {files
     {error && <Notice tone="warning">{error}</Notice>}
     {reply && !reply.ready && <><p><strong>{reply.file_name}</strong></p><GuidedImport upload={{row_count:reply.row_count || 0} as Upload} guidance={reply} busy={busy} onAnswer={(key,value)=>{const next={...answers,[key]:value};setAnswers(next);analyze(next);}} onReset={()=>{setReply(null);setAnswers({});}} onDetails={()=>{setReply(null);setAnswers({});}} /></>}
     {(!reply || error) && <Button disabled={busy || !items.length} onClick={()=>analyze()}>{busy ? "Reading your files…" : "Analyze sales"}</Button>}
-    <Button variant="text" disabled={busy} onClick={() => {items.forEach(cleanup); onCancel();}}>Cancel</Button>
+    <Button variant="text" disabled={busy} onClick={() => {items.forEach(cleanup); onCancel();}}>{embedded ? "Clear files" : "Cancel"}</Button>
   </section>;
 }

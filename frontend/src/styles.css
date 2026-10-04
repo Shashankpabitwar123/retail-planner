@@ -2209,3 +2209,11 @@ details summary {
 .batch-files li span { flex: 1; overflow-wrap: anywhere; min-width: 0; }
 .batch-files button { font-size: 13px; }
 .batch-upload .guided-card { margin: 20px auto; }
+
+.upload-box .batch-inline { width: 100%; max-width: none; margin: 0; padding: 0; border: 0; box-shadow: none; text-align: left; }
+.batch-inline > h2, .batch-inline > p { text-align: center; }
+.batch-inline .inline-actions { justify-content: center; flex-wrap: wrap; }
+.batch-inline .inline-actions > span { font-size: 12px; }
+.batch-inline .batch-files { max-height: 260px; overflow-y: auto; }
+.batch-inline .guided-card { padding: 16px 0; box-shadow: none; border: 0; }
+.batch-inline .guided-card h1 { font-size: 24px; }

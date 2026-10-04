@@ -543,6 +543,17 @@ export default function App() {
       if (contextRef.current === sourceContext) setAsking(false);
     }
   }
+  const batchPanel = batchFiles && <BatchUpload embedded={phase === "upload"} files={batchFiles} maxBytes={serverPolicy.max_upload_bytes} onCancel={() => { setBatchFiles(null); mergeBase.current = null; }} onReady={(id, uploadId, count) => {
+          setBatchFiles(null);
+          automatic.current = true;
+          missingAnswered.current = false;
+          setMissingQuestion(false);
+          setName(`${count} sales files`);
+          setError("");
+          setToast(`${count} file${count === 1 ? "" : "s"} checked. Preparing your sales history.`);
+          api<Upload>(`/uploads/${uploadId}`).then(setUpload).catch(() => {});
+          start(id);
+        }} />;
   return (
     <div className="app">
       <a className="skip-link" href="#main">
@@ -573,17 +584,7 @@ export default function App() {
       </header>
       <main id="main" tabIndex={-1} ref={main} className="main live-main">
         <input ref={extraFileInput} type="file" multiple accept=".csv,text/csv" hidden onChange={e => { const files = Array.from(e.target.files || []); if (files.length) { setAddingData(false); setBatchFiles(files); } e.target.value = ""; }} />
-        {batchFiles && <BatchUpload files={batchFiles} maxBytes={serverPolicy.max_upload_bytes} onCancel={() => { setBatchFiles(null); mergeBase.current = null; }} onReady={(id, uploadId, count) => {
-          setBatchFiles(null);
-          automatic.current = true;
-          missingAnswered.current = false;
-          setMissingQuestion(false);
-          setName(`${count} sales files`);
-          setError("");
-          setToast(`${count} file${count === 1 ? "" : "s"} checked. Preparing your sales history.`);
-          api<Upload>(`/uploads/${uploadId}`).then(setUpload).catch(() => {});
-          start(id);
-        }} />}
+        {phase !== "upload" && batchPanel}
         {addingData && <section className="panel">
           <h2>Update your sales data</h2>
           <p>Add complete daily sales for the same store and matching product IDs. Matching days count once. Different totals for the same day need a corrected complete file.</p>
@@ -614,7 +615,7 @@ export default function App() {
             </Notice>
           </div>
         )}
-        {phase === "upload" && !batchFiles && (
+        {phase === "upload" && (
           <>
             <div className="page-heading">
               <p className="eyebrow">LESS GUESSWORK. BETTER STOCK DECISIONS.</p>
@@ -631,12 +632,13 @@ export default function App() {
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={(e) => {
                   e.preventDefault();
-                  if (ready && !busy && e.dataTransfer.files.length) {
+                  if (!batchFiles && ready && !busy && e.dataTransfer.files.length) {
                     mergeBase.current = null;
                     setBatchFiles(Array.from(e.dataTransfer.files));
                   }
                 }}
               >
+                {batchFiles ? batchPanel : <>
                 <UploadCloud size={32} strokeWidth={1.5} />
                 <h2>Upload your sales file</h2>
                 <p>Drop your CSV files here, or choose files.</p>
@@ -671,6 +673,7 @@ export default function App() {
                     Keep each product’s sales history together when exporting a smaller file.
                   </p>
                 </details>
+                </>}
               </section>
               <section className="intro-panel">
                 <h2>A clear path from data to decisions</h2>
