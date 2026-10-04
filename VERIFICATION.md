@@ -21,4 +21,6 @@ A fresh production Docker build passed under local free-profile constraints (512
 
 ## Remaining qualification boundaries
 
-Public hosting must be checked after deployment. Concurrent load, complete screen-reader coverage, independent security review and representative business validation are not complete. The 72-item acceptance register records scoped evidence and partial UI checks; it is not 72 automated tests. Backup checksums detect accidental corruption, not authenticity. Free-host records can disappear; browser history and downloads are separate.
+Public Render deployment passed upload/review/forecast/export and a live AI request, with HTTPS Secure and HttpOnly cookies; see `evidence/public-smoke.json`. No error logs were returned at launch inspection. Concurrent load, complete screen-reader coverage, independent security review and representative business validation are not complete. The 72-item acceptance register records scoped evidence and partial UI checks; it is not 72 automated tests. Backup checksums detect accidental corruption, not authenticity. Free-host records can disappear; browser history and downloads are separate.
+
+Final free-profile browser reset check passed: after recreating the container, the expired-analysis message appeared; saved history reopened all three forecasts, with re-upload required for live AI/recalculation. See `evidence/free-reset-browser.json`.

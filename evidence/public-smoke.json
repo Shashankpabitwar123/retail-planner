@@ -1,0 +1,24 @@
+{
+  "build": "Render public Docker deployment",
+  "free_profile": true,
+  "sample_upload_review_forecast_export": "passed",
+  "forecast_total": 364,
+  "models": 6,
+  "ai_live_response": {
+    "answer": "The forecast was tested using an untouched final holdout evaluation over a 28-day window from 2026-06-18 to 2026-07-15, comparing actual sales totals to predicted totals and calculating error metrics like mean absolute error and weighted absolute percentage error. This evaluation used 168 training days prior to the test period.",
+    "citations": [
+      "quality",
+      "product",
+      "methodology"
+    ],
+    "usage": {
+      "input_tokens": 2344,
+      "output_tokens": 83,
+      "total_tokens": 2427
+    },
+    "latency_ms": 1722
+  },
+  "httponly_cookie": true,
+  "secure_cookie": true,
+  "hosting": "https://retail-planner-demo.onrender.com"
+}

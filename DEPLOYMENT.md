@@ -1,3 +1,11 @@
+# Live deployment
+
+App: https://retail-planner-demo.onrender.com/
+
+Source: https://github.com/Shashankpabitwar123/retail-planner
+
+Render free service deployed October 4, 2026 in the confirmed My Workspace. Existing OpenAI key configured as a server environment secret. Public upload/review/forecast/export and live AI smoke checks passed. Auto-deploy is off; source updates need an explicit Render deploy. No paid compute or disk was created. The direct-created service uses the root page for its health probe; the dedicated `/api/health` endpoint was verified separately.
+
 # Hosting the same application
 
 ## Recommended portfolio setup: free compute

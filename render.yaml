@@ -28,7 +28,7 @@ services:
       - key: RETAIL_MAX_GRID
         value: "50000"
       - key: RETAIL_AI_DAILY_LIMIT
-        value: "10"
+        value: "30"
       - key: RETAIL_ORIGINS
         sync: false
       - key: OPENAI_API_KEY

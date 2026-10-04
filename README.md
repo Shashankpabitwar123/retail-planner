@@ -1,5 +1,7 @@
 # Retail Planner
 
+[Live app](https://retail-planner-demo.onrender.com/) · [Source](https://github.com/Shashankpabitwar123/retail-planner)
+
 A no-login website that turns a store's sales CSV into a checked, explainable 28-day sales forecast and an optional inventory plan. React/TypeScript, FastAPI, SQLite, six statistical forecasting methods and an optional OpenAI assistant. No Tableau account is required.
 
 ## The user flow
@@ -37,7 +39,7 @@ The deterministic data, forecasting and inventory workflow works without OpenAI.
 
 See [DEPLOYMENT.md](DEPLOYMENT.md). `render-free.yaml` provides a free-compute portfolio demo with your existing OpenAI key configured separately as a secret. It has a 2 MiB / 50,000-row / 100-product limit. Temporary server uploads, jobs and chats can disappear when the free host sleeps or restarts; browser history and downloaded files remain separate.
 
-`render-paid.yaml` is an optional paid persistent-storage configuration, not a prerequisite for finishing or showing the project. No hosting service has been purchased or publicly deployed by these files. Free hosting still has shared usage allowances; OpenAI billing remains separate.
+`render-paid.yaml` is an optional paid persistent-storage configuration, not a prerequisite for finishing or showing the project. The public demo is deployed on Render’s free plan; no paid service was created. Free hosting still has shared usage allowances; OpenAI billing remains separate.
 
 Both profiles use one process and one worker. Do not horizontally scale this SQLite architecture. The Dockerfile serves the built website and API together; `/api/health` checks database access. Production cookies require HTTPS and `RETAIL_SECURE_COOKIE=1`; `RETAIL_ORIGINS` must be the exact site origin.
 

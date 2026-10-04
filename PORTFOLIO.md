@@ -30,4 +30,6 @@ A second walkthrough should use the missing-date sample to demonstrate the app d
 
 ## Publication status
 
-The source and copy are prepared locally. Insert a verified live URL and repository URL only after publication. Do not claim a live service, guaranteed accuracy, universal store compatibility, or millions-of-rows capacity before those are actually established.
+Source: https://github.com/Shashankpabitwar123/retail-planner. Live app: https://retail-planner-demo.onrender.com/. Do not claim a live service, guaranteed accuracy, universal store compatibility, or millions-of-rows capacity before those are actually established.
+
+A 30-second screenshot walkthrough is available in `previews/retail-planner-walkthrough.mp4`. It is labelled as a screenshot sequence, not a continuous screen recording.
