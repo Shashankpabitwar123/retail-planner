@@ -2255,3 +2255,15 @@ details summary {
 .upload-help .file-requirements { margin: 0; max-width: none; text-align: left; }
 .upload-help .file-requirements[open] { flex-basis: 100%; }
 .upload-help .file-requirements summary { font-size: inherit; }
+
+.batch-heading { text-align: left; }
+.batch-heading h2 { margin: 0 0 8px; }
+.batch-heading p { margin: 0; font-size: 0.85rem; }
+.batch-upload .batch-files { margin: 24px 0; }
+.batch-upload .batch-files li { padding: 16px 0; flex-wrap: wrap; gap: 8px 16px; }
+.batch-upload .batch-files li > span { flex-basis: 100%; font-size: 0.95rem; }
+.batch-upload .batch-files button { font-size: 0.8rem; }
+.batch-add { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
+.batch-add p { margin: 0; font-size: 0.8rem; line-height: 1.5; max-width: 230px; }
+.batch-submit { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border); }
+.batch-upload .batch-limits { text-align: left; color: var(--muted); font-size: 0.8rem; margin: 18px 0 0; }

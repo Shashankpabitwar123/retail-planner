@@ -66,15 +66,17 @@ export default function BatchUpload({files, maxBytes, onCancel, onReady, onQuest
     change(next);
   }
   return <section className={embedded ? "batch-upload batch-inline" : "panel batch-upload"} onDragOver={e => e.preventDefault()} onDrop={e => {e.preventDefault(); e.stopPropagation(); addFiles(Array.from(e.dataTransfer.files));}}>
-    <h2>{embedded ? "Upload your sales files" : "Your sales files"}</h2>
-    <p>Up to 12 CSVs · {maxBytes/1024/1024} MB total · Daily sales for one store</p>
-    <div className="inline-actions">
-      <Button variant="secondary" disabled={busy || items.length >= 12} onClick={() => addInput.current?.click()}>Add more files</Button>
-      <span className="muted">{items.length} of 12 files selected · You can also drop files here.</span>
-    </div>
+    <header className="batch-heading">
+      <h2>Your sales files</h2>
+      <p className="muted" aria-live="polite">{items.length} {items.length === 1 ? "file" : "files"} selected</p>
+    </header>
     <input ref={addInput} type="file" multiple accept=".csv,text/csv" hidden onChange={e => {addFiles(Array.from(e.target.files || [])); e.target.value="";}} />
     <ul className="batch-files">{items.map((f,i) => <li key={i}><span>{f.name}</span><button type="button" className="text-link" disabled={busy} onClick={() => {setReplaceIndex(i); replaceInput.current?.click();}}>Replace</button><button type="button" className="text-link" disabled={busy} onClick={() => change(items.filter((_,j)=>i!==j))}>Remove</button></li>)}</ul>
     <input ref={replaceInput} type="file" accept=".csv,text/csv" hidden onChange={e => {const f=e.target.files?.[0]; if(f && replaceIndex !== null) change(items.map((v,i)=>i===replaceIndex?f:v)); e.target.value="";}} />
+    <div className="batch-add">
+      <Button variant="secondary" disabled={busy || items.length >= 12} onClick={() => addInput.current?.click()}>Add more files</Button>
+      <p className="muted">Add sales from the same store, or drop files here.</p>
+    </div>
     {error && <Notice tone="warning">{error}</Notice>}
     {reply && !reply.ready && document.getElementById("batch-question-root") && createPortal(
       <section className="batch-question-page">
@@ -87,7 +89,10 @@ export default function BatchUpload({files, maxBytes, onCancel, onReady, onQuest
           onDetails={()=>{setReply(null);setAnswers({});setError("");}} />
       </section>, document.getElementById("batch-question-root")!
     )}
+    <div className="batch-submit">
     {(!reply || error) && <Button disabled={busy || !items.length} onClick={()=>analyze()}>{busy ? "Reading your files…" : "Analyze sales"}</Button>}
     <Button variant="text" disabled={busy} onClick={() => {items.forEach(cleanup); onCancel();}}>{embedded ? "Clear files" : "Cancel"}</Button>
+    </div>
+    <p className="batch-limits">Up to 12 CSV files · {maxBytes/1024/1024} MB total</p>
   </section>;
 }
