@@ -12,6 +12,7 @@ export default function BatchUpload({files, maxBytes, onCancel, onReady}: {files
   const [reply, setReply] = useState<Reply | null>(null);
   const [answers, setAnswers] = useState<Record<string,string>>({});
   const uploaded = useRef(new Map<File, Upload>());
+  const addInput = useRef<HTMLInputElement>(null);
   const replaceInput = useRef<HTMLInputElement>(null);
   const [replaceIndex, setReplaceIndex] = useState<number | null>(null);
   async function analyze(nextAnswers = answers) {
@@ -47,9 +48,22 @@ export default function BatchUpload({files, maxBytes, onCancel, onReady}: {files
     uploaded.current.delete(file);
   }
   function change(next: File[]) {items.filter(f => !next.includes(f)).forEach(cleanup); setItems(next); setAnswers({}); setReply(null); setError("");}
-  return <section className="panel batch-upload">
+  function addFiles(files: File[]) {
+    if (busy || !files.length) return;
+    if (files.some(f => !f.name.toLowerCase().endsWith(".csv"))) { setError("Please choose CSV files only."); return; }
+    const next = [...items, ...files];
+    if (next.length > 12) { setError(`You can add ${Math.max(0, 12-items.length)} more files. The limit is 12.`); return; }
+    if (next.reduce((sum, f) => sum + f.size, 0) > maxBytes) { setError(`These files would exceed ${maxBytes/1024/1024} MB together. Choose fewer files or smaller exports.`); return; }
+    change(next);
+  }
+  return <section className="panel batch-upload" onDragOver={e => e.preventDefault()} onDrop={e => {e.preventDefault(); addFiles(Array.from(e.dataTransfer.files));}}>
     <h2>Your sales files</h2>
     <p>Up to 12 CSVs · {maxBytes/1024/1024} MB total · Daily sales for one store</p>
+    <div className="inline-actions">
+      <Button variant="secondary" disabled={busy || items.length >= 12} onClick={() => addInput.current?.click()}>Add more files</Button>
+      <span className="muted">{items.length} of 12 files selected · You can also drop files here.</span>
+    </div>
+    <input ref={addInput} type="file" multiple accept=".csv,text/csv" hidden onChange={e => {addFiles(Array.from(e.target.files || [])); e.target.value="";}} />
     <ul className="batch-files">{items.map((f,i) => <li key={i}><span>{f.name}</span><button type="button" className="text-link" disabled={busy} onClick={() => {setReplaceIndex(i); replaceInput.current?.click();}}>Replace</button><button type="button" className="text-link" disabled={busy} onClick={() => change(items.filter((_,j)=>i!==j))}>Remove</button></li>)}</ul>
     <input ref={replaceInput} type="file" accept=".csv,text/csv" hidden onChange={e => {const f=e.target.files?.[0]; if(f && replaceIndex !== null) change(items.map((v,i)=>i===replaceIndex?f:v)); e.target.value="";}} />
     {error && <Notice tone="warning">{error}</Notice>}
