@@ -1,7 +1,7 @@
 """Guide separate CSVs, then combine checked daily sales conservatively."""
 from .guidance import guide
 from .domain import normalize, read_csv, DataError, MAX_ROWS
-from .merge import combine_reports
+from .merge import combine_reports, check_compatibility
 
 
 def prepare_batch(sources, answers):
@@ -56,6 +56,15 @@ def prepare_batch(sources, answers):
             reports.append((report, cfg))
         except DataError as exc:
             return {'ready': False, 'blocked': str(exc), 'config': cfg, 'file_index': i, 'file_name': source['name'], 'row_count': len(rows)}
+    try:
+        check_compatibility([r for r, _ in reports])
+    except DataError as exc:
+        return {'ready': False, 'blocked': str(exc), 'config': configs[0], 'file_name': 'Selected files', 'row_count': rows_total}
+    if len(reports) > 1:
+        if answers.get('same_store') == 'no':
+            return {'ready': False, 'blocked': 'Choose only sales files from one store. Analyze unrelated files separately.', 'config': configs[0], 'file_name': 'Selected files', 'row_count': rows_total}
+        if answers.get('same_store') != 'yes':
+            return {'ready': False, 'config': configs[0], 'file_name': 'Selected files', 'row_count': rows_total, 'question': {'id':'same_store', 'title':'Are all these files from the same store?', 'detail':'Combine only parts of the same sales history. Matching product IDs must mean the same products, and quantities must count the same items—not money or customer visits.', 'options':[{'value':'yes','label':'Yes, they belong together','hint':'These are separate exports of the same store’s sales.'},{'value':'no','label':'No, or I’m not sure','hint':'Go back and choose matching files.'}]}}
     combined = reports[0][0]
     for report, _ in reports[1:]:
         raw, cfg = combine_reports(combined, report)

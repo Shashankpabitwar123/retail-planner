@@ -4,7 +4,41 @@ import io
 from .domain import DataError
 
 
+def check_compatibility(reports):
+    if len({bool(r['config'].get('synthetic')) for r in reports}) > 1:
+        raise DataError('Sample data cannot be combined with your store’s sales. Remove the sample file and analyze your own files together.')
+    stores = {r.get('store_id') for r in reports}
+    if len(stores) > 1:
+        raise DataError('These files refer to different stores or do not consistently identify the store. Use matching exports from one store.')
+    if len({r['config'].get('timezone') for r in reports}) > 1:
+        raise DataError('These files use different store time zones. Correct them before combining sales.')
+    names = {}
+    groups = []
+    for report in reports:
+        products = set()
+        for p in report['products']:
+            pid = p['product_id']
+            if pid in names and names[pid] != p['name']:
+                raise DataError('The same product ID means different products across these files. Use consistent product IDs and names.')
+            names[pid] = p['name']
+            products.add(pid)
+        groups.append(products)
+    # Without a store identifier, require connected product histories rather than
+    # joining unrelated catalogs solely because their CSV columns look alike.
+    if len(reports) > 1 and not all(r['config'].get('store_id') for r in reports):
+        linked = set(groups[0])
+        remaining = groups[1:]
+        while remaining:
+            matches = [g for g in remaining if g & linked]
+            if not matches:
+                raise DataError('We cannot match these files to the same sales history: their product IDs do not overlap and no common store ID is provided. Analyze them separately, or export them with consistent product IDs and the same store ID.')
+            for g in matches:
+                linked.update(g)
+                remaining.remove(g)
+
+
 def combine_reports(old, new):
+    check_compatibility([old, new])
     for report in (old, new):
         cfg = report['config']
         if report.get('global_block') or any(i.get('blocking') and i.get('row') for i in report.get('issues', [])):

@@ -38,7 +38,7 @@ def test_real_upload_review_forecast_matches_known_sales(tmp_path,count,mixed):
         r=c.post('/api/uploads?name='+s['name'],headers=H,content=s['raw'])
         assert r.status_code==200,r.text
         ids.append(r.json()['id'])
-    response=c.post('/api/batches/prepare',headers=H,json={'upload_ids':ids,'answers':{'complete_all':'yes'}})
+    response=c.post('/api/batches/prepare',headers=H,json={'upload_ids':ids,'answers':{'complete_all':'yes','same_store':'yes'}})
     assert response.status_code==200,response.text
     assert response.json()['ready'],response.text
     jid=response.json()['id']; store.run_one()
@@ -71,15 +71,15 @@ def test_conflicting_daily_overlap_and_different_stores_are_rejected():
     sources,_=monthly_files(5)
     conflicting=source(sources[0]['raw'].replace(b',A,12,',b',A,99,'),'conflict.csv')
     with pytest.raises(DataError,match='Different sales'):
-        prepare_batch(sources+[conflicting],{'complete_all':'yes'})
+        prepare_batch(sources+[conflicting],{'complete_all':'yes','same_store':'yes'})
     sources[1]=source(sources[1]['raw'].replace(b'shop-1',b'shop-2'))
-    with pytest.raises(DataError,match='different stores'):
-        prepare_batch(sources,{'complete_all':'yes'})
+    result=prepare_batch(sources,{'complete_all':'yes','same_store':'yes'})
+    assert not result['ready'] and 'different stores' in result['blocked']
 
 
 def test_removed_month_is_unknown_not_zero():
     sources,_=monthly_files(5)
-    r=prepare_batch([sources[0],*sources[2:]],{'complete_all':'yes'})
+    r=prepare_batch([sources[0],*sources[2:]],{'complete_all':'yes','same_store':'yes'})
     q=normalize(r['raw'],r['config'])
     assert all(p['missing_days']==28 for p in q['products'])
     assert not q['eligible_products']
