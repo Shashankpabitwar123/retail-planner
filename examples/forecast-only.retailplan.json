@@ -1,0 +1,1264 @@
+{
+  "format": "retail-planner",
+  "revision": 1,
+  "snapshot": {
+    "id": "1db0ff9c8c0c47d28238333dc1a928da",
+    "created": "2026-10-04T06:44:06.045Z",
+    "name": "01-daily.csv",
+    "digest": "da23c671b8505ef935d165f895dec8caecbb72e0fdcc224c69deb7eb2ecc7989",
+    "result": {
+      "engine_revision": "1.0.0",
+      "horizon_days": 28,
+      "forecast_start": "2026-07-16",
+      "forecast_end": "2026-08-12",
+      "products": [
+        {
+          "product_id": "0007",
+          "name": "Notebook",
+          "status": "ready",
+          "days": 196,
+          "usable_days": 196,
+          "total_units": 2548,
+          "missing_days": 0,
+          "stockout_days": 0,
+          "history": [
+            {
+              "date": "2026-05-21",
+              "units": 10
+            },
+            {
+              "date": "2026-05-22",
+              "units": 11
+            },
+            {
+              "date": "2026-05-23",
+              "units": 12
+            },
+            {
+              "date": "2026-05-24",
+              "units": 13
+            },
+            {
+              "date": "2026-05-25",
+              "units": 14
+            },
+            {
+              "date": "2026-05-26",
+              "units": 15
+            },
+            {
+              "date": "2026-05-27",
+              "units": 16
+            },
+            {
+              "date": "2026-05-28",
+              "units": 10
+            },
+            {
+              "date": "2026-05-29",
+              "units": 11
+            },
+            {
+              "date": "2026-05-30",
+              "units": 12
+            },
+            {
+              "date": "2026-05-31",
+              "units": 13
+            },
+            {
+              "date": "2026-06-01",
+              "units": 14
+            },
+            {
+              "date": "2026-06-02",
+              "units": 15
+            },
+            {
+              "date": "2026-06-03",
+              "units": 16
+            },
+            {
+              "date": "2026-06-04",
+              "units": 10
+            },
+            {
+              "date": "2026-06-05",
+              "units": 11
+            },
+            {
+              "date": "2026-06-06",
+              "units": 12
+            },
+            {
+              "date": "2026-06-07",
+              "units": 13
+            },
+            {
+              "date": "2026-06-08",
+              "units": 14
+            },
+            {
+              "date": "2026-06-09",
+              "units": 15
+            },
+            {
+              "date": "2026-06-10",
+              "units": 16
+            },
+            {
+              "date": "2026-06-11",
+              "units": 10
+            },
+            {
+              "date": "2026-06-12",
+              "units": 11
+            },
+            {
+              "date": "2026-06-13",
+              "units": 12
+            },
+            {
+              "date": "2026-06-14",
+              "units": 13
+            },
+            {
+              "date": "2026-06-15",
+              "units": 14
+            },
+            {
+              "date": "2026-06-16",
+              "units": 15
+            },
+            {
+              "date": "2026-06-17",
+              "units": 16
+            },
+            {
+              "date": "2026-06-18",
+              "units": 10
+            },
+            {
+              "date": "2026-06-19",
+              "units": 11
+            },
+            {
+              "date": "2026-06-20",
+              "units": 12
+            },
+            {
+              "date": "2026-06-21",
+              "units": 13
+            },
+            {
+              "date": "2026-06-22",
+              "units": 14
+            },
+            {
+              "date": "2026-06-23",
+              "units": 15
+            },
+            {
+              "date": "2026-06-24",
+              "units": 16
+            },
+            {
+              "date": "2026-06-25",
+              "units": 10
+            },
+            {
+              "date": "2026-06-26",
+              "units": 11
+            },
+            {
+              "date": "2026-06-27",
+              "units": 12
+            },
+            {
+              "date": "2026-06-28",
+              "units": 13
+            },
+            {
+              "date": "2026-06-29",
+              "units": 14
+            },
+            {
+              "date": "2026-06-30",
+              "units": 15
+            },
+            {
+              "date": "2026-07-01",
+              "units": 16
+            },
+            {
+              "date": "2026-07-02",
+              "units": 10
+            },
+            {
+              "date": "2026-07-03",
+              "units": 11
+            },
+            {
+              "date": "2026-07-04",
+              "units": 12
+            },
+            {
+              "date": "2026-07-05",
+              "units": 13
+            },
+            {
+              "date": "2026-07-06",
+              "units": 14
+            },
+            {
+              "date": "2026-07-07",
+              "units": 15
+            },
+            {
+              "date": "2026-07-08",
+              "units": 16
+            },
+            {
+              "date": "2026-07-09",
+              "units": 10
+            },
+            {
+              "date": "2026-07-10",
+              "units": 11
+            },
+            {
+              "date": "2026-07-11",
+              "units": 12
+            },
+            {
+              "date": "2026-07-12",
+              "units": 13
+            },
+            {
+              "date": "2026-07-13",
+              "units": 14
+            },
+            {
+              "date": "2026-07-14",
+              "units": 15
+            },
+            {
+              "date": "2026-07-15",
+              "units": 16
+            }
+          ],
+          "forecast": [
+            {
+              "date": "2026-07-16",
+              "units": 10
+            },
+            {
+              "date": "2026-07-17",
+              "units": 11
+            },
+            {
+              "date": "2026-07-18",
+              "units": 12
+            },
+            {
+              "date": "2026-07-19",
+              "units": 13
+            },
+            {
+              "date": "2026-07-20",
+              "units": 14
+            },
+            {
+              "date": "2026-07-21",
+              "units": 15
+            },
+            {
+              "date": "2026-07-22",
+              "units": 16
+            },
+            {
+              "date": "2026-07-23",
+              "units": 10
+            },
+            {
+              "date": "2026-07-24",
+              "units": 11
+            },
+            {
+              "date": "2026-07-25",
+              "units": 12
+            },
+            {
+              "date": "2026-07-26",
+              "units": 13
+            },
+            {
+              "date": "2026-07-27",
+              "units": 14
+            },
+            {
+              "date": "2026-07-28",
+              "units": 15
+            },
+            {
+              "date": "2026-07-29",
+              "units": 16
+            },
+            {
+              "date": "2026-07-30",
+              "units": 10
+            },
+            {
+              "date": "2026-07-31",
+              "units": 11
+            },
+            {
+              "date": "2026-08-01",
+              "units": 12
+            },
+            {
+              "date": "2026-08-02",
+              "units": 13
+            },
+            {
+              "date": "2026-08-03",
+              "units": 14
+            },
+            {
+              "date": "2026-08-04",
+              "units": 15
+            },
+            {
+              "date": "2026-08-05",
+              "units": 16
+            },
+            {
+              "date": "2026-08-06",
+              "units": 10
+            },
+            {
+              "date": "2026-08-07",
+              "units": 11
+            },
+            {
+              "date": "2026-08-08",
+              "units": 12
+            },
+            {
+              "date": "2026-08-09",
+              "units": 13
+            },
+            {
+              "date": "2026-08-10",
+              "units": 14
+            },
+            {
+              "date": "2026-08-11",
+              "units": 15
+            },
+            {
+              "date": "2026-08-12",
+              "units": 16
+            }
+          ],
+          "evaluation": {
+            "kind": "untouched_final_holdout",
+            "windows": [
+              {
+                "start": "2026-06-18",
+                "end": "2026-07-15",
+                "training_days": 168,
+                "model": {
+                  "mae": 0,
+                  "wape": 0,
+                  "bias_units_per_day": 0,
+                  "total_absolute_error": 0,
+                  "actual_total": 364,
+                  "predicted_total": 364
+                },
+                "baseline": {
+                  "mae": 0,
+                  "wape": 0,
+                  "bias_units_per_day": 0,
+                  "total_absolute_error": 0,
+                  "actual_total": 364,
+                  "predicted_total": 364
+                }
+              }
+            ]
+          },
+          "selection": [
+            {
+              "method": "seasonal_naive",
+              "mean_mae": 0,
+              "windows": 3
+            },
+            {
+              "method": "mean_28",
+              "mean_mae": 1.7142857142857142,
+              "windows": 3
+            },
+            {
+              "method": "weekday_mean",
+              "mean_mae": 0,
+              "windows": 3
+            },
+            {
+              "method": "croston_sba",
+              "mean_mae": 1.750492867513511,
+              "windows": 3
+            }
+          ],
+          "range": null,
+          "range_reason": "Not enough independent forecast errors to establish a calibrated prediction range.",
+          "method": "seasonal_naive",
+          "forecast_total": 364,
+          "inventory_eligible": true,
+          "forecast_warning": null
+        },
+        {
+          "product_id": "SKU-B",
+          "name": "Storage box",
+          "status": "ready",
+          "days": 196,
+          "usable_days": 196,
+          "total_units": 1092,
+          "missing_days": 0,
+          "stockout_days": 0,
+          "history": [
+            {
+              "date": "2026-05-21",
+              "units": 5
+            },
+            {
+              "date": "2026-05-22",
+              "units": 5
+            },
+            {
+              "date": "2026-05-23",
+              "units": 5
+            },
+            {
+              "date": "2026-05-24",
+              "units": 5
+            },
+            {
+              "date": "2026-05-25",
+              "units": 5
+            },
+            {
+              "date": "2026-05-26",
+              "units": 7
+            },
+            {
+              "date": "2026-05-27",
+              "units": 7
+            },
+            {
+              "date": "2026-05-28",
+              "units": 5
+            },
+            {
+              "date": "2026-05-29",
+              "units": 5
+            },
+            {
+              "date": "2026-05-30",
+              "units": 5
+            },
+            {
+              "date": "2026-05-31",
+              "units": 5
+            },
+            {
+              "date": "2026-06-01",
+              "units": 5
+            },
+            {
+              "date": "2026-06-02",
+              "units": 7
+            },
+            {
+              "date": "2026-06-03",
+              "units": 7
+            },
+            {
+              "date": "2026-06-04",
+              "units": 5
+            },
+            {
+              "date": "2026-06-05",
+              "units": 5
+            },
+            {
+              "date": "2026-06-06",
+              "units": 5
+            },
+            {
+              "date": "2026-06-07",
+              "units": 5
+            },
+            {
+              "date": "2026-06-08",
+              "units": 5
+            },
+            {
+              "date": "2026-06-09",
+              "units": 7
+            },
+            {
+              "date": "2026-06-10",
+              "units": 7
+            },
+            {
+              "date": "2026-06-11",
+              "units": 5
+            },
+            {
+              "date": "2026-06-12",
+              "units": 5
+            },
+            {
+              "date": "2026-06-13",
+              "units": 5
+            },
+            {
+              "date": "2026-06-14",
+              "units": 5
+            },
+            {
+              "date": "2026-06-15",
+              "units": 5
+            },
+            {
+              "date": "2026-06-16",
+              "units": 7
+            },
+            {
+              "date": "2026-06-17",
+              "units": 7
+            },
+            {
+              "date": "2026-06-18",
+              "units": 5
+            },
+            {
+              "date": "2026-06-19",
+              "units": 5
+            },
+            {
+              "date": "2026-06-20",
+              "units": 5
+            },
+            {
+              "date": "2026-06-21",
+              "units": 5
+            },
+            {
+              "date": "2026-06-22",
+              "units": 5
+            },
+            {
+              "date": "2026-06-23",
+              "units": 7
+            },
+            {
+              "date": "2026-06-24",
+              "units": 7
+            },
+            {
+              "date": "2026-06-25",
+              "units": 5
+            },
+            {
+              "date": "2026-06-26",
+              "units": 5
+            },
+            {
+              "date": "2026-06-27",
+              "units": 5
+            },
+            {
+              "date": "2026-06-28",
+              "units": 5
+            },
+            {
+              "date": "2026-06-29",
+              "units": 5
+            },
+            {
+              "date": "2026-06-30",
+              "units": 7
+            },
+            {
+              "date": "2026-07-01",
+              "units": 7
+            },
+            {
+              "date": "2026-07-02",
+              "units": 5
+            },
+            {
+              "date": "2026-07-03",
+              "units": 5
+            },
+            {
+              "date": "2026-07-04",
+              "units": 5
+            },
+            {
+              "date": "2026-07-05",
+              "units": 5
+            },
+            {
+              "date": "2026-07-06",
+              "units": 5
+            },
+            {
+              "date": "2026-07-07",
+              "units": 7
+            },
+            {
+              "date": "2026-07-08",
+              "units": 7
+            },
+            {
+              "date": "2026-07-09",
+              "units": 5
+            },
+            {
+              "date": "2026-07-10",
+              "units": 5
+            },
+            {
+              "date": "2026-07-11",
+              "units": 5
+            },
+            {
+              "date": "2026-07-12",
+              "units": 5
+            },
+            {
+              "date": "2026-07-13",
+              "units": 5
+            },
+            {
+              "date": "2026-07-14",
+              "units": 7
+            },
+            {
+              "date": "2026-07-15",
+              "units": 7
+            }
+          ],
+          "forecast": [
+            {
+              "date": "2026-07-16",
+              "units": 5
+            },
+            {
+              "date": "2026-07-17",
+              "units": 5
+            },
+            {
+              "date": "2026-07-18",
+              "units": 5
+            },
+            {
+              "date": "2026-07-19",
+              "units": 5
+            },
+            {
+              "date": "2026-07-20",
+              "units": 5
+            },
+            {
+              "date": "2026-07-21",
+              "units": 7
+            },
+            {
+              "date": "2026-07-22",
+              "units": 7
+            },
+            {
+              "date": "2026-07-23",
+              "units": 5
+            },
+            {
+              "date": "2026-07-24",
+              "units": 5
+            },
+            {
+              "date": "2026-07-25",
+              "units": 5
+            },
+            {
+              "date": "2026-07-26",
+              "units": 5
+            },
+            {
+              "date": "2026-07-27",
+              "units": 5
+            },
+            {
+              "date": "2026-07-28",
+              "units": 7
+            },
+            {
+              "date": "2026-07-29",
+              "units": 7
+            },
+            {
+              "date": "2026-07-30",
+              "units": 5
+            },
+            {
+              "date": "2026-07-31",
+              "units": 5
+            },
+            {
+              "date": "2026-08-01",
+              "units": 5
+            },
+            {
+              "date": "2026-08-02",
+              "units": 5
+            },
+            {
+              "date": "2026-08-03",
+              "units": 5
+            },
+            {
+              "date": "2026-08-04",
+              "units": 7
+            },
+            {
+              "date": "2026-08-05",
+              "units": 7
+            },
+            {
+              "date": "2026-08-06",
+              "units": 5
+            },
+            {
+              "date": "2026-08-07",
+              "units": 5
+            },
+            {
+              "date": "2026-08-08",
+              "units": 5
+            },
+            {
+              "date": "2026-08-09",
+              "units": 5
+            },
+            {
+              "date": "2026-08-10",
+              "units": 5
+            },
+            {
+              "date": "2026-08-11",
+              "units": 7
+            },
+            {
+              "date": "2026-08-12",
+              "units": 7
+            }
+          ],
+          "evaluation": {
+            "kind": "untouched_final_holdout",
+            "windows": [
+              {
+                "start": "2026-06-18",
+                "end": "2026-07-15",
+                "training_days": 168,
+                "model": {
+                  "mae": 0,
+                  "wape": 0,
+                  "bias_units_per_day": 0,
+                  "total_absolute_error": 0,
+                  "actual_total": 156,
+                  "predicted_total": 156
+                },
+                "baseline": {
+                  "mae": 0,
+                  "wape": 0,
+                  "bias_units_per_day": 0,
+                  "total_absolute_error": 0,
+                  "actual_total": 156,
+                  "predicted_total": 156
+                }
+              }
+            ]
+          },
+          "selection": [
+            {
+              "method": "seasonal_naive",
+              "mean_mae": 0,
+              "windows": 3
+            },
+            {
+              "method": "mean_28",
+              "mean_mae": 0.8163265306122448,
+              "windows": 3
+            },
+            {
+              "method": "weekday_mean",
+              "mean_mae": 0,
+              "windows": 3
+            },
+            {
+              "method": "croston_sba",
+              "mean_mae": 0.7608269583120053,
+              "windows": 3
+            }
+          ],
+          "range": null,
+          "range_reason": "Not enough independent forecast errors to establish a calibrated prediction range.",
+          "method": "seasonal_naive",
+          "forecast_total": 156,
+          "inventory_eligible": true,
+          "forecast_warning": null
+        },
+        {
+          "product_id": "SKU-C",
+          "name": "Desk tray",
+          "status": "ready",
+          "days": 196,
+          "usable_days": 196,
+          "total_units": 84,
+          "missing_days": 0,
+          "stockout_days": 0,
+          "history": [
+            {
+              "date": "2026-05-21",
+              "units": 3
+            },
+            {
+              "date": "2026-05-22",
+              "units": 0
+            },
+            {
+              "date": "2026-05-23",
+              "units": 0
+            },
+            {
+              "date": "2026-05-24",
+              "units": 0
+            },
+            {
+              "date": "2026-05-25",
+              "units": 0
+            },
+            {
+              "date": "2026-05-26",
+              "units": 0
+            },
+            {
+              "date": "2026-05-27",
+              "units": 0
+            },
+            {
+              "date": "2026-05-28",
+              "units": 3
+            },
+            {
+              "date": "2026-05-29",
+              "units": 0
+            },
+            {
+              "date": "2026-05-30",
+              "units": 0
+            },
+            {
+              "date": "2026-05-31",
+              "units": 0
+            },
+            {
+              "date": "2026-06-01",
+              "units": 0
+            },
+            {
+              "date": "2026-06-02",
+              "units": 0
+            },
+            {
+              "date": "2026-06-03",
+              "units": 0
+            },
+            {
+              "date": "2026-06-04",
+              "units": 3
+            },
+            {
+              "date": "2026-06-05",
+              "units": 0
+            },
+            {
+              "date": "2026-06-06",
+              "units": 0
+            },
+            {
+              "date": "2026-06-07",
+              "units": 0
+            },
+            {
+              "date": "2026-06-08",
+              "units": 0
+            },
+            {
+              "date": "2026-06-09",
+              "units": 0
+            },
+            {
+              "date": "2026-06-10",
+              "units": 0
+            },
+            {
+              "date": "2026-06-11",
+              "units": 3
+            },
+            {
+              "date": "2026-06-12",
+              "units": 0
+            },
+            {
+              "date": "2026-06-13",
+              "units": 0
+            },
+            {
+              "date": "2026-06-14",
+              "units": 0
+            },
+            {
+              "date": "2026-06-15",
+              "units": 0
+            },
+            {
+              "date": "2026-06-16",
+              "units": 0
+            },
+            {
+              "date": "2026-06-17",
+              "units": 0
+            },
+            {
+              "date": "2026-06-18",
+              "units": 3
+            },
+            {
+              "date": "2026-06-19",
+              "units": 0
+            },
+            {
+              "date": "2026-06-20",
+              "units": 0
+            },
+            {
+              "date": "2026-06-21",
+              "units": 0
+            },
+            {
+              "date": "2026-06-22",
+              "units": 0
+            },
+            {
+              "date": "2026-06-23",
+              "units": 0
+            },
+            {
+              "date": "2026-06-24",
+              "units": 0
+            },
+            {
+              "date": "2026-06-25",
+              "units": 3
+            },
+            {
+              "date": "2026-06-26",
+              "units": 0
+            },
+            {
+              "date": "2026-06-27",
+              "units": 0
+            },
+            {
+              "date": "2026-06-28",
+              "units": 0
+            },
+            {
+              "date": "2026-06-29",
+              "units": 0
+            },
+            {
+              "date": "2026-06-30",
+              "units": 0
+            },
+            {
+              "date": "2026-07-01",
+              "units": 0
+            },
+            {
+              "date": "2026-07-02",
+              "units": 3
+            },
+            {
+              "date": "2026-07-03",
+              "units": 0
+            },
+            {
+              "date": "2026-07-04",
+              "units": 0
+            },
+            {
+              "date": "2026-07-05",
+              "units": 0
+            },
+            {
+              "date": "2026-07-06",
+              "units": 0
+            },
+            {
+              "date": "2026-07-07",
+              "units": 0
+            },
+            {
+              "date": "2026-07-08",
+              "units": 0
+            },
+            {
+              "date": "2026-07-09",
+              "units": 3
+            },
+            {
+              "date": "2026-07-10",
+              "units": 0
+            },
+            {
+              "date": "2026-07-11",
+              "units": 0
+            },
+            {
+              "date": "2026-07-12",
+              "units": 0
+            },
+            {
+              "date": "2026-07-13",
+              "units": 0
+            },
+            {
+              "date": "2026-07-14",
+              "units": 0
+            },
+            {
+              "date": "2026-07-15",
+              "units": 0
+            }
+          ],
+          "forecast": [
+            {
+              "date": "2026-07-16",
+              "units": 3
+            },
+            {
+              "date": "2026-07-17",
+              "units": 0
+            },
+            {
+              "date": "2026-07-18",
+              "units": 0
+            },
+            {
+              "date": "2026-07-19",
+              "units": 0
+            },
+            {
+              "date": "2026-07-20",
+              "units": 0
+            },
+            {
+              "date": "2026-07-21",
+              "units": 0
+            },
+            {
+              "date": "2026-07-22",
+              "units": 0
+            },
+            {
+              "date": "2026-07-23",
+              "units": 3
+            },
+            {
+              "date": "2026-07-24",
+              "units": 0
+            },
+            {
+              "date": "2026-07-25",
+              "units": 0
+            },
+            {
+              "date": "2026-07-26",
+              "units": 0
+            },
+            {
+              "date": "2026-07-27",
+              "units": 0
+            },
+            {
+              "date": "2026-07-28",
+              "units": 0
+            },
+            {
+              "date": "2026-07-29",
+              "units": 0
+            },
+            {
+              "date": "2026-07-30",
+              "units": 3
+            },
+            {
+              "date": "2026-07-31",
+              "units": 0
+            },
+            {
+              "date": "2026-08-01",
+              "units": 0
+            },
+            {
+              "date": "2026-08-02",
+              "units": 0
+            },
+            {
+              "date": "2026-08-03",
+              "units": 0
+            },
+            {
+              "date": "2026-08-04",
+              "units": 0
+            },
+            {
+              "date": "2026-08-05",
+              "units": 0
+            },
+            {
+              "date": "2026-08-06",
+              "units": 3
+            },
+            {
+              "date": "2026-08-07",
+              "units": 0
+            },
+            {
+              "date": "2026-08-08",
+              "units": 0
+            },
+            {
+              "date": "2026-08-09",
+              "units": 0
+            },
+            {
+              "date": "2026-08-10",
+              "units": 0
+            },
+            {
+              "date": "2026-08-11",
+              "units": 0
+            },
+            {
+              "date": "2026-08-12",
+              "units": 0
+            }
+          ],
+          "evaluation": {
+            "kind": "untouched_final_holdout",
+            "windows": [
+              {
+                "start": "2026-06-18",
+                "end": "2026-07-15",
+                "training_days": 168,
+                "model": {
+                  "mae": 0,
+                  "wape": 0,
+                  "bias_units_per_day": 0,
+                  "total_absolute_error": 0,
+                  "actual_total": 12,
+                  "predicted_total": 12
+                },
+                "baseline": {
+                  "mae": 0,
+                  "wape": 0,
+                  "bias_units_per_day": 0,
+                  "total_absolute_error": 0,
+                  "actual_total": 12,
+                  "predicted_total": 12
+                }
+              }
+            ]
+          },
+          "selection": [
+            {
+              "method": "seasonal_naive",
+              "mean_mae": 0,
+              "windows": 3
+            },
+            {
+              "method": "mean_28",
+              "mean_mae": 0.7346938775510204,
+              "windows": 3
+            },
+            {
+              "method": "weekday_mean",
+              "mean_mae": 0,
+              "windows": 3
+            },
+            {
+              "method": "croston_sba",
+              "mean_mae": 0.7885243912349112,
+              "windows": 3
+            }
+          ],
+          "range": null,
+          "range_reason": "Not enough independent forecast errors to establish a calibrated prediction range.",
+          "method": "seasonal_naive",
+          "forecast_total": 12,
+          "inventory_eligible": true,
+          "forecast_warning": null
+        }
+      ],
+      "quality": {
+        "issues": [],
+        "issue_counts": {},
+        "global_block": false,
+        "rows": 588,
+        "coverage_start": "2026-01-01",
+        "coverage_end": "2026-07-15",
+        "store_id": "single-store",
+        "config": {
+          "coverage_confirmed": true,
+          "coverage_end": "2026-07-15",
+          "coverage_start": "2026-01-01",
+          "date_format": "ISO",
+          "deduplicate_events": false,
+          "demo_proxy_confirmed": false,
+          "gross_sales_confirmed": true,
+          "layout": "daily",
+          "mapping": {
+            "date": "date",
+            "product_id": "product_id",
+            "product_name": "product_name",
+            "units": "units_sold"
+          },
+          "missing_days_zero": false,
+          "number_format": "dot",
+          "quantity_basis": "gross_completed_sales",
+          "store_id": "",
+          "synthetic": true,
+          "timezone": "America/New_York"
+        },
+        "eligible_products": 3
+      },
+      "notice": "Forecasts estimate sales under the supplied coverage assumptions, not unconstrained demand. Past test error is not future accuracy."
+    },
+    "plans": {}
+  }
+}

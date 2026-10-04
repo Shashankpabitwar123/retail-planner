@@ -1,0 +1,95 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 580B 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:22-bookworm-slim
+#2 DONE 0.6s
+
+#3 [internal] load metadata for docker.io/library/python:3.13-slim-bookworm
+#3 DONE 0.6s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 155B done
+#4 DONE 0.0s
+
+#5 [frontend 1/6] FROM docker.io/library/node:22-bookworm-slim@sha256:43ac6c60b8f89723f746e8a92ce91abd5017e627ce1ddfe4238355d3a30b772c
+#5 resolve docker.io/library/node:22-bookworm-slim@sha256:43ac6c60b8f89723f746e8a92ce91abd5017e627ce1ddfe4238355d3a30b772c 0.0s done
+#5 DONE 0.0s
+
+#6 [stage-1 1/7] FROM docker.io/library/python:3.13-slim-bookworm@sha256:5024f48ba9441d4b13a95d3945abc6365538e3a31109833367a1923523c6efed
+#6 resolve docker.io/library/python:3.13-slim-bookworm@sha256:5024f48ba9441d4b13a95d3945abc6365538e3a31109833367a1923523c6efed 0.0s done
+#6 DONE 0.0s
+
+#7 [internal] load build context
+#7 transferring context: 88.21kB 0.0s done
+#7 DONE 0.0s
+
+#8 [stage-1 3/7] COPY requirements.lock.txt ./
+#8 CACHED
+
+#9 [stage-1 2/7] WORKDIR /app
+#9 CACHED
+
+#10 [stage-1 4/7] RUN pip install --no-cache-dir -r requirements.lock.txt
+#10 CACHED
+
+#11 [frontend 3/6] COPY frontend/package*.json ./
+#11 CACHED
+
+#12 [frontend 2/6] WORKDIR /build
+#12 CACHED
+
+#13 [frontend 4/6] RUN npm ci
+#13 CACHED
+
+#14 [stage-1 5/7] COPY backend/ backend/
+#14 DONE 0.0s
+
+#15 [frontend 5/6] COPY frontend/ ./
+#15 DONE 0.0s
+
+#16 [frontend 6/6] RUN npm run build
+#16 0.637 
+#16 0.637 > retail-planner@1.0.0 build
+#16 0.637 > tsc -b && vite build
+#16 0.637 
+#16 3.336 vite v8.3.2 building client environment for production...
+#16 3.347 transforming...
+#16 3.627 ✓ 1577 modules transformed.
+#16 3.702 rendering chunks...
+#16 3.742 computing gzip size...
+#16 3.748 dist/index.html                                      0.52 kB │ gzip:  0.34 kB
+#16 3.748 dist/assets/inter-latin-400-normal-C38fXH4l.woff2   23.66 kB
+#16 3.748 dist/assets/inter-latin-500-normal-Cerq10X2.woff2   24.27 kB
+#16 3.748 dist/assets/inter-latin-700-normal-Yt3aPRUw.woff2   24.35 kB
+#16 3.748 dist/assets/inter-latin-600-normal-LgqL8muc.woff2   24.45 kB
+#16 3.748 dist/assets/inter-latin-400-normal-CyCys3Eg.woff    30.69 kB
+#16 3.748 dist/assets/inter-latin-600-normal-CiBQ2DWP.woff    31.26 kB
+#16 3.748 dist/assets/inter-latin-500-normal-BL9OpVg8.woff    31.28 kB
+#16 3.748 dist/assets/inter-latin-700-normal-BLAVimhd.woff    31.32 kB
+#16 3.748 dist/assets/index-G57B7weB.css                      28.30 kB │ gzip:  6.58 kB
+#16 3.748 dist/assets/index-0Y7A1u-T.js                      279.46 kB │ gzip: 86.42 kB
+#16 3.748 
+#16 3.748 ✓ built in 411ms
+#16 DONE 3.8s
+
+#17 [stage-1 6/7] COPY --from=frontend /build/dist frontend/dist/
+#17 DONE 0.0s
+
+#18 [stage-1 7/7] COPY --from=frontend /build/public/samples samples/
+#18 DONE 0.0s
+
+#19 exporting to image
+#19 exporting layers 0.1s done
+#19 exporting manifest sha256:ad21726cbfdf6370e4c6b7e18134a4527f557b2bec297c59bd02279a00763ac8 done
+#19 exporting config sha256:762c59e7dcf27911eda0599073d48994b16b1c8700dce103bfd19a0669d2f014 done
+#19 exporting attestation manifest sha256:15bf8c676db66f7646e744656ee353d8a16bbf21aa75c822647027ad3ba623e2
+#19 exporting attestation manifest sha256:15bf8c676db66f7646e744656ee353d8a16bbf21aa75c822647027ad3ba623e2 done
+#19 exporting manifest list sha256:2e061b4309437953edb9d26e0b5aa4c0ca17b1d5ad3c1f51da276bcb3deb2e31 done
+#19 naming to docker.io/library/retail-planner:local done
+#19 unpacking to docker.io/library/retail-planner:local 0.0s done
+#19 DONE 0.1s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/l1n2rzjxtghsdbnyjs5ngbt98

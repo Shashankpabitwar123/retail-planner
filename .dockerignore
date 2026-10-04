@@ -1,0 +1,11 @@
+**/node_modules
+**/.env*
+**/.local
+**/__pycache__
+**/.pytest_cache
+**/dist
+.git
+samples
+evidence
+examples
+previews

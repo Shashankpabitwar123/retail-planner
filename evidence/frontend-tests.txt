@@ -1,0 +1,79 @@
+
+> retail-planner@1.0.0 test
+> tsx --test tests/*.test.ts
+
+TAP version 13
+# Subtest: expired analysis carries HTTP status for stopping retry loops
+ok 1 - expired analysis carries HTTP status for stopping retry loops
+  ---
+  duration_ms: 40.045666
+  ...
+# Subtest: hosting wake-up HTML becomes a readable retry message
+ok 2 - hosting wake-up HTML becomes a readable retry message
+  ---
+  duration_ms: 0.521917
+  ...
+# Subtest: portable backup restores actual results and inventory, without live access
+ok 3 - portable backup restores actual results and inventory, without live access
+  ---
+  duration_ms: 9.855541
+  ...
+# Subtest: backup rejects invalid dates, malformed issues and inconsistent totals
+ok 4 - backup rejects invalid dates, malformed issues and inconsistent totals
+  ---
+  duration_ms: 4.20575
+  ...
+# Subtest: backup discards unknown secret-like fields
+ok 5 - backup discards unknown secret-like fields
+  ---
+  duration_ms: 4.518625
+  ...
+# Subtest: CSV neutralizes spreadsheet formulas and preserves leading-zero IDs
+ok 6 - CSV neutralizes spreadsheet formulas and preserves leading-zero IDs
+  ---
+  duration_ms: 0.375
+  ...
+# Subtest: forecast export has 28 days per eligible product
+ok 7 - forecast export has 28 days per eligible product
+  ---
+  duration_ms: 0.591959
+  ...
+# Subtest: revision 2 rejects altered payload with unchanged checksum; legacy remains readable
+ok 8 - revision 2 rejects altered payload with unchanged checksum; legacy remains readable
+  ---
+  duration_ms: 1.334166
+  ...
+# Subtest: new forecast methods survive a portable round trip
+ok 9 - new forecast methods survive a portable round trip
+  ---
+  duration_ms: 2.026833
+  ...
+# Subtest: inventory backup rejects invalid dates and foreign products; strips nested extra fields
+ok 10 - inventory backup rejects invalid dates and foreign products; strips nested extra fields
+  ---
+  duration_ms: 14.571917
+  ...
+# Subtest: browser history keeps the newest ten and deletes only the selected entry
+ok 11 - browser history keeps the newest ten and deletes only the selected entry
+  ---
+  duration_ms: 50.144667
+  ...
+# Subtest: oversized history becomes an explicitly labelled summary and reports fallback
+ok 12 - oversized history becomes an explicitly labelled summary and reports fallback
+  ---
+  duration_ms: 86.646417
+  ...
+# Subtest: unavailable browser storage rejects clearly without claiming a save
+ok 13 - unavailable browser storage rejects clearly without claiming a save
+  ---
+  duration_ms: 0.8345
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 700.56875

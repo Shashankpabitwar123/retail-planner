@@ -1,0 +1,25 @@
+{
+  "build": "Docker production bundle",
+  "memory_limit_mib": 512,
+  "cpu_limit": 0.1,
+  "free_profile": true,
+  "sample_upload_review_forecast_export": "passed",
+  "forecast_total": 364,
+  "models": 6,
+  "ai_live_response": {
+    "answer": "The forecast was tested using an untouched final holdout evaluation method. This involved evaluating the model on a specific window from 2026-06-18 to 2026-07-15, where the model's predictions were compared to actual sales. The evaluation reported metrics such as mean absolute error (MAE) of 0.0, weighted absolute percentage error (WAPE) of 0.0, and no bias, indicating perfect prediction performance on this holdout period.",
+    "citations": [
+      "product",
+      "methodology"
+    ],
+    "usage": {
+      "input_tokens": 2344,
+      "output_tokens": 110,
+      "total_tokens": 2454
+    },
+    "latency_ms": 3366
+  },
+  "httponly_cookie": true,
+  "secure_cookie": "Off only for this localhost HTTP test; deployment manifests set it on.",
+  "hosting": "Not publicly deployed"
+}

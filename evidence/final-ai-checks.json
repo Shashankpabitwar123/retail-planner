@@ -1,0 +1,55 @@
+{
+  "mapping": {
+    "mapping": {
+      "date": "date",
+      "product_id": "product_id",
+      "product_name": "product_name",
+      "units": "units_sold",
+      "event_id": "",
+      "event_type": "",
+      "store_id": "",
+      "date_status": ""
+    },
+    "notice": "Suggestions only. Review each field before applying; dates, units and coverage still need your confirmation.",
+    "usage": {
+      "input_tokens": 281,
+      "output_tokens": 38,
+      "total_tokens": 319,
+      "latency_ms": 1600
+    }
+  },
+  "answers": [
+    {
+      "question": "How many units sold on 2026-01-01?",
+      "answer": "On 2026-01-01, 10 units of the product Notebook were sold.",
+      "citations": [
+        "product",
+        "rows"
+      ],
+      "usage": {
+        "input_tokens": 2394,
+        "output_tokens": 31,
+        "total_tokens": 2425
+      },
+      "latency_ms": 1820
+    },
+    {
+      "question": "Explain this unapplied inventory preview and its risks.",
+      "answer": "This inventory preview shows a projected stock plan for the product Notebook starting from 2026-07-16. It forecasts daily sales and tracks opening and closing stock, considering no incoming units until a proposed receipt of 132 units arrives on 2026-07-21. Before arrival, stock is expected to run out by 2026-07-18 causing unmet demand (lost sales) on several days. After the arrival, the stock is sufficient to meet demand and maintain a protection stock level of 41 units at the period end. The risk is that before the new stock arrives, there are several days with unmet demand, indicating potential lost sales due to stockouts. The buffer units and protection stock are planned as user assumptions and do not guarantee service levels. No order has been placed yet, so this preview helps in decision-making to mitigate stockout risks by adjusting order quantities or timing.",
+      "citations": [
+        "quality",
+        "product",
+        "methodology",
+        "scenario"
+      ],
+      "usage": {
+        "input_tokens": 4377,
+        "output_tokens": 197,
+        "total_tokens": 4574
+      },
+      "latency_ms": 1870
+    }
+  ],
+  "preview_did_not_apply": true,
+  "cost": "Token usage measured; no monetary estimate claimed."
+}

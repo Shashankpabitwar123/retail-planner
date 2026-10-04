@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: retail-planner
+    runtime: docker
+    plan: standard
+    numInstances: 1
+    healthCheckPath: /api/health
+    autoDeployTrigger: "off"
+    disk:
+      name: retail-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: RETAIL_SECURE_COOKIE
+        value: "1"
+      - key: RETAIL_SERVE_FRONTEND
+        value: "1"
+      - key: RETAIL_DB
+        value: /var/data/retail.sqlite3
+      - key: RETAIL_AI_DAILY_LIMIT
+        value: "100"
+      - key: RETAIL_ORIGINS
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false

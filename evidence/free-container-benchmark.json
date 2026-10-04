@@ -1,0 +1,15 @@
+{
+  "rows": 50000,
+  "products": 100,
+  "bytes": 1020619,
+  "upload_and_inspection_seconds": 3.498076041985769,
+  "normalize_queue_persist_and_poll_seconds": 34.09800658302265,
+  "forecast_queue_persist_and_poll_seconds": 13.133236249996116,
+  "total_seconds": 50.72931887500454,
+  "forecasted_products": 100,
+  "cpu_limit": 0.1,
+  "memory_limit_mib": 512,
+  "scope": "One sequential local Docker HTTP test at configured row cap, with SQLite persistence and 100ms polling. Excludes generation of synthetic input, browser rendering, internet transfer, AI and concurrent users. Not a public-service capacity claim.",
+  "cgroup_memory_peak_bytes": 115257344,
+  "oom_killed": false
+}

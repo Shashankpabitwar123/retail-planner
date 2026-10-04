@@ -1,0 +1,144 @@
+{
+  "source": "UCI Online Retail II",
+  "doi": "10.24432/C5CG6D",
+  "license": "CC BY 4.0",
+  "creator": "Daqing Chen",
+  "source_sha256": "bcbe73b35f5b7babf197fb0cb983a11f5d9ff929078d4aa53d171b1f2df2e980",
+  "worksheet": "Year 2010-2011",
+  "target": "positive invoice units proxy, NOT verified completed gross sales",
+  "product_selection": "Three IDs fixed in Phase 1 using data no later than 2011-11-10. Not representative of all stores.",
+  "coverage_assumption": "Selected products treated as active throughout the period; absent eligible invoice dates assigned zero. No availability/stockout truth.",
+  "cutoff": "2011-11-10",
+  "holdout_start": "2011-11-11",
+  "holdout_end": "2011-12-08",
+  "final_partial_day_excluded": "2011-12-09",
+  "counts": {
+    "source_rows_scanned": 541910,
+    "selected_product_source_rows": 5864,
+    "included_invoice_lines": 5612,
+    "excluded_adjustments_or_nonpositive": 246,
+    "outside_range": 6
+  },
+  "training_daily_rows": 1035,
+  "products": [
+    {
+      "product_id": "22423",
+      "name": "REGENCY CAKESTAND 3 TIER",
+      "method": "weekday_mean",
+      "external_holdout": {
+        "mae": 22.910714285714285,
+        "wape": 0.5573414422241529,
+        "bias_units_per_day": -10.25,
+        "total_absolute_error": 287.0,
+        "actual_total": 1151,
+        "predicted_total": 864.0
+      },
+      "internal_evaluation": {
+        "kind": "untouched_final_holdout",
+        "windows": [
+          {
+            "start": "2011-10-14",
+            "end": "2011-11-10",
+            "training_days": 317,
+            "model": {
+              "mae": 18.875,
+              "wape": 0.6138211382113821,
+              "bias_units_per_day": -1.7678571428571428,
+              "total_absolute_error": 49.5,
+              "actual_total": 861,
+              "predicted_total": 811.5
+            },
+            "baseline": {
+              "mae": 18.464285714285715,
+              "wape": 0.6004645760743321,
+              "bias_units_per_day": -5.607142857142857,
+              "total_absolute_error": 157.0,
+              "actual_total": 861,
+              "predicted_total": 704.0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "product_id": "84879",
+      "name": "ASSORTED COLOUR BIRD ORNAMENT",
+      "method": "seasonal_naive",
+      "external_holdout": {
+        "mae": 259.14285714285717,
+        "wape": 1.764591439688716,
+        "bias_units_per_day": 111.42857142857143,
+        "total_absolute_error": 3120.0,
+        "actual_total": 4112,
+        "predicted_total": 7232.0
+      },
+      "internal_evaluation": {
+        "kind": "untouched_final_holdout",
+        "windows": [
+          {
+            "start": "2011-10-14",
+            "end": "2011-11-10",
+            "training_days": 317,
+            "model": {
+              "mae": 116.53571428571429,
+              "wape": 0.7590137241218888,
+              "bias_units_per_day": -104.25,
+              "total_absolute_error": 2919.0,
+              "actual_total": 4299,
+              "predicted_total": 1380.0
+            },
+            "baseline": {
+              "mae": 116.53571428571429,
+              "wape": 0.7590137241218888,
+              "bias_units_per_day": -104.25,
+              "total_absolute_error": 2919.0,
+              "actual_total": 4299,
+              "predicted_total": 1380.0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "product_id": "85099B",
+      "name": "JUMBO BAG RED RETROSPOT",
+      "method": "weekday_mean",
+      "external_holdout": {
+        "mae": 140.22321428571428,
+        "wape": 0.997269494538989,
+        "bias_units_per_day": 63.142857142857146,
+        "total_absolute_error": 1768.0,
+        "actual_total": 3937,
+        "predicted_total": 5705.0
+      },
+      "internal_evaluation": {
+        "kind": "untouched_final_holdout",
+        "windows": [
+          {
+            "start": "2011-10-14",
+            "end": "2011-11-10",
+            "training_days": 317,
+            "model": {
+              "mae": 120.70535714285714,
+              "wape": 0.6790737392003214,
+              "bias_units_per_day": 4.375,
+              "total_absolute_error": 122.5,
+              "actual_total": 4977,
+              "predicted_total": 5099.5
+            },
+            "baseline": {
+              "mae": 217.82142857142858,
+              "wape": 1.2254370102471368,
+              "bias_units_per_day": 26.107142857142858,
+              "total_absolute_error": 731.0,
+              "actual_total": 4977,
+              "predicted_total": 5708.0
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "offline_total_seconds": 8.875,
+  "scope": "Offline workbook scan, adaptation and three-product evaluation; not a web upload or service-capacity benchmark."
+}

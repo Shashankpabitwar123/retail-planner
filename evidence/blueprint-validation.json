@@ -1,0 +1,14 @@
+{
+  "schema": "https://render.com/schema/render.yaml.json",
+  "checks": [
+    {
+      "file": "render.yaml",
+      "passed": true
+    },
+    {
+      "file": "render-free.yaml",
+      "passed": true
+    }
+  ],
+  "scope": "JSON schema validation, not provisioning"
+}

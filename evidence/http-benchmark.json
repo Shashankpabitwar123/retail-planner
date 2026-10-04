@@ -1,0 +1,11 @@
+{
+  "rows": 200000,
+  "products": 500,
+  "bytes": 4082370,
+  "upload_and_inspection_seconds": 0.4230436249927152,
+  "normalize_queue_persist_and_poll_seconds": 2.252683333004825,
+  "forecast_queue_persist_and_poll_seconds": 1.4143748749920633,
+  "total_seconds": 4.090101832989603,
+  "forecasted_products": 500,
+  "scope": "One sequential local HTTP test at configured row cap, with SQLite persistence and 100ms polling. Excludes generation of synthetic input, browser rendering, internet transfer, AI and concurrent users. Not a public-service capacity claim."
+}
