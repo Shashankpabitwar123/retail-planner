@@ -3,6 +3,7 @@ import { Button, Notice } from "./UI";
 import {
   post,
   num,
+  friendlyDate,
   csv,
   download,
   type Product,
@@ -143,7 +144,7 @@ export default function Inventory({
       {saved && (
         <Notice tone="success">
           Saved plan: {num(saved.suggested_order_units)} units, arriving{" "}
-          {saved.arrival_date}.{" "}
+          {friendlyDate(saved.arrival_date)}.{" "}
           <button className="text-link" onClick={() => exportPlan(saved)}>
             Download plan
           </button>
@@ -336,13 +337,13 @@ export default function Inventory({
           {preview && (
             <section className="panel scenario">
               <p className="eyebrow">YOUR RESTOCK ESTIMATE</p>
-              <p className="muted">Plan date: {preview.planning_date}. This is a recommendation; no order is placed.</p>
+              <p className="muted">Plan date: {friendlyDate(preview.planning_date)}. This is a recommendation; no order is placed.</p>
               <h2>{preview.suggested_order_units > 0 ? `${num(preview.suggested_order_units)} units to restock` : "No extra stock needed for this plan"}</h2>
               <p>
-                Expected delivery: {preview.arrival_date}. Sales you may miss before delivery:{" "}
+                Expected delivery: {friendlyDate(preview.arrival_date)}. Sales you may miss before delivery:{" "}
                 <strong>{num(preview.pre_arrival_unmet_units)} units</strong>
                 {preview.first_shortfall_date
-                  ? `, starting ${preview.first_shortfall_date}`
+                  ? `, starting ${friendlyDate(preview.first_shortfall_date)}`
                   : ""}
                 .
               </p>
@@ -398,7 +399,7 @@ function StockProjection({ plan }: { plan: Plan }) {
           <tbody>
             {plan.daily_stock.map((d) => (
               <tr key={d.date}>
-                <td>{d.date}</td>
+                <td>{friendlyDate(d.date)}</td>
                 <td>{num(d.opening_units)}</td>
                 <td>{num(d.incoming_units)}</td>
                 <td>{num(d.proposed_receipt_units)}</td>

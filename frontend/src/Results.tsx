@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button, Notice } from "./UI";
 import {
   num,
+  friendlyDate,
   download,
   forecastCSV,
   type Result,
@@ -57,15 +58,13 @@ export default function Results({
         </p>
         <h1>{tab === "Inventory" ? "What should I restock?" : tab === "Data quality" ? "Can I use this data?" : "How much will sell?"}</h1>
         <p>
-          {result.forecast_start} – {result.forecast_end} · 28-day forecast ·{" "}
+          {friendlyDate(result.forecast_start)} – {friendlyDate(result.forecast_end)} ·{" "}
           {result.products.filter((p) => p.forecast?.length).length} products
-          forecast
         </p>
       </div>
       {result.forecast_start < new Date().toISOString().slice(0, 10) && (
         <p className="muted historical-note">
-          Based on past sales · This forecast starts on {result.forecast_start}.
-          Upload recent sales for a current plan.
+          This forecast uses older sales. Upload your latest sales to plan ahead.
         </p>
       )}
       {result.products.some((p) => !p.forecast?.length) && (
@@ -168,7 +167,7 @@ export default function Results({
                         </td>
                         <td>{num(p.suggested_order_units)}</td>
                         <td>{num(p.pre_arrival_unmet_units)}</td>
-                        <td>{p.arrival_date}</td>
+                        <td>{friendlyDate(p.arrival_date)}</td>
                       </tr>
                     ))}
                 </tbody>
@@ -397,7 +396,7 @@ function Forecast({ product: p, onRestock }: { product: Product; onRestock: () =
                     {p.evaluation?.kind === "untouched_final_holdout"
                       ? "Final test period, kept separate from method selection"
                       : "Limited baseline testing"}{" "}
-                    · {last.start} – {last.end}
+                    · {friendlyDate(last.start)} – {friendlyDate(last.end)}
                   </p>
                   <div className="metric-strip">
                     <div>
@@ -449,7 +448,7 @@ function Forecast({ product: p, onRestock }: { product: Product; onRestock: () =
                 <tbody>
                   {future.map((d) => (
                     <tr key={d.date}>
-                      <td>{d.date}</td>
+                      <td>{friendlyDate(d.date)}</td>
                       <td>{num(d.units)}</td>
                     </tr>
                   ))}

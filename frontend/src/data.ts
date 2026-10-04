@@ -1,3 +1,7 @@
+export function friendlyDate(value: string) {
+  const date = new Date(value + "T00:00:00Z");
+  return Number.isNaN(date.getTime()) ? value : new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }).format(date);
+}
 export type Mapping = Record<string, string>;
 export type Config = {
   coverage_upload_id?: string;

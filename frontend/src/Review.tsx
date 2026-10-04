@@ -1,7 +1,7 @@
 import AIMapping from "./AIMapping";
 import ImportOptions, { Comparison } from "./ImportOptions";
 import { Button, Notice, Steps } from "./UI";
-import { num, csv, download, type Config, type Upload, type Quality } from "./data";
+import { num, friendlyDate, csv, download, type Config, type Upload, type Quality } from "./data";
 const fields: Record<string, string> = {
   product_id: "Product ID",
   product_name: "Product name (optional)",
@@ -293,7 +293,7 @@ export function QualityView({ quality }: { quality: Quality }) {
         {[...quality.products].sort((a,b) => Number(["ready", "limited"].includes(a.status)) - Number(["ready", "limited"].includes(b.status))).map(p => <tr key={p.product_id}><td>{p.name}<small className="block muted">{p.product_id}</small></td><td>{p.missing_days > 0 ? `Add sales records for ${p.missing_days} missing days.` : p.stockout_days > 0 ? "Stockouts affected sales. Review the missing demand." : p.status === "ready" ? "Ready for forecasting" : p.status === "limited" ? "Limited history — use estimates cautiously" : p.usable_days < 56 ? `Add more history: ${p.usable_days} complete days available; at least 56 needed.` : p.total_units === 0 ? "No sales recorded — no forecast available" : "Review this product’s issues or active selling dates."}</td></tr>)}
       </tbody></table></div>
       <details className="quiet-details"><summary>View file details</summary>
-        <p>{quality.coverage_start} to {quality.coverage_end} · {num(quality.rows)} sales records.</p>
+        <p>{friendlyDate(quality.coverage_start)} to {friendlyDate(quality.coverage_end)} · {num(quality.rows)} sales records.</p>
         <p>At least 56 complete days are needed for an initial forecast. With 168 days, we can compare methods and test the chosen one on a separate period.</p>
         <Comparison quality={quality} />
         {Object.entries(quality.issue_counts).filter(([k]) => k.startsWith("excluded_") || k === "duplicate_events_removed").map(([k,v]) => <p key={k}>{k.replaceAll("_", " ")}: {v}</p>)}

@@ -14,6 +14,7 @@ import {
   api,
   post,
   num,
+  friendlyDate,
   download,
   backup,
   restore,
@@ -1091,7 +1092,7 @@ export default function App() {
       </button>
       {drawer && (
         <Drawer
-          title={drawer === "help" ? "Ask about your data" : "Recent analyses"}
+          title={drawer === "help" ? "Ask about your data" : "Your history"}
           onClose={() => setDrawer(null)}
         >
           {drawer === "help" ? (
@@ -1229,24 +1230,20 @@ export default function App() {
             </>
           ) : (
             <>
-              <Notice>
-                Your ten most recent results are saved in this browser. Download
-                a copy to keep them when switching devices or clearing browser
-                data.
-              </Notice>
-              <h3>Saved results</h3>
+              <p>Pick a file to revisit your results.</p>
+              <details className="quiet-details"><summary>How history is saved</summary><p>Your last 10 results stay in this browser. Download a copy to keep them on another device or after clearing browser data.</p></details>
               {!history.length && <p>No saved results yet.</p>}
               {history.map((s) => (
                 <section className="history-item" key={s.id}>
                   <strong>{s.name}</strong>
                   <p>
-                    {s.result.forecast_start} · {s.result.products.length}{" "}
-                    products
+                    {s.result.products.length} products · Forecast from {friendlyDate(s.result.forecast_start)}
                   </p>
                   <div className="inline-actions">
                     <Button variant="secondary" onClick={() => openSaved(s)}>
-                      Open saved
+                      Open
                     </Button>
+                    <details className="history-options"><summary>More options</summary>
                     <Button
                       variant="text"
                       onClick={() =>
@@ -1266,29 +1263,28 @@ export default function App() {
                           await historyDelete(s.id);
                           setHistory(await historyList());
                           setToast(
-                            "Removed from browser history. Server copy is separate.",
+                            "Removed from this browser’s history. Your uploaded file has not been deleted.",
                           );
                         })
                       }
                     >
-                      Remove local
+                      Remove from history
                     </Button>
+                    </details>
                   </div>
                 </section>
               ))}
-              <h3>Server analyses</h3>
-              <p className="muted">
-                Uploaded files and chats are temporary and may expire sooner
-                than 7 days. Your downloaded results and saved browser history
-                stay separate.
-              </p>
+              <details className="quiet-details">
+              <summary>Recent uploads</summary>
+              <p className="muted">Reopen an upload to continue using AI. Uploads and chats are temporary and may disappear within 7 days. Downloaded copies and browser history are kept separately.</p>
+              {!jobs.length && <p>No recent uploads available.</p>}
               {jobs.map((j) => (
                 <section className="history-item" key={j.id}>
                   <strong>
                     {j.kind === "forecast" ? "Forecast" : "Data check"} ·{" "}
                     {j.state}
                   </strong>
-                  <p>{new Date(j.created * 1000).toLocaleString()}</p>
+                  <p>{new Date(j.created * 1000).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</p>
                   <div className="inline-actions">
                     <Button
                       variant="secondary"
@@ -1297,7 +1293,7 @@ export default function App() {
                         start(j.id);
                       }}
                     >
-                      Open live
+                      Open
                     </Button>
                     <Button
                       variant="text"
@@ -1316,11 +1312,12 @@ export default function App() {
                         })
                       }
                     >
-                      Delete source from server
+                      Delete uploaded file
                     </Button>
                   </div>
                 </section>
               ))}
+              </details>
             </>
           )}
         </Drawer>

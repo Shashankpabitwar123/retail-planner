@@ -2194,3 +2194,11 @@ details summary {
 .chat-followups button:hover { background: var(--selected); }
 .chat-followups button:focus-visible { outline: 2px solid #27624d; outline-offset: 2px; }
 .chat-followups button:disabled { opacity: .5; cursor: default; }
+
+.live-drawer .history-item { display: block; padding: 20px 0; }
+.live-drawer .history-item > strong { display: block; overflow-wrap: anywhere; font-size: 16px; }
+.live-drawer .history-item > p { font-size: 13px; margin: 6px 0 14px; }
+.history-options { font-size: 13px; }
+.history-options summary { color: #27624d; cursor: pointer; padding: 8px 0; }
+.history-options[open] { flex-basis: 100%; }
+.history-options button { margin-right: 14px; }
