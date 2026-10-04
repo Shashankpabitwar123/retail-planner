@@ -107,3 +107,15 @@ def test_money_column_requires_quantity_choice():
     g = guide(raw, answers)
     assert g["question"]["id"] == "quantity_column"
     assert guide(raw, {**answers, "quantity_column": "__missing__"})["blocked"]
+
+
+def test_dish_names_detected_but_customer_counts_need_confirmation():
+    raw = b"date,Dish Name,Total Customers,Price\n2026-01-01,Sandwich,50,4\n2026-01-02,Sandwich,60,4\n"
+    first = guide(raw, {})
+    assert first['config']['mapping']['product_id'] == 'Dish Name'
+    assert first['question']['id'] == 'column_units'
+    answers = {'column_units': 'Total Customers'}
+    assert guide(raw, answers)['question']['id'] == 'quantity_meaning'
+    assert guide(raw, {**answers, 'quantity_meaning': 'people'})['blocked']
+    assert guide(raw, {**answers, 'quantity_meaning': 'unsure'})['blocked']
+    assert guide(raw, {**answers, 'quantity_meaning': 'items', 'complete': 'yes'})['ready']

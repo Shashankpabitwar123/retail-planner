@@ -4,7 +4,7 @@ import {api, post, type Upload} from "./data";
 import GuidedImport, {type Guidance} from "./GuidedImport";
 import {Button, Notice} from "./UI";
 type Reply = Guidance & {file_index?: number; file_name?: string; row_count?: number; id?: string; upload_id?: string; file_count?: number};
-export default function BatchUpload({files, maxBytes, onCancel, onReady, onQuestionChange, onFilesChange, embedded = false}: {onFilesChange: (files: File[]) => void; onQuestionChange: (open: boolean) => void; embedded?: boolean; files: File[]; maxBytes: number; onCancel: () => void; onReady: (id: string, uploadId: string, count: number) => void}) {
+export default function BatchUpload({files, maxBytes, onCancel, onReady, onQuestionChange, onFilesChange, embedded = false, aiAvailable = false}: {aiAvailable?: boolean; onFilesChange: (files: File[]) => void; onQuestionChange: (open: boolean) => void; embedded?: boolean; files: File[]; maxBytes: number; onCancel: () => void; onReady: (id: string, uploadId: string, count: number) => void}) {
   const active = useRef(true);
   useEffect(() => {active.current=true; return () => {active.current=false;};}, []);
   const [items, setItems] = useState(files);
@@ -20,6 +20,14 @@ export default function BatchUpload({files, maxBytes, onCancel, onReady, onQuest
   }, [reply, onQuestionChange]);
   useEffect(() => () => onQuestionChange(false), [onQuestionChange]);
   const [answers, setAnswers] = useState<Record<string,string>>({});
+  const [steps, setSteps] = useState<{reply: Reply; answers: Record<string,string>; selected: string}[]>([]);
+  const [previousAnswer, setPreviousAnswer] = useState<string>();
+  function goBack() {
+    const step = steps.at(-1);
+    if (!step) return;
+    setReply(step.reply); setAnswers(step.answers); setPreviousAnswer(step.selected);
+    setSteps(steps.slice(0, -1)); setError("");
+  }
   const uploaded = useRef(new Map<File, Upload>());
   const addInput = useRef<HTMLInputElement>(null);
   const replaceInput = useRef<HTMLInputElement>(null);
@@ -56,7 +64,7 @@ export default function BatchUpload({files, maxBytes, onCancel, onReady, onQuest
     if (upload && !upload.duplicate) api(`/uploads/${upload.id}`, {method:"DELETE"}).catch(() => {});
     uploaded.current.delete(file);
   }
-  function change(next: File[]) {items.filter(f => !next.includes(f)).forEach(cleanup); setItems(next); setAnswers({}); setReply(null); setError("");}
+  function change(next: File[]) {items.filter(f => !next.includes(f)).forEach(cleanup); setItems(next); setAnswers({}); setReply(null); setSteps([]); setPreviousAnswer(undefined); setError("");}
   function addFiles(files: File[]) {
     if (busy || !files.length) return;
     if (files.some(f => !f.name.toLowerCase().endsWith(".csv"))) { setError("Please choose CSV files only."); return; }
@@ -83,8 +91,20 @@ export default function BatchUpload({files, maxBytes, onCancel, onReady, onQuest
         <Button variant="text" disabled={busy} onClick={() => {setReply(null); setError("");}}>← Back to files</Button>
         <p className="muted">{reply.file_name}</p>
         {error && <Notice tone="warning">{error}</Notice>}
-        <GuidedImport upload={{row_count:reply.row_count || 0} as Upload} guidance={reply} busy={busy}
-          onAnswer={(key,value)=>{const next={...answers,[key]:value};setAnswers(next);analyze(next);}}
+        {steps.length > 0 && <details className="question-file-details"><summary>Review my answers</summary>
+          {steps.map((step, index) => <p key={index}><strong>{step.reply.question?.title}</strong><br />{step.reply.question?.options.find(o => o.value === step.selected)?.label || step.selected}{" "}<button className="text-link" disabled={busy} onClick={() => {setReply(step.reply); setAnswers(step.answers); setPreviousAnswer(step.selected); setSteps(steps.slice(0, index)); setError("");}}>Change answer</button></p>)}
+        </details>}
+        <GuidedImport previousAnswer={previousAnswer} onPrevious={steps.length ? goBack : undefined}
+          onSuggest={aiAvailable && reply.file_index !== undefined ? async () => {
+            const file = items[reply.file_index!]; const upload = uploaded.current.get(file);
+            if (!upload || !reply.question) return;
+            const suggestion = await post<{mapping: Record<string,string>}>(`/uploads/${upload.id}/suggest-mapping`, {consent: true});
+            const field = reply.question.id.split(":").at(-1)!.replace("column_", "");
+            const value = suggestion.mapping[field];
+            return reply.question.options.some(o => o.value === value) ? value : undefined;
+          } : undefined}
+          upload={{row_count:reply.row_count || 0} as Upload} guidance={reply} busy={busy}
+          onAnswer={(key,value)=>{setSteps([...steps, {reply, answers: {...answers}, selected: value}]); setPreviousAnswer(undefined); const next={...answers,[key]:value};setAnswers(next);analyze(next);}}
           onReset={()=>{setReply(null);setAnswers({});setError("");}}
           onDetails={()=>{setReply(null);setAnswers({});setError("");}} />
       </section>, document.getElementById("batch-question-root")!

@@ -2296,3 +2296,16 @@ details summary {
 .live-chart circle:focus { outline:2px solid var(--green); }
 .forecast-next { margin:8px 0 24px; }
 @media(max-width:600px) { .compact-sample details { margin-left:0; } .forecast-detail .metric-strip { gap:20px; flex-wrap:wrap; } }
+
+.batch-question-page { max-width:680px; }
+.batch-question-page > .muted { margin:12px 0 20px; font-size:.85rem; }
+.batch-question-page .guided-card { margin:0 auto 40px; }
+.guided-card .eyebrow { margin:20px 0 10px; font-size:.75rem; }
+.guided-card h1 { font-size:clamp(24px,3vw,32px); margin:12px 0; }
+.guided-card .question-detail { margin:0 0 22px; font-size:.95rem; }
+.guided-card .answer-options { gap:10px; margin:20px 0 24px; }
+.guided-card .answer-option { padding:15px 18px; gap:6px; }
+.guided-card .answer-option span { font-size:.85rem; }
+.guided-card .answer-selected { border-color:var(--green); background:#edf5ef; box-shadow:inset 0 0 0 1px var(--green); }
+.question-ai, .question-file-details { margin-top:24px; font-size:.85rem; color:var(--muted); }
+.question-ai p, .question-file-details p { line-height:1.6; margin:12px 0; }

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { LoaderCircle, Check } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 import { Button, Notice } from "./UI";
 import type { Config, Upload } from "./data";
 export type Guidance = {
@@ -21,6 +21,9 @@ export default function GuidedImport({
   onAnswer,
   onReset,
   onDetails,
+  previousAnswer,
+  onPrevious,
+  onSuggest,
 }: {
   upload: Upload;
   guidance: Guidance | null;
@@ -28,21 +31,26 @@ export default function GuidedImport({
   onAnswer: (key: string, value: string) => void;
   onReset: () => void;
   onDetails: () => void;
+  previousAnswer?: string;
+  onPrevious?: () => void;
+  onSuggest?: () => Promise<string | undefined>;
 }) {
   const q = guidance?.question;
+  const [selected, setSelected] = useState(previousAnswer || "");
+  const [suggesting, setSuggesting] = useState(false);
+  const [suggestion, setSuggestion] = useState("");
+  useEffect(() => { setSelected(previousAnswer || ""); setSuggestion(""); }, [q?.id, previousAnswer]);
   const [zone, setZone] = useState(
     Intl.DateTimeFormat().resolvedOptions().timeZone || "Etc/UTC",
   );
   const heading = useRef<HTMLHeadingElement>(null);
+  useEffect(() => { if (previousAnswer && q?.input === "timezone") setZone(previousAnswer); }, [q?.id, previousAnswer]);
   useEffect(() => {
     if (!busy) heading.current?.focus();
   }, [q?.id, guidance?.blocked, busy]);
   return (
     <section className="guided-card">
-      <div className="file-chip">
-        <Check size={16} />
-        <span>{upload.row_count.toLocaleString()} sales rows found</span>
-      </div>
+      {onPrevious && <Button variant="text" disabled={busy} onClick={onPrevious}>← Previous question</Button>}
       {!guidance || busy ? (
         <div role="status" className="guided-loading">
           <LoaderCircle className="spin" />
@@ -69,7 +77,7 @@ export default function GuidedImport({
         </>
       ) : q ? (
         <>
-          <p className="eyebrow">ONE QUICK QUESTION</p>
+          <p className="eyebrow">HELP US UNDERSTAND YOUR SALES</p>
           <h1 ref={heading} tabIndex={-1}>
             {q.title}
           </h1>
@@ -113,8 +121,9 @@ export default function GuidedImport({
               {q.options.map((o) => (
                 <button
                   key={o.value}
-                  className="answer-option"
-                  onClick={() => onAnswer(q.id, o.value)}
+                  className={"answer-option" + (selected === o.value ? " answer-selected" : "")}
+                  aria-pressed={selected === o.value}
+                  onClick={() => setSelected(o.value)}
                 >
                   <strong>{o.label}</strong>
                   {o.hint && <span>{o.hint}</span>}
@@ -122,12 +131,14 @@ export default function GuidedImport({
               ))}
             </div>
           )}
-          <p className="muted question-footnote">
-            We’ve taken care of everything else we can read from your file.
-          </p>
-          <button className="text-link" onClick={onReset}>
-            Choose a different file
-          </button>
+          {q.input !== "timezone" && <Button disabled={!selected || suggesting} onClick={() => onAnswer(q.id, selected)}>Continue</Button>}
+          {onSuggest && q.id.includes("column_") && <details className="question-ai"><summary>Need help choosing?</summary>
+            <p>AI can suggest a heading. Only column names are shared with OpenAI, not your sales records. You review the answer before continuing.</p>
+            <Button variant="secondary" disabled={suggesting} onClick={async () => {setSuggesting(true); try {const value = await onSuggest(); setSuggestion(value ? `Suggested heading: ${value}. Check its examples before choosing.` : "AI couldn’t find a clear match. Use the examples above.");} catch {setSuggestion("AI is unavailable. You can still choose using the examples above.");} finally {setSuggesting(false);} }}>{suggesting ? "Checking headings…" : "Share headings and suggest"}</Button>
+            {suggestion && <p role="status">{suggestion}</p>}
+          </details>}
+          <details className="question-file-details"><summary>File details</summary><p>{upload.row_count.toLocaleString()} sales records found.</p></details>
+
         </>
       ) : (
         <Notice>Your file is ready. Preparing your analysis…</Notice>

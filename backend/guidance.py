@@ -75,11 +75,17 @@ def guide(raw, answers, timezone="Etc/UTC"):
         matches = [h for h in headers if key(h) in names]
         if len(matches) == 1:
             cfg["mapping"][field] = matches[0]
+    # A descriptive dish/item name can identify products when no code is present.
+    if "product_id" not in cfg["mapping"]:
+        names = [h for h in headers if key(h) in {"dishname", "itemname", "productname"}]
+        if len(names) == 1:
+            cfg["mapping"]["product_id"] = names[0]
+            cfg["mapping"]["product_name"] = names[0]
     wide = detected["suggested_layout"] == "wide"
     for field, title in [
-        ("product_id", "Which column identifies each product?"),
-        ("date", "Which column contains the sale date?"),
-        ("units", "Which column tells us how many items were sold?"),
+        ("product_id", "Which heading contains the item names or codes?"),
+        ("date", "Which heading tells us when the sale happened?"),
+        ("units", "Which heading tells us how many items were sold?"),
     ]:
         if wide and field in ("date", "units"):
             continue
@@ -112,7 +118,7 @@ def guide(raw, answers, timezone="Etc/UTC"):
                 return question(
                     "column_" + field,
                     title,
-                    "We found the other details. We just need help with this one.",
+                    "Choose the heading that matches. The examples below come from your file.",
                     opts,
                 )
             cfg["mapping"][field] = answer
@@ -125,6 +131,14 @@ def guide(raw, answers, timezone="Etc/UTC"):
         if not selected:
             return question("quantity_column", "Which column counts items sold?", "The selected column looks like money. Choose item quantities, not revenue. Use customer counts only if each count means one item sold.", options)
         cfg["mapping"]["units"] = selected
+    units_header = cfg["mapping"].get("units", "")
+    if any(word in key(units_header) for word in ("customer", "guest", "visitor", "people")):
+        opts = [option("items", "Items or portions sold", "Each count means one item sold."), option("people", "People served", "A person may buy more than one item."), option("unsure", "I’m not sure")]
+        meaning = choice("quantity_meaning", opts)
+        if not meaning:
+            return question("quantity_meaning", f'What does “{units_header}” count?', "Stock planning needs items sold. Customer visits alone cannot tell us how much stock was used.", opts)
+        if meaning != "items":
+            return {"config": cfg, "ready": False, "blocked": "We need the number of items or portions sold for each product. Go back to choose that heading, or upload a file with item quantities."}
     if "event_type" in cfg["mapping"] or "event_id" in cfg["mapping"]:
         cfg["layout"] = "transactions"
     dates = (

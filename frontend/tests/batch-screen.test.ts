@@ -14,11 +14,11 @@ test('actual app hides landing page during questions and preserves files on retu
   w.HTMLElement.prototype.scrollIntoView = () => {};
   let preparations=0;
   const originalFetch=globalThis.fetch;
-  globalThis.fetch=async (input) => {
+  globalThis.fetch=async (input, init) => {
     const url=String(input);
     if(url.endsWith('/session')) return Response.json({max_upload_bytes:2097152,max_rows:50000,max_products:100,ai_available:false});
     if(url.includes('/uploads?')) return Response.json({id:'file-1',duplicate:false,row_count:2});
-    if(url.endsWith('/batches/prepare')) {preparations++;return Response.json({ready:false,config:{},file_name:'sales.csv',row_count:2,question:{id:'complete_all',title:'Are these complete daily sales?',detail:'Confirm the dates.',options:[{value:'yes',label:'Yes, complete',hint:''}]}});}
+    if(url.endsWith('/batches/prepare')) {preparations++; if (JSON.parse(String(init?.body)).answers.complete_all) return Response.json({ready:false,config:{},question:{id:'same_store',title:'Are these from one store?',detail:'Confirm the store.',options:[{value:'yes',label:'Same store',hint:''}]}}); return Response.json({ready:false,config:{},file_name:'sales.csv',row_count:2,question:{id:'complete_all',title:'Are these complete daily sales?',detail:'Confirm the dates.',options:[{value:'yes',label:'Yes, complete',hint:''}]}});}
     if(url.includes('/uploads/')) return Response.json({deleted:true});
     throw Error('Unexpected request '+url);
   };
@@ -35,13 +35,20 @@ test('actual app hides landing page during questions and preserves files on retu
     const landing=[...w.document.querySelectorAll('h1')].find(h=>h.textContent==='Estimate future sales and plan your stock.')!;
     assert.ok(landing.closest('[hidden]'), 'Landing content must be hidden without CSS selectors');
     assert.equal(portal.closest('[hidden]'),null, 'Question must remain visible');
+    await click('Yes, complete');
+    assert.equal(preparations,1,'Selecting must not submit');
+    await click('Continue');
+    assert.match(portal.textContent!,/Are these from one store/);
+    await click('← Previous question');
+    assert.match(portal.textContent!,/Are these complete daily sales/);
+    assert.equal(portal.querySelector('[aria-pressed=true]')?.textContent,'Yes, complete');
     await click('← Back to files');
     assert.equal(portal.textContent,'');
     assert.equal(landing.closest('[hidden]'),null);
     assert.match(w.document.querySelector('.batch-files')!.textContent!,/sales.csv/);
     await click('Analyze sales');
     assert.ok(landing.closest('[hidden]'));
-    assert.equal(preparations,2);
+    assert.equal(preparations,3);
     await click('← Back to files');
     await click('Clear files');
     assert.equal(portal.textContent,'');

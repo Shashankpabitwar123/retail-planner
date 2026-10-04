@@ -57,6 +57,8 @@ const initial: Config = {
 };
 export default function App() {
   const [guidance, setGuidance] = useState<Guidance | null>(null);
+  const [guideSteps, setGuideSteps] = useState<{guidance: Guidance; answers: Record<string,string>; selected: string}[]>([]);
+  const [previousGuideAnswer, setPreviousGuideAnswer] = useState<string>();
   const [guideAnswers, setGuideAnswers] = useState<Record<string, string>>({});
   const automatic = useRef(true);
   const importGeneration = useRef(0);
@@ -406,6 +408,8 @@ export default function App() {
       automatic.current = true;
       missingAnswered.current = false;
       setMissingQuestion(false);
+      setGuideSteps([]);
+      setPreviousGuideAnswer(undefined);
       setGuideAnswers({});
       setGuidance(null);
       setReview(null);
@@ -435,6 +439,8 @@ export default function App() {
   }
   async function answerGuide(key: string, value: string) {
     if (!upload) return;
+    if (guidance) setGuideSteps([...guideSteps, {guidance, answers: {...guideAnswers}, selected: value}]);
+    setPreviousGuideAnswer(undefined);
     const answers = { ...guideAnswers, [key]: value };
     setGuideAnswers(answers);
     await run(() => inspectGuide(upload, answers));
@@ -549,7 +555,7 @@ export default function App() {
       if (contextRef.current === sourceContext) setAsking(false);
     }
   }
-  const batchPanel = batchFiles && <BatchUpload onFilesChange={setBatchFiles} onQuestionChange={setBatchQuestionOpen} embedded={phase === "upload"} files={batchFiles} maxBytes={serverPolicy.max_upload_bytes} onCancel={() => { setBatchFiles(null); mergeBase.current = null; }} onReady={(id, uploadId, count) => {
+  const batchPanel = batchFiles && <BatchUpload aiAvailable={serverPolicy.ai_available} onFilesChange={setBatchFiles} onQuestionChange={setBatchQuestionOpen} embedded={phase === "upload"} files={batchFiles} maxBytes={serverPolicy.max_upload_bytes} onCancel={() => { setBatchFiles(null); mergeBase.current = null; }} onReady={(id, uploadId, count) => {
           setBatchFiles(null);
           automatic.current = true;
           missingAnswered.current = false;
@@ -762,6 +768,8 @@ export default function App() {
             upload={upload}
             guidance={guidance}
             busy={busy}
+            previousAnswer={previousGuideAnswer}
+            onPrevious={guideSteps.length ? () => {const step = guideSteps.at(-1)!; setGuidance(step.guidance); setGuideAnswers(step.answers); setPreviousGuideAnswer(step.selected); setGuideSteps(guideSteps.slice(0,-1));} : undefined}
             onAnswer={answerGuide}
             onReset={reset}
             onDetails={() => {
