@@ -49,3 +49,31 @@ def test_date_auto_resolution_requires_one_interpretation():
     assert onboarding_ai.unambiguous_date(b'when\n2026-01-01\n2026-02-13\n','when')
     assert not onboarding_ai.unambiguous_date(b'when\n01/02/2026\n03/04/2026\n','when')
     assert not onboarding_ai.unambiguous_date(b'when\n2026-01-01\ninvalid\n','when')
+
+RESTAURANT = b'Date,Dish Name,Price,Dine In,Parcel,Total Customers,Total Sales\n2026-01-01,Soup,20,52,5,57,1140\n2026-01-02,Soup,12,10,12,22,264\n2026-01-03,Soup,12,23,0,23,276\n'
+
+
+def test_channel_suggestion_replaced_only_with_supported_total(monkeypatch):
+    async def fake(*args):
+        assert args[3]['quantity_checks']['sum_relationships']
+        return {'date':'Date','product_id':'Dish Name','units':'Dine In'}, {}
+    monkeypatch.setattr(onboarding_ai,'structured',fake)
+    mapping=asyncio.run(onboarding_ai.suggest(RESTAURANT,'test'))
+    assert mapping['units']=='Total Customers'
+    from backend.guidance import guide
+    prepared=guide(RESTAURANT,{})
+    result=onboarding_ai.apply_hint(prepared,mapping,RESTAURANT)
+    assert result['question']['suggested_value']=='Total Customers'
+    assert guide(RESTAURANT,{'column_units':'Total Customers'})['question']['id']=='quantity_meaning'
+
+
+def test_inconsistent_total_and_partial_channel_not_highlighted():
+    raw=RESTAURANT.replace(b'23,0,23,276',b'23,0,24,276')
+    evidence=onboarding_ai.quantity_evidence(raw)
+    assert onboarding_ai.validated_quantity('Dine In',evidence)==''
+    assert onboarding_ai.validated_quantity('Total Customers',evidence)==''
+
+
+def test_zero_coincidences_do_not_prove_total():
+    raw=b'Price,Dine In,Parcel,Total Customers,Total Sales\n0,0,0,0,0\n0,0,0,0,0\n'
+    assert onboarding_ai.quantity_evidence(raw)=={'sum_relationships':[], 'revenue_relationships':[]}
