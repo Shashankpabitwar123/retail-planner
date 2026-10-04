@@ -641,6 +641,31 @@ def create_app(db_path=None, worker=True):
             store.owned("jobs", config["compare_review_id"], owner(request))
         return {"id": store.enqueue(owner(request), uid, "normalize", config)}
 
+    @app.post("/api/jobs/{jid}/combine")
+    async def combine(jid: str, request: Request):
+        from .merge import combine_reports
+        user = owner(request)
+        payload = await body(request)
+        def report(identifier):
+            row = store.owned("jobs", identifier, user)
+            if row["kind"] == "forecast":
+                row = store.owned("jobs", json.loads(row["config"])["review_id"], user)
+            if row["kind"] != "normalize" or row["state"] != "completed":
+                raise HTTPException(422, "Finish checking both files before combining them.")
+            return json.loads(row["result"])
+        raw, config = combine_reports(report(jid), report(payload.get("new_review_id", "")))
+        if len(raw) > MAX_BYTES:
+            raise HTTPException(413, "The combined data is too large. Upload a complete file containing fewer products.")
+        inspect_csv(raw)
+        uid, now = uuid.uuid4().hex, time.time()
+        with store.db() as db:
+            if db.execute("SELECT COUNT(*) FROM uploads WHERE owner=?", (user,)).fetchone()[0] >= 20:
+                raise HTTPException(429, "Remove an old upload before adding more data.")
+            if db.execute("SELECT COALESCE(SUM(length(raw)),0) FROM uploads").fetchone()[0] + len(raw) > 200 * 1024 * 1024:
+                raise HTTPException(429, "Upload storage is full. Try again later.")
+            db.execute("INSERT INTO uploads VALUES(?,?,?,?,?,?,?)", (uid, user, "Combined sales.csv", hashlib.sha256(raw).hexdigest(), raw, now, now + RETENTION))
+        return {"id": store.enqueue(user, uid, "normalize", config), "upload_id": uid}
+
     @app.post("/api/jobs/{jid}/forecast")
     async def create_forecast(jid: str, request: Request):
         user = owner(request)

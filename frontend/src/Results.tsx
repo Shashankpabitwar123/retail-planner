@@ -20,6 +20,7 @@ export default function Results({
   onExplain,
   onBackup,
   onSelected,
+  onAddData,
   requestedTab,
 }: {
   result: Result;
@@ -29,6 +30,7 @@ export default function Results({
   onExplain: (p: Plan) => void;
   onBackup: () => void;
   onSelected: (id: string) => void;
+  onAddData: () => void;
   requestedTab?: { name: string; revision: number };
 }) {
   const [tab, setTab] = useState("Forecasts"),
@@ -115,6 +117,7 @@ export default function Results({
           </Button>
         </div>
       </div>
+      <div className="data-update-action"><Button variant="secondary" onClick={onAddData}>Add or update sales data</Button><p className="muted">Add missing days or upload a more complete sales file.</p></div>
       <section
         id="result-panel"
         role="tabpanel"
@@ -255,7 +258,7 @@ export default function Results({
                     onExplain={onExplain}
                   />
                 ) : (
-                  <Forecast product={product} onRestock={() => setTab("Inventory")} />
+                  <Forecast product={product} onAddData={onAddData} onRestock={() => setTab("Inventory")} />
                 ))}
             </div>
           </div>
@@ -264,7 +267,7 @@ export default function Results({
     </>
   );
 }
-function Forecast({ product: p, onRestock }: { product: Product; onRestock: () => void }) {
+function Forecast({ product: p, onRestock, onAddData }: { product: Product; onRestock: () => void; onAddData: () => void }) {
   const last = p.evaluation?.windows.at(-1);
   const history = p.history || [],
     future = p.forecast || [];
@@ -315,6 +318,9 @@ function Forecast({ product: p, onRestock }: { product: Product; onRestock: () =
             </div>
           </div>
           <div className="forecast-confidence">
+            <span className="badge">{!last ? "Not yet tested" : p.inventory_eligible ? "Passed our checks" : "Use cautiously"}</span>
+            {!last && <p>Based on {p.usable_days} complete days. {p.usable_days < 84 ? `Add at least ${84 - p.usable_days} more complete days so we can test this estimate.` : "There is not enough usable history for a complete test."} Passing is not guaranteed.</p>}
+            {!last && <Button variant="secondary" onClick={onAddData}>Add sales data</Button>}
             <p>{last ? `In a past test, daily predictions differed from actual sales by about ${num(last.model.mae)} units on average.` : "This estimate has not been tested against enough past sales yet."} Future sales may differ.</p>
             {p.inventory_eligible ? <Button onClick={onRestock}>Check how much to restock</Button> : <p>Stock recommendations aren’t available for this product yet. Review the forecast details before using this estimate.</p>}
           </div>

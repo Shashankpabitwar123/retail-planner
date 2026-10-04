@@ -102,6 +102,9 @@ export default function App() {
     [answer, setAnswer] = useState(""),
     [citations, setCitations] = useState<string[]>([]),
     [asking, setAsking] = useState(false);
+  const [addingData, setAddingData] = useState(false);
+  const mergeBase = useRef<string | null>(null);
+  const extraFileInput = useRef<HTMLInputElement>(null);
   const fileInput = useRef<HTMLInputElement>(null),
     backupInput = useRef<HTMLInputElement>(null),
     main = useRef<HTMLElement>(null);
@@ -240,6 +243,25 @@ export default function App() {
         if (next.state === "completed" && next.result) {
           if (completed.current === next.id) return;
           completed.current = next.id;
+          if (next.kind === "normalize" && mergeBase.current) {
+            const base = mergeBase.current;
+            try {
+              const merged = await post<{id: string; upload_id: string}>(`/jobs/${base}/combine`, {new_review_id: next.id});
+              if (stopped) return;
+              mergeBase.current = null;
+              setUpload(await api<Upload>(`/uploads/${merged.upload_id}`));
+              setToast("Sales combined. Checking the updated history now.");
+              start(merged.id);
+            } catch (e) {
+              if (!stopped) {
+                mergeBase.current = null;
+                setError((e as Error).message);
+                setAddingData(true);
+                setPhase(snapshot ? "results" : "review");
+              }
+            }
+            return;
+          }
           if (next.kind === "normalize") {
             setReviewId(next.id);
             setReview(next.result as Quality);
@@ -442,6 +464,8 @@ export default function App() {
     });
   }
   function reset() {
+    mergeBase.current = null;
+    setAddingData(false);
     importGeneration.current++;
     setJobId(null);
     localStorage.removeItem("retail-active-job");
@@ -545,6 +569,17 @@ export default function App() {
         </nav>
       </header>
       <main id="main" tabIndex={-1} ref={main} className="main live-main">
+        <input ref={extraFileInput} type="file" accept=".csv,text/csv" hidden onChange={e => { const f = e.target.files?.[0]; if (f) { setAddingData(false); loadFile(f); } e.target.value = ""; }} />
+        {addingData && <section className="panel">
+          <h2>Update your sales data</h2>
+          <p>Add complete daily sales for the same store and matching product IDs. Matching days count once. Different totals for the same day need a corrected complete file.</p>
+          <div className="inline-actions">
+            <Button disabled={!(serverId || reviewId)} onClick={() => { mergeBase.current = serverId || reviewId; extraFileInput.current?.click(); }}>Add more sales</Button>
+            <Button variant="secondary" onClick={() => { mergeBase.current = null; extraFileInput.current?.click(); }}>Replace with complete file</Button>
+            <Button variant="text" onClick={() => { mergeBase.current = null; setAddingData(false); }}>Cancel</Button>
+          </div>
+          {!(serverId || reviewId) && <p>Your original upload is no longer available here. Upload one complete file to continue.</p>}
+        </section>}
         {error && (
           <div role="alert">
             <Notice tone="warning">
@@ -998,6 +1033,7 @@ export default function App() {
             </div>
           </>
         )}
+        {phase === "review" && !missingQuestion && <Button variant="secondary" onClick={() => setAddingData(true)}>Add or update sales data</Button>}
         {phase === "results" && snapshot && (
           <Results
             key={snapshot.id}
@@ -1039,6 +1075,7 @@ export default function App() {
               )
             }
             onSelected={setSelected}
+            onAddData={() => { setAddingData(true); main.current?.scrollIntoView({block: "start"}); }}
           />
         )}
         {phase === "summary" && snapshot && (
