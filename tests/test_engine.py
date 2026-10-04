@@ -324,4 +324,4 @@ def test_bad_holdout_withholds_inventory_without_reselecting():
         p["series"][-28:] = [777] * 28
     output = forecast(r)
     assert all(not p["inventory_eligible"] for p in output["products"])
-    assert all("withheld" in p["forecast_warning"] for p in output["products"])
+    assert all("past test error" in p["forecast_warning"] for p in output["products"])

@@ -116,6 +116,15 @@ def guide(raw, answers, timezone="Etc/UTC"):
                     opts,
                 )
             cfg["mapping"][field] = answer
+    if key(cfg["mapping"].get("units", "")) in {"totalsales", "revenue", "salesamount", "totalrevenue", "price", "amount"}:
+        options = [option(h, h) for h in headers if h not in cfg["mapping"].values() and key(h) not in {"totalsales", "revenue", "salesamount", "totalrevenue", "price", "amount"}]
+        options.append(option("__missing__", "I don’t have item quantities"))
+        selected = choice("quantity_column", options)
+        if selected == "__missing__":
+            return {"config": cfg, "ready": False, "blocked": "Stock planning needs the number of items sold, not sales revenue or customer visits. Export item quantities and upload again."}
+        if not selected:
+            return question("quantity_column", "Which column counts items sold?", "The selected column looks like money. Choose item quantities, not revenue. Use customer counts only if each count means one item sold.", options)
+        cfg["mapping"]["units"] = selected
     if "event_type" in cfg["mapping"] or "event_id" in cfg["mapping"]:
         cfg["layout"] = "transactions"
     dates = (

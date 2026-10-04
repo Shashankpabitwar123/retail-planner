@@ -755,11 +755,17 @@ def forecast(report, progress=lambda *_: None):
             and last["model"]["mae"] <= last["baseline"]["mae"] + 1e-9
         )
         item["inventory_eligible"] = acceptable
-        item["forecast_warning"] = (
-            None
-            if acceptable
-            else "Inventory recommendation withheld: historical testing is missing, undefined, above the provisional 50% WAPE error limit, or worse than the weekly baseline. This limit is an application safeguard, not a calibrated reliability threshold."
-        )
+        reasons = []
+        if not last:
+            reasons.append(f"We need more sales history to test this forecast: {n} complete days are available; at least 84 are needed (56 to learn and 28 to test). Add at least {max(0, 84-n)} more complete days. Passing that test is still required before stock advice is available.")
+        elif tested_wape is None:
+            reasons.append("The test period has no recorded sales, so we cannot measure the relative forecast error. Check that these are real zero-sales days, not missing records.")
+        else:
+            if tested_wape > 0.5:
+                reasons.append(f"The past test error was {tested_wape * 100:.1f}% of recorded sales, above this app’s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.")
+            if last["model"]["mae"] > last["baseline"]["mae"] + 1e-9:
+                reasons.append("In the past test, this forecast performed worse than repeating the previous week’s sales. Review the sales estimate manually before ordering.")
+        item["forecast_warning"] = "Restock advice is unavailable. " + " ".join(reasons) if reasons else None
         output.append(item)
     return {
         "engine_revision": "1.1.0",

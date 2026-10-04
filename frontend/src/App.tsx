@@ -116,6 +116,14 @@ export default function App() {
   >([]);
   const [ackChanges, setAckChanges] = useState(false);
   const activePid = selected || review?.products[0]?.product_id || "";
+  const chatProduct = snapshot?.result.products.find(p => p.product_id === activeProductId()) || review?.products.find(p => p.product_id === activeProductId());
+  function activeProductId() { return selected || review?.products[0]?.product_id || ""; }
+  const warningQuestions = [
+    ...(chatProduct && phase === "results" && !chatProduct.forecast?.length ? ["Why is the forecast unavailable for this product?"] : []),
+    ...(chatProduct && phase === "results" && !chatProduct.inventory_eligible ? ["Why can’t I get a restock recommendation?", "What data do I need to add or fix?"] : []),
+    ...(chatProduct?.missing_days ? ["Which sales days are missing?"] : []),
+    ...((review?.issues.length || snapshot?.result.quality.issues.length) ? ["Explain the warnings for this product."] : []),
+  ];
   const chatEnd = useRef<HTMLDivElement>(null);
   const contextRef = useRef("");
   const liveContext =
@@ -1144,7 +1152,7 @@ export default function App() {
                   <details className="quiet-details chat-privacy"><summary>What is shared?</summary><p>Your raw CSV rows and customer columns are not sent. Recent messages are stored for up to 7 days. AI can make mistakes; check the linked results.</p></details>
                   <p className="chat-context">Talking about <strong>{snapshot?.result.products.find(p => p.product_id === activePid)?.name || review?.products.find(p => p.product_id === activePid)?.name || activePid || "your sales"}</strong></p>
                   {conversation.length === 0 && <div className="button-stack">
-                    {(previewContext ? ["Explain this restock amount simply.", "Could I run out before delivery?"] : phase === "review" ? ["What needs fixing in my data?", "What should I upload next?"] : ["Explain this product’s forecast simply.", "Can I trust this estimate?", "What should I do next?"]).map((q) => (
+                    {([...warningQuestions, ...(previewContext ? ["Explain this restock amount simply.", "Could I run out before delivery?"] : phase === "review" ? ["What needs fixing in my data?", "What should I upload next?"] : ["Explain this product’s forecast simply.", "Can I trust this estimate?", "What should I do next?"])]).slice(0, 3).map((q) => (
                       <Button
                         key={q}
                         variant="secondary"
@@ -1194,9 +1202,9 @@ export default function App() {
                     <div className="chat-followups" aria-label="Suggested follow-up questions">
                       <small>You could also ask</small>
                       <div>
-                        {(previewContext
+                        {([...warningQuestions, ...(previewContext
                           ? ["Could I run out before delivery?", "Explain this restock amount simply.", "What assumptions does this plan use?", "What should I check before ordering?"]
-                          : ["What should I do next?", "Can I trust this estimate?", "What could change these sales?", "What data would improve this forecast?", "Explain this product’s forecast simply.", "What should I check before restocking?"]
+                          : ["What should I do next?", "Can I trust this estimate?", "What could change these sales?", "What data would improve this forecast?", "Explain this product’s forecast simply.", "What should I check before restocking?"]) ]
                         ).filter(q => !conversation.some(m => m.question.toLowerCase().trim() === q.toLowerCase().trim())).slice(0, 3).map(q => (
                           <button type="button" key={q} disabled={!consent} onClick={() => ask(q)}>{q}</button>
                         ))}

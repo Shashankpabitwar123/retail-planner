@@ -99,3 +99,11 @@ def test_bad_answers_and_owner_isolation(tmp_path):
     other = TestClient(c.app)
     other.get("/api/session")
     assert other.post(route, headers=H, json={"answers": {}}).status_code == 404
+
+
+def test_money_column_requires_quantity_choice():
+    raw = b"Date,Dish Name,Total Customers,Total Sales\n10/1/2023,eggs,5,100\n"
+    answers = {"column_product_id": "Dish Name", "column_units": "Total Sales"}
+    g = guide(raw, answers)
+    assert g["question"]["id"] == "quantity_column"
+    assert guide(raw, {**answers, "quantity_column": "__missing__"})["blocked"]
