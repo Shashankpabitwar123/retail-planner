@@ -105,10 +105,14 @@ export default function App() {
   >([]);
   const [ackChanges, setAckChanges] = useState(false);
   const activePid = selected || review?.products[0]?.product_id || "";
+  const chatEnd = useRef<HTMLDivElement>(null);
   const contextRef = useRef("");
   const liveContext =
     phase === "results" ? serverId : phase === "review" ? reviewId : null;
   contextRef.current = String(liveContext) + ":" + activePid;
+  useEffect(() => {
+    if (drawer === "help") chatEnd.current?.scrollIntoView({ block: "nearest" });
+  }, [conversation, answer, asking]);
   function evidenceLink(source: string, sourceQuestion = question) {
     if (source === "rows") {
       const dates = [
@@ -461,6 +465,7 @@ export default function App() {
     );
   }
   async function ask(q: string) {
+    if (!consent || asking || !liveContext || !q.trim()) return;
     const sourceContext = contextRef.current;
     setQuestion(q);
     setAsking(true);
@@ -484,6 +489,7 @@ export default function App() {
       );
       if (contextRef.current !== sourceContext) return;
       setConversation(messages);
+      setQuestion("");
       if (messages.at(-1)?.question === q) setAnswer("");
     } catch (e) {
       if (contextRef.current === sourceContext) setAnswer((e as Error).message);
@@ -516,14 +522,6 @@ export default function App() {
           >
             <Clock3 size={17} />
             History
-          </button>
-          <button
-            id="assistant-trigger"
-            className="nav-button"
-            onClick={() => setDrawer("help")}
-          >
-            <MessageSquare size={17} />
-            Ask about your data
           </button>
         </nav>
       </header>
@@ -1071,6 +1069,16 @@ export default function App() {
           </button>
         </div>
       )}
+      <button
+        id="assistant-trigger"
+        className="ask-fab"
+        aria-label="Ask about your data"
+        aria-haspopup="dialog"
+        onClick={() => setDrawer("help")}
+      >
+        <MessageSquare size={24} aria-hidden="true" />
+        <span>Ask</span>
+      </button>
       {drawer && (
         <Drawer
           title={drawer === "help" ? "Ask about your data" : "Recent analyses"}
@@ -1078,10 +1086,7 @@ export default function App() {
         >
           {drawer === "help" ? (
             <>
-              <p>
-                Ask about the selected product, data checks or forecasting
-                method. Answers use a small summary of this analysis.
-              </p>
+              <p>What would you like to understand? Choose a question below or ask your own.</p>
               {phase === "processing" && (
                 <Notice>
                   Current step:{" "}
@@ -1100,21 +1105,20 @@ export default function App() {
                 </Notice>
               ) : !liveContext ? (
                 <Notice>
-                  Finish a data check or open a live result to use the
-                  assistant. Restored backups remain readable without AI.
+                  {phase === "processing" ? "I’ll be ready when your results are finished." : phase === "results" || phase === "summary" ? "Upload this sales file again to ask questions about your saved results." : "Upload your sales file first. Once it’s checked, I can help explain your data and results."}
                 </Notice>
               ) : (
                 <>
                   {previewContext && (
                     <Notice>
-                      Attached un-applied preview:{" "}
+                      Discussing this restock estimate:{" "}
                       {num(previewContext.suggested_order_units)} units,
                       arriving {previewContext.arrival_date}.{" "}
                       <button
                         className="text-link"
                         onClick={() => setPreviewContext(null)}
                       >
-                        Remove preview context
+                        Back to product questions
                       </button>
                     </Notice>
                   )}
@@ -1124,19 +1128,12 @@ export default function App() {
                       checked={consent}
                       onChange={(e) => setConsent(e.target.checked)}
                     />
-                    Send my question and the selected product’s summary to
-                    OpenAI. Raw CSV rows and customer columns are excluded.
+                    Allow AI help: share my question and this product’s summary with OpenAI.
                   </label>
-                  <p className="muted">
-                    Recent messages stay with this product and analysis for up
-                    to 7 days. Check the linked data before making a decision.
-                  </p>
-                  <div className="button-stack">
-                    {[
-                      "What data should I improve?",
-                      "How was this forecast tested?",
-                      "What does the error tell me?",
-                    ].map((q) => (
+                  <details className="quiet-details chat-privacy"><summary>What is shared?</summary><p>Your raw CSV rows and customer columns are not sent. Recent messages are stored for up to 7 days. AI can make mistakes; check the linked results.</p></details>
+                  <p className="chat-context">Talking about <strong>{snapshot?.result.products.find(p => p.product_id === activePid)?.name || review?.products.find(p => p.product_id === activePid)?.name || activePid || "your sales"}</strong></p>
+                  {conversation.length === 0 && <div className="button-stack">
+                    {(previewContext ? ["Explain this restock amount simply.", "Could I run out before delivery?"] : phase === "review" ? ["What needs fixing in my data?", "What should I upload next?"] : ["Explain this product’s forecast simply.", "Can I trust this estimate?", "What should I do next?"]).map((q) => (
                       <Button
                         key={q}
                         variant="secondary"
@@ -1146,13 +1143,10 @@ export default function App() {
                         {q}
                       </Button>
                     ))}
-                  </div>
-                  <p className="muted">
-                    Analysis {liveContext?.slice(0, 8)} · Product {activePid}
-                  </p>
+                  </div>}
                   {conversation.map((m, i) => (
                     <section className="answer" key={m.created + ":" + i}>
-                      <strong>You: {m.question}</strong>
+                      <p className="chat-question">{m.question}</p>
                       <p>{m.answer}</p>
                       <div className="inline-actions">
                         {m.citations.map((c) => (
@@ -1161,31 +1155,12 @@ export default function App() {
                             className="text-link"
                             onClick={() => evidenceLink(c, m.question)}
                           >
-                            View {c}
+                            {c === "quality" ? "See data check" : c === "inventory" || c === "scenario" ? "See stock plan" : c === "rows" ? "See sales records" : "See forecast"}
                           </button>
                         ))}
                       </div>
                     </section>
                   ))}
-                  <form
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      ask(question);
-                    }}
-                  >
-                    <label className="field">
-                      Your question
-                      <textarea
-                        maxLength={1500}
-                        value={question}
-                        onChange={(e) => setQuestion(e.target.value)}
-                        rows={4}
-                      />
-                    </label>
-                    <Button disabled={!consent || asking || !question.trim()}>
-                      {asking ? "Reading the analysis…" : "Ask assistant"}
-                    </Button>
-                  </form>
                   {answer && (
                     <div className="answer" role="status">
                       <p>{answer}</p>
@@ -1197,13 +1172,35 @@ export default function App() {
                               className="text-link"
                               onClick={() => evidenceLink(c)}
                             >
-                              View {c}{" "}
+                              {c === "quality" ? "See data check" : c === "inventory" || c === "scenario" ? "See stock plan" : c === "rows" ? "See sales records" : "See forecast"}{" "}
                             </button>
                           ))}
                         </p>
                       )}
                     </div>
                   )}
+                  {asking && <p role="status" className="chat-thinking">Looking at your data…</p>}
+                  <div ref={chatEnd} />
+                  <form className="ask-composer"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      ask(question);
+                    }}
+                  >
+                    <label className="field">
+                      Ask a question
+                      <textarea
+                        maxLength={1500}
+                        value={question}
+                        onChange={(e) => setQuestion(e.target.value)}
+                        rows={2}
+                        placeholder="e.g. How much stock will I need?"
+                      />
+                    </label>
+                    <Button disabled={!consent || asking || !question.trim()}>
+                      {asking ? "Thinking…" : "Send"}
+                    </Button>
+                  </form>
                 </>
               )}
             </>

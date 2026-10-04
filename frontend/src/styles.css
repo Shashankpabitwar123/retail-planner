@@ -2173,3 +2173,16 @@ details summary {
 .forecast-detail .quiet-details { margin: 12px 0; }
 .quality-summary { max-width: 960px; }
 .quality-summary > h2 { margin-bottom: 8px; }
+
+.ask-fab { position: fixed; right: 24px; bottom: calc(24px + env(safe-area-inset-bottom)); z-index: 40; width: 72px; height: 72px; border-radius: 50%; border: 0; background: #27624d; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 18px #173c4933; }
+.ask-fab:hover { background: #1d4d3b; }
+.ask-fab:focus-visible { outline: 3px solid #27624d; outline-offset: 4px; }
+.app > footer { padding-bottom: 110px; }
+.chat-context { background: var(--selected); padding: 10px 12px; border-radius: 8px; font-size: 14px; }
+.chat-question { font-weight: 600; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+.chat-privacy { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+.ask-composer { position: sticky; bottom: -24px; background: white; padding: 16px 0 24px; border-top: 1px solid var(--border); }
+.ask-composer textarea { resize: vertical; min-height: 72px; max-height: 160px; }
+.ask-composer button { width: 100%; }
+.chat-thinking { color: var(--muted); font-size: 14px; }
+@media (max-width: 600px) { .ask-fab { right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); width: 64px; height: 64px; } .live-drawer { width: 100vw; } .ask-composer { padding-bottom: calc(24px + env(safe-area-inset-bottom)); } }
