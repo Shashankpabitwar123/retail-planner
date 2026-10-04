@@ -297,14 +297,17 @@ function Forecast({ product: p, onRestock, onAddData }: { product: Product; onRe
       .join(" ");
   return (
     <>
-      <div className="detail-heading">
+      <div className="detail-heading forecast-summary-heading">
         <div>
           <h2>{p.name}</h2>
           <p className="muted">
             Product ID: {p.product_id}
           </p>
         </div>
-
+        {future.length > 0 && <div className="restock-shortcut">
+          <Button onClick={onRestock}>Check how much to restock</Button>
+          <small>{p.inventory_eligible ? "Add stock and delivery details to make a plan." : "See what’s needed before planning stock."}</small>
+        </div>}
       </div>
       {!future.length ? (
         <Notice tone="warning">
@@ -317,6 +320,7 @@ function Forecast({ product: p, onRestock, onAddData }: { product: Product; onRe
         </Notice>
       ) : (
         <>
+          <div className="forecast-summary-card">
           <div className="metric-strip">
             <div>
               <small>Estimated sales · these 28 days</small>
@@ -333,6 +337,7 @@ function Forecast({ product: p, onRestock, onAddData }: { product: Product; onRe
             {!last && <Button variant="secondary" onClick={onAddData}>Add sales data</Button>}
             <p>{last ? `In a past test, daily predictions differed from actual sales by about ${num(last.model.mae)} units on average.` : "This estimate has not been tested against enough past sales yet."} Future sales may differ.</p>
             {!p.inventory_eligible && <p>Stock recommendations aren’t available for this product yet.</p>}
+          </div>
           </div>
           {p.forecast_warning && <Notice tone="warning">{p.forecast_warning}</Notice>}
           <section className="daily-preview">
@@ -412,7 +417,7 @@ function Forecast({ product: p, onRestock, onAddData }: { product: Product; onRe
             {[...history, ...future].map((d, i) => d.units == null ? null : <circle key={i} cx={40 + i * 660 / Math.max(1, values.length - 1)} cy={215 - d.units / max * 170} r="5" fill={i < history.length ? "#98a39b" : "#27624d"} tabIndex={0} role="button" onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setActivePoint(`${friendlyDate(d.date)} · ${num(d.units)} ${i < history.length ? "sold" : "estimated"} units`); } }} aria-label={`${friendlyDate(d.date)}: ${num(d.units)} ${i < history.length ? "sold" : "estimated"} units`} onMouseEnter={() => setActivePoint(`${friendlyDate(d.date)} · ${num(d.units)} ${i < history.length ? "sold" : "estimated"} units`)} onFocus={() => setActivePoint(`${friendlyDate(d.date)} · ${num(d.units)} ${i < history.length ? "sold" : "estimated"} units`)} onClick={() => setActivePoint(`${friendlyDate(d.date)} · ${num(d.units)} ${i < history.length ? "sold" : "estimated"} units`)} />)}
           </svg>
           </section>
-          {p.inventory_eligible && <div className="forecast-next"><Button onClick={onRestock}>Check how much to restock</Button></div>}
+
           <details className="quiet-details">
             <summary>How we checked this</summary>
             <p>

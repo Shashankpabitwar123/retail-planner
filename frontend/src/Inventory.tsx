@@ -139,8 +139,8 @@ export default function Inventory({
     );
   }
   return (
-    <section>
-      <h2>Plan stock for {product.name}</h2>
+    <section className="restock-page">
+      <header className="restock-heading"><h2>Plan stock for {product.name}</h2><p className="muted">Enter your stock and delivery time to see how much to order.</p></header>
       {saved && (
         <Notice tone="success">
           Saved plan: {num(saved.suggested_order_units)} units, arriving{" "}
@@ -163,16 +163,15 @@ export default function Inventory({
         </Notice>
       ) : (
         <>
-          {result.quality.config.synthetic && <Notice>Example stock values are filled in. Change them if you like, confirm the details, then click Calculate restock amount. No orders are placed.</Notice>}
-          <Notice>
-            Add your stock and delivery time to see how much you may need. This
-            creates a plan; it won’t place an order.
-          </Notice>
+          {result.quality.config.synthetic && <p className="sample-stock-note">Example values are filled in. You can change them to try a different plan.</p>}
+          <div className="restock-input-card">
+          <h3>Your stock details</h3>
+          <p className="stock-date-note">This plan starts on <strong>{friendlyDate(result.forecast_start)}</strong>. Enter the stock available on that date.</p>
           <div className="inventory-grid">
             {Object.entries({
-              stock: "How many units are in stock?",
+              stock: "Units in stock",
               snapshot_date: "Stock count date",
-              lead_days: "How many days does delivery take?",
+              lead_days: "Delivery time (days)",
             }).map(([k, label]) => (
               <label className="field" key={k}>
                 {label}
@@ -190,13 +189,9 @@ export default function Inventory({
               </label>
             ))}
           </div>
-          <p className="muted">
-            Plan for {values.review_days} days of sales, plus a{" "}
-            {values.buffer_days}-day buffer. Orders in packs of{" "}
-            {values.pack_size}; minimum {values.minimum_order} units.
-          </p>
+          <p className="stock-date-note">Covers delivery time + {values.review_days} days of sales, with {values.buffer_days} extra days as a buffer.</p>
           <details className="quiet-details">
-            <summary>Adjust the plan</summary>
+            <summary>More planning options</summary>
             <div className="inventory-grid">
               {Object.entries({
                 review_days: "Days to cover",
@@ -328,30 +323,26 @@ export default function Inventory({
                 setPreview(null);
               }}
             />
-            This product is still sold. The stock count and any incoming orders
-            above are correct.
+            I still sell this product, and these stock details are correct.
           </label>
           {error && <Notice tone="warning">{error}</Notice>}
-          <Button onClick={calculate} disabled={!confirmed || busy}>
+          <div className="restock-calculate"><Button onClick={calculate} disabled={!confirmed || busy}>
             {busy ? "Calculating…" : "Calculate restock amount"}
-          </Button>
+          </Button><small>This creates a recommendation. It won’t place an order.</small></div>
+          </div>
           {preview && (
             <section className="panel scenario">
               <p className="eyebrow">YOUR RESTOCK ESTIMATE</p>
               <p className="muted">Plan date: {friendlyDate(preview.planning_date)}. This is a recommendation; no order is placed.</p>
               <h2>{preview.suggested_order_units > 0 ? `${num(preview.suggested_order_units)} units to restock` : "No extra stock needed for this plan"}</h2>
-              <p>
-                Expected delivery: {friendlyDate(preview.arrival_date)}. Sales you may miss before delivery:{" "}
-                <strong>{num(preview.pre_arrival_unmet_units)} units</strong>
-                {preview.first_shortfall_date
-                  ? `, starting ${friendlyDate(preview.first_shortfall_date)}`
-                  : ""}
-                .
-              </p>
+              <p>Expected delivery: <strong>{friendlyDate(preview.arrival_date)}</strong></p>
+              {preview.pre_arrival_unmet_units > 0 && <Notice tone="warning">You may run short before delivery: about {num(preview.pre_arrival_unmet_units)} units{preview.first_shortfall_date ? `, starting ${friendlyDate(preview.first_shortfall_date)}` : ""}. Consider an earlier delivery.</Notice>}
               <p className="muted">{preview.notice}</p>
               <details className="quiet-details"><summary>How this amount was calculated</summary><p>Includes {num(preview.buffer_units)} units of buffer stock. Estimated stock remaining at the end of the plan: {num(preview.end_protection_stock_with_order)} units.</p></details>
               <StockProjection plan={preview} />
-              <Button variant="secondary" onClick={() => onExplain(preview)}>
+              <div className="restock-result-actions">
+              <Button variant="secondary" onClick={() => exportPlan(preview)}>Download plan</Button>
+              <Button variant="text" onClick={() => onExplain(preview)}>
                 Ask about this plan
               </Button>
               <Button
@@ -367,6 +358,7 @@ export default function Inventory({
               >
                 Save this plan
               </Button>
+              </div>
             </section>
           )}
         </>
