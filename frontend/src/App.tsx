@@ -583,6 +583,7 @@ export default function App() {
         </nav>
       </header>
       <main id="main" tabIndex={-1} ref={main} className="main live-main">
+        <div id="batch-question-root" />
         <input ref={extraFileInput} type="file" multiple accept=".csv,text/csv" hidden onChange={e => { const files = Array.from(e.target.files || []); if (files.length) { setAddingData(false); setBatchFiles(files); } e.target.value = ""; }} />
         {phase !== "upload" && batchPanel}
         {addingData && <section className="panel">

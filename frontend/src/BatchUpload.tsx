@@ -1,4 +1,5 @@
 import {useEffect, useRef, useState} from "react";
+import {createPortal} from "react-dom";
 import {api, post, type Upload} from "./data";
 import GuidedImport, {type Guidance} from "./GuidedImport";
 import {Button, Notice} from "./UI";
@@ -10,6 +11,9 @@ export default function BatchUpload({files, maxBytes, onCancel, onReady, embedde
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [reply, setReply] = useState<Reply | null>(null);
+  useEffect(() => {
+    if (reply && !reply.ready) document.getElementById("batch-question-root")?.scrollIntoView({block:"start"});
+  }, [reply?.question?.id, reply?.blocked]);
   const [answers, setAnswers] = useState<Record<string,string>>({});
   const uploaded = useRef(new Map<File, Upload>());
   const addInput = useRef<HTMLInputElement>(null);
@@ -67,7 +71,17 @@ export default function BatchUpload({files, maxBytes, onCancel, onReady, embedde
     <ul className="batch-files">{items.map((f,i) => <li key={i}><span>{f.name}</span><button type="button" className="text-link" disabled={busy} onClick={() => {setReplaceIndex(i); replaceInput.current?.click();}}>Replace</button><button type="button" className="text-link" disabled={busy} onClick={() => change(items.filter((_,j)=>i!==j))}>Remove</button></li>)}</ul>
     <input ref={replaceInput} type="file" accept=".csv,text/csv" hidden onChange={e => {const f=e.target.files?.[0]; if(f && replaceIndex !== null) change(items.map((v,i)=>i===replaceIndex?f:v)); e.target.value="";}} />
     {error && <Notice tone="warning">{error}</Notice>}
-    {reply && !reply.ready && <><p><strong>{reply.file_name}</strong></p><GuidedImport upload={{row_count:reply.row_count || 0} as Upload} guidance={reply} busy={busy} onAnswer={(key,value)=>{const next={...answers,[key]:value};setAnswers(next);analyze(next);}} onReset={()=>{setReply(null);setAnswers({});}} onDetails={()=>{setReply(null);setAnswers({});}} /></>}
+    {reply && !reply.ready && document.getElementById("batch-question-root") && createPortal(
+      <section className="batch-question-page">
+        <Button variant="text" disabled={busy} onClick={() => {setReply(null); setError("");}}>← Back to files</Button>
+        <p className="muted">{reply.file_name}</p>
+        {error && <Notice tone="warning">{error}</Notice>}
+        <GuidedImport upload={{row_count:reply.row_count || 0} as Upload} guidance={reply} busy={busy}
+          onAnswer={(key,value)=>{const next={...answers,[key]:value};setAnswers(next);analyze(next);}}
+          onReset={()=>{setReply(null);setAnswers({});setError("");}}
+          onDetails={()=>{setReply(null);setAnswers({});setError("");}} />
+      </section>, document.getElementById("batch-question-root")!
+    )}
     {(!reply || error) && <Button disabled={busy || !items.length} onClick={()=>analyze()}>{busy ? "Reading your files…" : "Analyze sales"}</Button>}
     <Button variant="text" disabled={busy} onClick={() => {items.forEach(cleanup); onCancel();}}>{embedded ? "Clear files" : "Cancel"}</Button>
   </section>;
