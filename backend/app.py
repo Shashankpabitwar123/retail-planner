@@ -641,6 +641,9 @@ def create_app(db_path=None, worker=True):
             store.owned("jobs", config["compare_review_id"], owner(request))
         return {"id": store.enqueue(owner(request), uid, "normalize", config)}
 
+    onboarding_cache = {}
+    onboarding_pending = {}
+
     @app.post("/api/batches/prepare")
     async def prepare_files(request: Request):
         import asyncio
@@ -661,7 +664,41 @@ def create_app(db_path=None, worker=True):
             raise HTTPException(413, f"Choose files totaling no more than {MAX_BYTES // 1024 // 1024} MB.")
         prepared = await asyncio.to_thread(prepare_batch, sources, answers)
         if not prepared['ready']:
-            return prepared
+            question = prepared.get('question') or {}
+            index = prepared.get('file_index')
+            key = os.environ.get('OPENAI_API_KEY')
+            if payload.get('use_ai') is True and key and isinstance(index, int) and 'column_' in question.get('id', ''):
+                from .onboarding_ai import suggest, apply_hint, unambiguous_date
+                source = sources[index]
+                cache_key = (user, source['digest'])
+                async def obtain():
+                    try:
+                        reserve_ai(user)
+                        return await suggest(source['raw'], key)
+                    except Exception:
+                        return {}  # AI failure must never prevent the ordinary questions.
+                for stale in [k for k, v in onboarding_cache.items() if v[0] < time.monotonic()]:
+                    onboarding_cache.pop(stale, None)
+                if cache_key not in onboarding_cache:
+                    if cache_key not in onboarding_pending and len(onboarding_pending) < 8:
+                        onboarding_pending[cache_key] = asyncio.create_task(obtain())
+                    task = onboarding_pending.get(cache_key)
+                    if task:
+                        mapping = await asyncio.shield(task)
+                        onboarding_pending.pop(cache_key, None)
+                        if len(onboarding_cache) >= 128:
+                            onboarding_cache.pop(next(iter(onboarding_cache)))
+                        onboarding_cache[cache_key] = (time.monotonic() + 900, mapping)
+                mapping = onboarding_cache.get(cache_key, (0, {}))[1]
+                try:
+                    prepared = apply_hint(prepared, mapping, source['raw'])
+                    q = prepared.get('question') or {}
+                    if q.get('id', '').endswith('column_date') and q.get('suggested_value') and unambiguous_date(source['raw'], q['suggested_value']):
+                        prepared = await asyncio.to_thread(prepare_batch, sources, {**answers, q['id']: q['suggested_value']})
+                except Exception:
+                    pass
+            if not prepared['ready']:
+                return prepared
         raw, cfg = prepared.pop('raw'), prepared['config']
         if len(raw) > MAX_BYTES:
             raise HTTPException(413, "The combined sales file is too large. Choose fewer products across these files.")

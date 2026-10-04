@@ -91,6 +91,8 @@ def guide(raw, answers, timezone="Etc/UTC"):
             continue
         if field not in cfg["mapping"]:
             available = [h for h in headers if h not in cfg["mapping"].values()]
+            if field == "units":
+                available = [h for h in available if key(h) not in {"price", "amount", "revenue", "totalsales", "salesamount", "totalrevenue"}]
             opts = [
                 option(
                     h,

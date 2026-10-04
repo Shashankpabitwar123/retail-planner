@@ -32,7 +32,10 @@ export default function BatchUpload({files, maxBytes, onCancel, onReady, onQuest
   const addInput = useRef<HTMLInputElement>(null);
   const replaceInput = useRef<HTMLInputElement>(null);
   const [replaceIndex, setReplaceIndex] = useState<number | null>(null);
+  const submitting = useRef(false);
   async function analyze(nextAnswers = answers) {
+    if (submitting.current) return;
+    submitting.current = true;
     setBusy(true); setError("");
     let current = "";
     try {
@@ -46,7 +49,7 @@ export default function BatchUpload({files, maxBytes, onCancel, onReady, onQuest
         ids.push(uploaded.current.get(f)!.id);
       }
       current = "";
-      const result = await post<Reply>("/batches/prepare", {upload_ids:ids, answers:nextAnswers});
+      const result = await post<Reply>("/batches/prepare", {upload_ids:ids, answers:nextAnswers, use_ai:aiAvailable});
       if (!active.current) return;
       setReply(result);
       if (result.ready && result.id && result.upload_id) {
@@ -57,7 +60,7 @@ export default function BatchUpload({files, maxBytes, onCancel, onReady, onQuest
         if (active.current) onReady(result.id,result.upload_id,result.file_count || items.length);
       }
     } catch (e) {setError((current ? current+": " : "")+(e as Error).message);}
-    finally {setBusy(false);}
+    finally {submitting.current = false; setBusy(false);}
   }
   function cleanup(file: File) {
     const upload = uploaded.current.get(file);
@@ -88,23 +91,11 @@ export default function BatchUpload({files, maxBytes, onCancel, onReady, onQuest
     {error && <Notice tone="warning">{error}</Notice>}
     {reply && !reply.ready && document.getElementById("batch-question-root") && createPortal(
       <section className="batch-question-page">
-        <Button variant="text" disabled={busy} onClick={() => {setReply(null); setError("");}}>← Back to files</Button>
-        <p className="muted">{reply.file_name}</p>
+        {items.length > 1 && <p className="muted">{reply.file_name}</p>}
         {error && <Notice tone="warning">{error}</Notice>}
-        {steps.length > 0 && <details className="question-file-details"><summary>Review my answers</summary>
-          {steps.map((step, index) => <p key={index}><strong>{step.reply.question?.title}</strong><br />{step.reply.question?.options.find(o => o.value === step.selected)?.label || step.selected}{" "}<button className="text-link" disabled={busy} onClick={() => {setReply(step.reply); setAnswers(step.answers); setPreviousAnswer(step.selected); setSteps(steps.slice(0, index)); setError("");}}>Change answer</button></p>)}
-        </details>}
-        <GuidedImport previousAnswer={previousAnswer} onPrevious={steps.length ? goBack : undefined}
-          onSuggest={aiAvailable && reply.file_index !== undefined ? async () => {
-            const file = items[reply.file_index!]; const upload = uploaded.current.get(file);
-            if (!upload || !reply.question) return;
-            const suggestion = await post<{mapping: Record<string,string>}>(`/uploads/${upload.id}/suggest-mapping`, {consent: true});
-            const field = reply.question.id.split(":").at(-1)!.replace("column_", "");
-            const value = suggestion.mapping[field];
-            return reply.question.options.some(o => o.value === value) ? value : undefined;
-          } : undefined}
+        <GuidedImport previousAnswer={previousAnswer} onPrevious={steps.length ? goBack : () => {setReply(null); setError("");}}
           upload={{row_count:reply.row_count || 0} as Upload} guidance={reply} busy={busy}
-          onAnswer={(key,value)=>{setSteps([...steps, {reply, answers: {...answers}, selected: value}]); setPreviousAnswer(undefined); const next={...answers,[key]:value};setAnswers(next);analyze(next);}}
+          onAnswer={(key,value)=>{if (submitting.current) return; setSteps([...steps, {reply, answers: {...answers}, selected: value}]); setPreviousAnswer(undefined); const next={...answers,[key]:value};setAnswers(next);analyze(next);}}
           onReset={()=>{setReply(null);setAnswers({});setError("");}}
           onDetails={()=>{setReply(null);setAnswers({});setError("");}} />
       </section>, document.getElementById("batch-question-root")!

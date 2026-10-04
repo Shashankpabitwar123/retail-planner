@@ -11,6 +11,7 @@ export type Guidance = {
     title: string;
     detail: string;
     input?: string;
+    suggested_value?: string;
     options: { value: string; label: string; hint: string }[];
   } | null;
 };
@@ -23,7 +24,7 @@ export default function GuidedImport({
   onDetails,
   previousAnswer,
   onPrevious,
-  onSuggest,
+
 }: {
   upload: Upload;
   guidance: Guidance | null;
@@ -33,13 +34,9 @@ export default function GuidedImport({
   onDetails: () => void;
   previousAnswer?: string;
   onPrevious?: () => void;
-  onSuggest?: () => Promise<string | undefined>;
+
 }) {
   const q = guidance?.question;
-  const [selected, setSelected] = useState(previousAnswer || "");
-  const [suggesting, setSuggesting] = useState(false);
-  const [suggestion, setSuggestion] = useState("");
-  useEffect(() => { setSelected(previousAnswer || ""); setSuggestion(""); }, [q?.id, previousAnswer]);
   const [zone, setZone] = useState(
     Intl.DateTimeFormat().resolvedOptions().timeZone || "Etc/UTC",
   );
@@ -50,7 +47,7 @@ export default function GuidedImport({
   }, [q?.id, guidance?.blocked, busy]);
   return (
     <section className="guided-card">
-      {onPrevious && <Button variant="text" disabled={busy} onClick={onPrevious}>← Previous question</Button>}
+
       {!guidance || busy ? (
         <div role="status" className="guided-loading">
           <LoaderCircle className="spin" />
@@ -63,17 +60,6 @@ export default function GuidedImport({
             We need a little more information.
           </h1>
           <p>{guidance.blocked}</p>
-          <Button onClick={onReset}>Choose another file</Button>
-          <a
-            className="text-link guided-secondary"
-            href="/samples/01-daily.csv"
-            download
-          >
-            Download an example CSV
-          </a>
-          <button className="text-link guided-secondary" onClick={onDetails}>
-            Import details
-          </button>
         </>
       ) : q ? (
         <>
@@ -121,28 +107,23 @@ export default function GuidedImport({
               {q.options.map((o) => (
                 <button
                   key={o.value}
-                  className={"answer-option" + (selected === o.value ? " answer-selected" : "")}
-                  aria-pressed={selected === o.value}
-                  onClick={() => setSelected(o.value)}
+                  className={"answer-option" + (q.suggested_value === o.value ? " answer-suggested" : "")}
+                  disabled={busy}
+                  onClick={() => onAnswer(q.id, o.value)}
                 >
-                  <strong>{o.label}</strong>
+                  <strong>{o.label}{q.suggested_value === o.value && <small className="suggested-label">Suggested</small>}</strong>
                   {o.hint && <span>{o.hint}</span>}
                 </button>
               ))}
             </div>
           )}
-          {q.input !== "timezone" && <Button disabled={!selected || suggesting} onClick={() => onAnswer(q.id, selected)}>Continue</Button>}
-          {onSuggest && q.id.includes("column_") && <details className="question-ai"><summary>Need help choosing?</summary>
-            <p>AI can suggest a heading. Only column names are shared with OpenAI, not your sales records. You review the answer before continuing.</p>
-            <Button variant="secondary" disabled={suggesting} onClick={async () => {setSuggesting(true); try {const value = await onSuggest(); setSuggestion(value ? `Suggested heading: ${value}. Check its examples before choosing.` : "AI couldn’t find a clear match. Use the examples above.");} catch {setSuggestion("AI is unavailable. You can still choose using the examples above.");} finally {setSuggesting(false);} }}>{suggesting ? "Checking headings…" : "Share headings and suggest"}</Button>
-            {suggestion && <p role="status">{suggestion}</p>}
-          </details>}
-          <details className="question-file-details"><summary>File details</summary><p>{upload.row_count.toLocaleString()} sales records found.</p></details>
+
 
         </>
       ) : (
         <Notice>Your file is ready. Preparing your analysis…</Notice>
       )}
+      {!busy && guidance && <div className="question-back"><Button variant="text" onClick={onPrevious || onReset}>← Back</Button></div>}
     </section>
   );
 }

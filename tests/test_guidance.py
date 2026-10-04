@@ -104,9 +104,9 @@ def test_bad_answers_and_owner_isolation(tmp_path):
 def test_money_column_requires_quantity_choice():
     raw = b"Date,Dish Name,Total Customers,Total Sales\n10/1/2023,eggs,5,100\n"
     answers = {"column_product_id": "Dish Name", "column_units": "Total Sales"}
-    g = guide(raw, answers)
-    assert g["question"]["id"] == "quantity_column"
-    assert guide(raw, {**answers, "quantity_column": "__missing__"})["blocked"]
+    assert "Total Sales" not in [o["value"] for o in guide(raw, {})["question"]["options"]]
+    with pytest.raises(DataError):
+        guide(raw, answers)
 
 
 def test_dish_names_detected_but_customer_counts_need_confirmation():
