@@ -643,15 +643,19 @@ export default function App() {
                 }}
               >
                 {batchFiles ? batchPanel : <>
-                <UploadCloud size={32} strokeWidth={1.5} />
-                <h2>Upload your sales files</h2>
-                <p>Drop your CSV files here, or choose files.</p>
+                <div className="upload-empty">
+                <UploadCloud size={32} strokeWidth={1.5} aria-hidden="true" />
+                <h2>Upload sales files</h2>
+                <p className="upload-guidance">Add one file or several sales files from the same store.</p>
+                <div className="upload-action">
                 <Button
                   disabled={!ready || busy}
                   onClick={() => fileInput.current?.click()}
                 >
                   {busy ? "Reading your file…" : "Choose files"}
                 </Button>
+                <p className="upload-drop-hint">Or drag and drop here</p>
+                </div>
                 <input
                   ref={fileInput}
                   type="file"
@@ -663,12 +667,11 @@ export default function App() {
                     e.target.value = "";
                   }}
                 />
-                <p className="muted">
+                <p className="upload-limits">
                   Up to 12 CSV files · {serverPolicy.max_upload_bytes / 1024 / 1024} MB total
                 </p>
-                <p>
-                  <em>Need an example? <a className="text-link" href="/samples/01-daily.csv" download="sample-sales.csv">Download a sample</a></em>
-                </p>
+                <div className="upload-help">
+                <a className="text-link" href="/samples/01-daily.csv" download="sample-sales.csv">Download sample</a>
                 <details className="file-requirements">
                   <summary>File requirements</summary>
                   <p className="muted">
@@ -677,6 +680,8 @@ export default function App() {
                     Keep each product’s sales history together when exporting a smaller file.
                   </p>
                 </details>
+                </div>
+                </div>
                 </>}
               </section>
               {batchFiles?.length ? <FilePreviews files={batchFiles} /> : (

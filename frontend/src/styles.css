@@ -2243,3 +2243,15 @@ details summary {
 .file-preview-dialog p { font-size: 13px; }
 @media(max-width:1100px){.file-preview-grid{grid-template-columns:minmax(0,1fr)}}
 @media(min-width:801px) and (max-width:1100px){.file-preview-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Keep the upload action prominent and supporting help separate. */
+.upload-empty { display: flex; flex-direction: column; align-items: center; width: 100%; }
+.upload-empty h2 { margin: 16px 0 8px; }
+.upload-guidance { max-width: 340px; margin: 0; font-size: 0.95rem; line-height: 1.55; color: var(--muted); }
+.upload-action { margin: 28px 0 30px; }
+.upload-drop-hint { margin: 10px 0 0; font-size: 0.85rem; color: var(--muted); }
+.upload-limits { margin: 0 0 20px; font-size: 0.8rem; color: var(--muted); }
+.upload-help { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 14px 24px; width: 100%; padding-top: 18px; border-top: 1px solid var(--border); text-align: left; font-size: 0.85rem; }
+.upload-help .file-requirements { margin: 0; max-width: none; text-align: left; }
+.upload-help .file-requirements[open] { flex-basis: 100%; }
+.upload-help .file-requirements summary { font-size: inherit; }
