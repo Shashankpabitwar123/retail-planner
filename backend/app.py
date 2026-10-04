@@ -641,6 +641,40 @@ def create_app(db_path=None, worker=True):
             store.owned("jobs", config["compare_review_id"], owner(request))
         return {"id": store.enqueue(owner(request), uid, "normalize", config)}
 
+    @app.post("/api/batches/prepare")
+    async def prepare_files(request: Request):
+        import asyncio
+        from .batch import prepare_batch
+        user = owner(request)
+        payload = await body(request)
+        ids, answers = payload.get("upload_ids"), payload.get("answers", {})
+        if not isinstance(ids, list) or not 1 <= len(ids) <= 12 or any(not isinstance(i, str) for i in ids):
+            raise HTTPException(422, "Choose between 1 and 12 CSV files.")
+        if not isinstance(answers, dict) or len(answers) > 288 or any(not isinstance(k, str) or not isinstance(v, str) or len(k) > 100 or len(v) > 120 for k,v in answers.items()):
+            raise HTTPException(422, "Please choose an answer from the available options.")
+        if answers.get("daily_records") == "no":
+            raise HTTPException(422, "Monthly totals cannot produce a daily forecast. Replace these files with daily sales exports.")
+        if answers.get("complete_all") == "unsure":
+            raise HTTPException(422, "Check that each file includes all daily sales for its dates, then try again.")
+        sources = [dict(store.owned("uploads", i, user)) for i in ids]
+        if sum(len(s["raw"]) for s in sources) > MAX_BYTES:
+            raise HTTPException(413, f"Choose files totaling no more than {MAX_BYTES // 1024 // 1024} MB.")
+        prepared = await asyncio.to_thread(prepare_batch, sources, answers)
+        if not prepared['ready']:
+            return prepared
+        raw, cfg = prepared.pop('raw'), prepared['config']
+        if len(raw) > MAX_BYTES:
+            raise HTTPException(413, "The combined sales file is too large. Choose fewer products across these files.")
+        inspect_csv(raw)
+        uid, now = uuid.uuid4().hex, time.time()
+        with store.db() as db:
+            if db.execute("SELECT COUNT(*) FROM uploads WHERE owner=?", (user,)).fetchone()[0] >= 20:
+                raise HTTPException(429, "Remove an old upload from History before continuing.")
+            if db.execute("SELECT COALESCE(SUM(length(raw)),0) FROM uploads").fetchone()[0] + len(raw) > 200 * 1024 * 1024:
+                raise HTTPException(429, "Upload storage is full. Try again later.")
+            db.execute("INSERT INTO uploads VALUES(?,?,?,?,?,?,?)", (uid,user,f"Combined sales ({len(ids)} files).csv",hashlib.sha256(raw).hexdigest(),raw,now,now+RETENTION))
+        return {"ready": True, "id": store.enqueue(user, uid, "normalize", cfg), "upload_id": uid, "file_count": len(ids)}
+
     @app.post("/api/jobs/{jid}/combine")
     async def combine(jid: str, request: Request):
         from .merge import combine_reports

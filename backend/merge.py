@@ -11,7 +11,7 @@ def combine_reports(old, new):
             raise DataError('Fix the file’s data errors before combining it.')
         if cfg.get('coverage_upload_id') or cfg.get('coverage_rows'):
             raise DataError('This analysis uses separate product active dates. Upload a complete replacement file instead.')
-    if old['config'].get('store_id', '') != new['config'].get('store_id', ''):
+    if old.get('store_id') != new.get('store_id'):
         raise DataError('These files refer to different stores. Choose sales from the same store.')
     if old['config'].get('timezone') != new['config'].get('timezone'):
         raise DataError('Use the same store time zone for both files.')

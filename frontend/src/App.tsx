@@ -9,6 +9,7 @@ import {
 import { Button, Notice, Steps } from "./UI";
 import { Setup, QualityView } from "./Review";
 import Results from "./Results";
+import BatchUpload from "./BatchUpload";
 import GuidedImport, { type Guidance } from "./GuidedImport";
 import {
   api,
@@ -102,6 +103,7 @@ export default function App() {
     [answer, setAnswer] = useState(""),
     [citations, setCitations] = useState<string[]>([]),
     [asking, setAsking] = useState(false);
+  const [batchFiles, setBatchFiles] = useState<File[] | null>(null);
   const [addingData, setAddingData] = useState(false);
   const mergeBase = useRef<string | null>(null);
   const extraFileInput = useRef<HTMLInputElement>(null);
@@ -464,6 +466,7 @@ export default function App() {
     });
   }
   function reset() {
+    setBatchFiles(null);
     mergeBase.current = null;
     setAddingData(false);
     importGeneration.current++;
@@ -569,7 +572,18 @@ export default function App() {
         </nav>
       </header>
       <main id="main" tabIndex={-1} ref={main} className="main live-main">
-        <input ref={extraFileInput} type="file" accept=".csv,text/csv" hidden onChange={e => { const f = e.target.files?.[0]; if (f) { setAddingData(false); loadFile(f); } e.target.value = ""; }} />
+        <input ref={extraFileInput} type="file" multiple accept=".csv,text/csv" hidden onChange={e => { const files = Array.from(e.target.files || []); if (files.length) { setAddingData(false); setBatchFiles(files); } e.target.value = ""; }} />
+        {batchFiles && <BatchUpload files={batchFiles} maxBytes={serverPolicy.max_upload_bytes} onCancel={() => { setBatchFiles(null); mergeBase.current = null; }} onReady={(id, uploadId, count) => {
+          setBatchFiles(null);
+          automatic.current = true;
+          missingAnswered.current = false;
+          setMissingQuestion(false);
+          setName(`${count} sales files`);
+          setError("");
+          setToast(`${count} file${count === 1 ? "" : "s"} checked. Preparing your sales history.`);
+          api<Upload>(`/uploads/${uploadId}`).then(setUpload).catch(() => {});
+          start(id);
+        }} />}
         {addingData && <section className="panel">
           <h2>Update your sales data</h2>
           <p>Add complete daily sales for the same store and matching product IDs. Matching days count once. Different totals for the same day need a corrected complete file.</p>
@@ -600,7 +614,7 @@ export default function App() {
             </Notice>
           </div>
         )}
-        {phase === "upload" && (
+        {phase === "upload" && !batchFiles && (
           <>
             <div className="page-heading">
               <p className="eyebrow">LESS GUESSWORK. BETTER STOCK DECISIONS.</p>
@@ -617,31 +631,34 @@ export default function App() {
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={(e) => {
                   e.preventDefault();
-                  if (ready && !busy && e.dataTransfer.files[0])
-                    loadFile(e.dataTransfer.files[0]);
+                  if (ready && !busy && e.dataTransfer.files.length) {
+                    mergeBase.current = null;
+                    setBatchFiles(Array.from(e.dataTransfer.files));
+                  }
                 }}
               >
                 <UploadCloud size={32} strokeWidth={1.5} />
                 <h2>Upload your sales file</h2>
-                <p>Drop your CSV file here, or choose a file.</p>
+                <p>Drop your CSV files here, or choose files.</p>
                 <Button
                   disabled={!ready || busy}
                   onClick={() => fileInput.current?.click()}
                 >
-                  {busy ? "Reading your file…" : "Choose file"}
+                  {busy ? "Reading your file…" : "Choose files"}
                 </Button>
                 <input
                   ref={fileInput}
                   type="file"
+                  multiple
                   accept=".csv,text/csv"
                   hidden
                   onChange={(e) => {
-                    if (e.target.files?.[0]) loadFile(e.target.files[0]);
+                    if (e.target.files?.length) { mergeBase.current = null; setBatchFiles(Array.from(e.target.files)); }
                     e.target.value = "";
                   }}
                 />
                 <p className="muted">
-                  CSV files up to {serverPolicy.max_upload_bytes / 1024 / 1024} MB
+                  Up to 12 CSV files · {serverPolicy.max_upload_bytes / 1024 / 1024} MB total
                 </p>
                 <p>
                   <em>Need an example? <a className="text-link" href="/samples/01-daily.csv" download="sample-sales.csv">Download a sample</a></em>
@@ -649,7 +666,7 @@ export default function App() {
                 <details className="file-requirements">
                   <summary>File requirements</summary>
                   <p className="muted">
-                    Up to {num(serverPolicy.max_rows)} sales records and {num(serverPolicy.max_products)} products per file.
+                    Up to {num(serverPolicy.max_rows)} sales records and {num(serverPolicy.max_products)} products across all files.
                     We analyze one store at a time. Include a date, product, and quantity sold.
                     Keep each product’s sales history together when exporting a smaller file.
                   </p>
