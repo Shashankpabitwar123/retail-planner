@@ -2186,3 +2186,11 @@ details summary {
 .ask-composer button { width: 100%; }
 .chat-thinking { color: var(--muted); font-size: 14px; }
 @media (max-width: 600px) { .ask-fab { right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); width: 64px; height: 64px; } .live-drawer { width: 100vw; } .ask-composer { padding-bottom: calc(24px + env(safe-area-inset-bottom)); } }
+
+.chat-followups { margin: 12px 0 20px; }
+.chat-followups small { display: block; color: var(--muted); margin-bottom: 8px; }
+.chat-followups > div { display: flex; flex-wrap: wrap; gap: 8px; }
+.chat-followups button { font: inherit; font-size: 12px; line-height: 1.4; text-align: left; color: #27624d; background: white; border: 1px solid var(--border); border-radius: 18px; padding: 8px 12px; cursor: pointer; }
+.chat-followups button:hover { background: var(--selected); }
+.chat-followups button:focus-visible { outline: 2px solid #27624d; outline-offset: 2px; }
+.chat-followups button:disabled { opacity: .5; cursor: default; }

@@ -28,6 +28,16 @@ import {
   type Snapshot,
   type Plan,
 } from "./data";
+function uniqueEvidenceLinks(sources: string[]) {
+  const destination = (source: string) => source === "rows" ? "rows" : source === "quality" ? "quality" : ["inventory", "scenario"].includes(source) ? "inventory" : "forecast";
+  const seen = new Set<string>();
+  return sources.filter(source => {
+    const target = destination(source);
+    if (seen.has(target)) return false;
+    seen.add(target);
+    return true;
+  });
+}
 const initial: Config = {
   mapping: {},
   layout: "daily",
@@ -1149,7 +1159,7 @@ export default function App() {
                       <p className="chat-question">{m.question}</p>
                       <p>{m.answer}</p>
                       <div className="inline-actions">
-                        {m.citations.map((c) => (
+                        {uniqueEvidenceLinks(m.citations).map((c) => (
                           <button
                             key={c}
                             className="text-link"
@@ -1166,7 +1176,7 @@ export default function App() {
                       <p>{answer}</p>
                       {citations.length > 0 && (
                         <p className="muted">
-                          {citations.map((c) => (
+                          {uniqueEvidenceLinks(citations).map((c) => (
                             <button
                               key={c}
                               className="text-link"
@@ -1177,6 +1187,19 @@ export default function App() {
                           ))}
                         </p>
                       )}
+                    </div>
+                  )}
+                  {conversation.length > 0 && !asking && !answer && (
+                    <div className="chat-followups" aria-label="Suggested follow-up questions">
+                      <small>You could also ask</small>
+                      <div>
+                        {(previewContext
+                          ? ["Could I run out before delivery?", "Explain this restock amount simply.", "What assumptions does this plan use?", "What should I check before ordering?"]
+                          : ["What should I do next?", "Can I trust this estimate?", "What could change these sales?", "What data would improve this forecast?", "Explain this product’s forecast simply.", "What should I check before restocking?"]
+                        ).filter(q => !conversation.some(m => m.question.toLowerCase().trim() === q.toLowerCase().trim())).slice(0, 3).map(q => (
+                          <button type="button" key={q} disabled={!consent} onClick={() => ask(q)}>{q}</button>
+                        ))}
+                      </div>
                     </div>
                   )}
                   {asking && <p role="status" className="chat-thinking">Looking at your data…</p>}
