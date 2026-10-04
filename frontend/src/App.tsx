@@ -10,6 +10,7 @@ import { Button, Notice, Steps } from "./UI";
 import { Setup, QualityView } from "./Review";
 import Results from "./Results";
 import BatchUpload from "./BatchUpload";
+import FilePreviews from "./FilePreviews";
 import GuidedImport, { type Guidance } from "./GuidedImport";
 import {
   api,
@@ -545,7 +546,7 @@ export default function App() {
       if (contextRef.current === sourceContext) setAsking(false);
     }
   }
-  const batchPanel = batchFiles && <BatchUpload onQuestionChange={setBatchQuestionOpen} embedded={phase === "upload"} files={batchFiles} maxBytes={serverPolicy.max_upload_bytes} onCancel={() => { setBatchFiles(null); mergeBase.current = null; }} onReady={(id, uploadId, count) => {
+  const batchPanel = batchFiles && <BatchUpload onFilesChange={setBatchFiles} onQuestionChange={setBatchQuestionOpen} embedded={phase === "upload"} files={batchFiles} maxBytes={serverPolicy.max_upload_bytes} onCancel={() => { setBatchFiles(null); mergeBase.current = null; }} onReady={(id, uploadId, count) => {
           setBatchFiles(null);
           automatic.current = true;
           missingAnswered.current = false;
@@ -679,6 +680,7 @@ export default function App() {
                 </details>
                 </>}
               </section>
+              {batchFiles?.length ? <FilePreviews files={batchFiles} /> : (
               <section className="intro-panel">
                 <h2>A clear path from data to decisions</h2>
                 <ol className="journey-list">
@@ -704,6 +706,7 @@ export default function App() {
                   ready.
                 </p>
               </section>
+              )}
             </div>
             <section className="sample-section simple-sample">
               <span>Just looking around?</span>

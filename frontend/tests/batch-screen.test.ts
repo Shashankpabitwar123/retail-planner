@@ -9,7 +9,7 @@ import App from '../src/App';
 test('actual app hides landing page during questions and preserves files on return', async () => {
   const dom = new JSDOM('<div id="root"></div>', {url:'http://localhost/'});
   const w = dom.window;
-  Object.assign(globalThis, {window:w, document:w.document, HTMLElement:w.HTMLElement, localStorage:w.localStorage, IS_REACT_ACT_ENVIRONMENT:true});
+  Object.assign(globalThis, {window:w, document:w.document, HTMLElement:w.HTMLElement, FileReader:w.FileReader, localStorage:w.localStorage, IS_REACT_ACT_ENVIRONMENT:true});
   w.scrollTo = () => {};
   w.HTMLElement.prototype.scrollIntoView = () => {};
   let preparations=0;

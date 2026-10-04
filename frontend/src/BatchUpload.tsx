@@ -4,10 +4,11 @@ import {api, post, type Upload} from "./data";
 import GuidedImport, {type Guidance} from "./GuidedImport";
 import {Button, Notice} from "./UI";
 type Reply = Guidance & {file_index?: number; file_name?: string; row_count?: number; id?: string; upload_id?: string; file_count?: number};
-export default function BatchUpload({files, maxBytes, onCancel, onReady, onQuestionChange, embedded = false}: {onQuestionChange: (open: boolean) => void; embedded?: boolean; files: File[]; maxBytes: number; onCancel: () => void; onReady: (id: string, uploadId: string, count: number) => void}) {
+export default function BatchUpload({files, maxBytes, onCancel, onReady, onQuestionChange, onFilesChange, embedded = false}: {onFilesChange: (files: File[]) => void; onQuestionChange: (open: boolean) => void; embedded?: boolean; files: File[]; maxBytes: number; onCancel: () => void; onReady: (id: string, uploadId: string, count: number) => void}) {
   const active = useRef(true);
   useEffect(() => {active.current=true; return () => {active.current=false;};}, []);
   const [items, setItems] = useState(files);
+  useEffect(() => {onFilesChange(items);}, [items, onFilesChange]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [reply, setReply] = useState<Reply | null>(null);
