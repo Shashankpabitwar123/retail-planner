@@ -142,10 +142,10 @@ export default function Inventory({
       <h2>Plan stock for {product.name}</h2>
       {saved && (
         <Notice tone="success">
-          Saved scenario: {num(saved.suggested_order_units)} units, arriving{" "}
+          Saved plan: {num(saved.suggested_order_units)} units, arriving{" "}
           {saved.arrival_date}.{" "}
           <button className="text-link" onClick={() => exportPlan(saved)}>
-            Download saved order plan
+            Download plan
           </button>
         </Notice>
       )}
@@ -218,8 +218,8 @@ export default function Inventory({
                   value={values.mode}
                   onChange={(e) => change("mode", e.target.value)}
                 >
-                  <option value="historical_replay">Historical replay</option>
-                  <option value="current">Current planning</option>
+                  <option value="historical_replay">Plan using these sales dates</option>
+                  <option value="current">Plan for today</option>
                 </select>
               </label>
             </div>
@@ -331,30 +331,26 @@ export default function Inventory({
           </label>
           {error && <Notice tone="warning">{error}</Notice>}
           <Button onClick={calculate} disabled={!confirmed || busy}>
-            {busy ? "Calculating…" : "Preview order plan"}
+            {busy ? "Calculating…" : "Calculate restock amount"}
           </Button>
           {preview && (
             <section className="panel scenario">
-              <p className="eyebrow">SCENARIO PREVIEW</p>
-              <h2>{num(preview.suggested_order_units)} units to order</h2>
+              <p className="eyebrow">YOUR RESTOCK ESTIMATE</p>
+              <p className="muted">Plan date: {preview.planning_date}. This is a recommendation; no order is placed.</p>
+              <h2>{preview.suggested_order_units > 0 ? `${num(preview.suggested_order_units)} units to restock` : "No extra stock needed for this plan"}</h2>
               <p>
-                Arrive on {preview.arrival_date}. Estimated unmet sales before
-                arrival:{" "}
+                Expected delivery: {preview.arrival_date}. Sales you may miss before delivery:{" "}
                 <strong>{num(preview.pre_arrival_unmet_units)} units</strong>
                 {preview.first_shortfall_date
                   ? `, starting ${preview.first_shortfall_date}`
                   : ""}
                 .
               </p>
-              <p>
-                Buffer: {num(preview.buffer_units)} units. Stock after the
-                review period: {num(preview.end_protection_stock_with_order)}{" "}
-                units.
-              </p>
               <p className="muted">{preview.notice}</p>
+              <details className="quiet-details"><summary>How this amount was calculated</summary><p>Includes {num(preview.buffer_units)} units of buffer stock. Estimated stock remaining at the end of the plan: {num(preview.end_protection_stock_with_order)} units.</p></details>
               <StockProjection plan={preview} />
               <Button variant="secondary" onClick={() => onExplain(preview)}>
-                Ask about this preview
+                Ask about this plan
               </Button>
               <Button
                 disabled={applying}
@@ -367,7 +363,7 @@ export default function Inventory({
                   }
                 }}
               >
-                Apply this scenario
+                Save this plan
               </Button>
             </section>
           )}

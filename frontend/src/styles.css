@@ -2162,3 +2162,14 @@ details summary {
 .file-requirements { margin-top: 12px; max-width: 440px; text-align: center; }
 .file-requirements summary { font-size: 0.85rem; color: var(--muted); cursor: pointer; text-decoration: underline; }
 .file-requirements p { font-size: 0.85rem; line-height: 1.6; margin-top: 10px; }
+
+/* Compact result pages: decisions first, detail on request. */
+.results-heading { margin-bottom: 18px; }
+.results-heading h1 { font-size: clamp(28px, 3vw, 42px); }
+.results-heading + .historical-note { margin: 8px 0 20px; }
+.forecast-layout .product-row { padding: 12px; gap: 4px; align-items: flex-start; text-align: left; }
+.forecast-detail .metric-strip { margin: 18px 0; }
+.forecast-detail .forecast-confidence { margin-bottom: 20px; }
+.forecast-detail .quiet-details { margin: 12px 0; }
+.quality-summary { max-width: 960px; }
+.quality-summary > h2 { margin-bottom: 8px; }

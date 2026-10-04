@@ -274,90 +274,30 @@ export function Setup({
   );
 }
 export function QualityView({ quality }: { quality: Quality }) {
+  const needsHelp = quality.products.filter(p => !["ready", "limited"].includes(p.status));
   return (
-    <>
-      <div className="metric-strip">
-        <div>
-          <small>Complete date range</small>
-          <strong>
-            {quality.coverage_start} → {quality.coverage_end}
-          </strong>
-        </div>
-        <div>
-          <small>Source rows</small>
-          <strong>{num(quality.rows)}</strong>
-        </div>
-        <div>
-          <small>Products eligible to test</small>
-          <strong>{num(quality.eligible_products)}</strong>
-        </div>
-      </div>
-      <Notice>
-        Data readiness is not forecast accuracy. Each product needs at least 56
-        complete days. With 168 days, we can select a method on three historical
-        periods and test it on a separate final period.
-      </Notice>
-      <div className="table-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th>Product</th>
-              <th>Complete days</th>
-              <th>Sales units</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {quality.products?.map((p) => (
-              <tr key={p.product_id}>
-                <td>
-                  {p.name}
-                  <small className="block muted">{p.product_id}</small>
-                </td>
-                <td>
-                  {p.usable_days} / {p.days}
-                </td>
-                <td>{num(p.total_units)}</td>
-                <td>
-                  <span
-                    className={"badge " + (p.status === "ready" ? "good" : "")}
-                  >
-                    {p.status.replaceAll("_", " ")}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <Comparison quality={quality} />
-      <h2>What needs attention</h2>
-          {quality.issues.length>0&&<Button variant="secondary" onClick={()=>download('data-issues.csv',csv([['source_row','product_id','issue','message','blocks_forecast'],...quality.issues.map(i=>[i.row??'',i.product_id,i.code,i.message,i.blocking])]))}>Download issue report (up to 150 issues)</Button>}
-      {!quality.issues.length ? (
-        <p>No blocking data issues found under your confirmed assumptions.</p>
-      ) : (
-        <ul className="issues">
-          {quality.issues.map((v, i) => (
-            <li key={i}>
-              <strong>
-                {v.product_id || "File"}
-                {v.row ? ` · row ${v.row}` : ""}
-              </strong>
-              <span>{v.message}</span>
-            </li>
-          ))}
-        </ul>
-      )}
-      {Object.entries(quality.issue_counts)
-        .filter(
-          ([k]) =>
-            k.startsWith("excluded_") || k === "duplicate_events_removed",
-        )
-        .map(([k, v]) => (
-          <p key={k}>
-            {k.replaceAll("_", " ")}: {v}
-          </p>
-        ))}
-    </>
+    <section className="quality-summary">
+      <h2>{quality.global_block ? "Fix the file before using these results" : needsHelp.length ? `${needsHelp.length} product${needsHelp.length === 1 ? " needs" : "s need"} attention` : quality.issues.length ? "Your data can be used, with a few things to review" : "Your data is ready to use"}</h2>
+      <p>{num(quality.eligible_products)} of {num(quality.products.length)} products have enough usable history for forecasting. This does not guarantee future accuracy.</p>
+      {quality.issues.length > 0 && <section className="panel">
+        <h3>What to check</h3>
+        <ul className="issues">{quality.issues.slice(0, 5).map((v, i) => <li key={i}>
+          <strong>{quality.products.find(p => p.product_id === v.product_id)?.name || v.product_id || "Your file"}{v.row ? ` · line ${v.row}` : ""}</strong>
+          <span>{v.message}</span>
+        </li>)}</ul>
+        <Button variant="secondary" onClick={() => download("data-issues.csv", csv([["source_row", "product_id", "issue", "message", "blocks_forecast"], ...quality.issues.map(i => [i.row ?? "", i.product_id, i.code, i.message, i.blocking])]))}>Download issues to fix</Button>
+        {quality.issues.length > 5 && <details className="quiet-details"><summary>View more issues</summary><ul className="issues">{quality.issues.slice(5).map((v,i) => <li key={i}><strong>{v.product_id || "Your file"}{v.row ? ` · line ${v.row}` : ""}</strong><span>{v.message}</span></li>)}</ul></details>}
+        <p className="muted">The report includes up to 150 issues. Correct the original file and upload it again.</p>
+      </section>}
+      <div className="table-scroll"><table><thead><tr><th>Product</th><th>What you need to know</th></tr></thead><tbody>
+        {[...quality.products].sort((a,b) => Number(["ready", "limited"].includes(a.status)) - Number(["ready", "limited"].includes(b.status))).map(p => <tr key={p.product_id}><td>{p.name}<small className="block muted">{p.product_id}</small></td><td>{p.missing_days > 0 ? `Add sales records for ${p.missing_days} missing days.` : p.stockout_days > 0 ? "Stockouts affected sales. Review the missing demand." : p.status === "ready" ? "Ready for forecasting" : p.status === "limited" ? "Limited history — use estimates cautiously" : p.usable_days < 56 ? `Add more history: ${p.usable_days} complete days available; at least 56 needed.` : p.total_units === 0 ? "No sales recorded — no forecast available" : "Review this product’s issues or active selling dates."}</td></tr>)}
+      </tbody></table></div>
+      <details className="quiet-details"><summary>View file details</summary>
+        <p>{quality.coverage_start} to {quality.coverage_end} · {num(quality.rows)} sales records.</p>
+        <p>At least 56 complete days are needed for an initial forecast. With 168 days, we can compare methods and test the chosen one on a separate period.</p>
+        <Comparison quality={quality} />
+        {Object.entries(quality.issue_counts).filter(([k]) => k.startsWith("excluded_") || k === "duplicate_events_removed").map(([k,v]) => <p key={k}>{k.replaceAll("_", " ")}: {v}</p>)}
+      </details>
+    </section>
   );
 }

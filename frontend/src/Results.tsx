@@ -49,13 +49,13 @@ export default function Results({
   const quality = { ...result.quality, products: result.products };
   return (
     <>
-      <div className="page-heading">
+      <div className="page-heading results-heading">
         <p className="eyebrow">
           {result.quality.config.synthetic
             ? "SAMPLE SALES"
             : "YOUR SALES OUTLOOK"}
         </p>
-        <h1>Your sales forecast.</h1>
+        <h1>{tab === "Inventory" ? "What should I restock?" : tab === "Data quality" ? "Can I use this data?" : "How much will sell?"}</h1>
         <p>
           {result.forecast_start} – {result.forecast_end} · 28-day forecast ·{" "}
           {result.products.filter((p) => p.forecast?.length).length} products
@@ -100,7 +100,7 @@ export default function Results({
               aria-selected={t === tab}
               onClick={() => setTab(t)}
             >
-              {t}
+              {t === "Inventory" ? "Restock" : t === "Data quality" ? "Data check" : "Sales forecast"}
             </button>
           ))}
         </div>
@@ -109,10 +109,10 @@ export default function Results({
             variant="secondary"
             onClick={() => download("sales-forecast.csv", forecastCSV(result))}
           >
-            Download forecast CSV
+            Download forecast
           </Button>
           <Button variant="secondary" onClick={onBackup}>
-            Save a copy
+            Save full analysis
           </Button>
         </div>
       </div>
@@ -122,11 +122,10 @@ export default function Results({
         aria-labelledby={`tab-${tab.replaceAll(" ", "-")}`}
       >
         {tab === "Inventory" && Object.keys(plans).length > 0 && (
-          <section className="panel">
-            <h2>Applied stock actions</h2>
+          <details className="panel">
+            <summary>Saved stock plans ({Object.keys(plans).length})</summary>
             <p>
-              Saved scenarios only. Prioritized by unmet sales before delivery;
-              this is a simulation, not an order submission.
+              Your saved recommendations. No orders have been placed.
             </p>
             <div className="table-scroll">
               <table>
@@ -175,7 +174,7 @@ export default function Results({
                 </tbody>
               </table>
             </div>
-          </section>
+          </details>
         )}
         {tab === "Inventory" && jobId && (
           <BulkInventory
@@ -232,7 +231,7 @@ export default function Results({
                 >
                   <span>
                     <strong>{p.name}</strong>
-                    <small>{p.product_id}</small>
+                    <small>ID: {p.product_id}</small>
                   </span>
                   <span>
                     {p.forecast?.length
@@ -257,7 +256,7 @@ export default function Results({
                     onExplain={onExplain}
                   />
                 ) : (
-                  <Forecast product={product} />
+                  <Forecast product={product} onRestock={() => setTab("Inventory")} />
                 ))}
             </div>
           </div>
@@ -266,7 +265,7 @@ export default function Results({
     </>
   );
 }
-function Forecast({ product: p }: { product: Product }) {
+function Forecast({ product: p, onRestock }: { product: Product; onRestock: () => void }) {
   const last = p.evaluation?.windows.at(-1);
   const history = p.history || [],
     future = p.forecast || [];
@@ -291,10 +290,10 @@ function Forecast({ product: p }: { product: Product }) {
         <div>
           <h2>{p.name}</h2>
           <p className="muted">
-            {p.product_id} · {p.usable_days} complete days of history
+            Product ID: {p.product_id}
           </p>
         </div>
-        <span className="badge">{p.status.replaceAll("_", " ")}</span>
+
       </div>
       {!future.length ? (
         <Notice tone="warning">
@@ -302,7 +301,7 @@ function Forecast({ product: p }: { product: Product }) {
             ? `We need the missing ${p.missing_days} day(s) of sales before forecasting this product.`
             : p.status === "summary_only"
               ? "We need more sales history before forecasting this product."
-              : "Some sales records need fixing before we can forecast this product. See Data quality for the details."}
+              : "Some sales records need fixing before we can forecast this product. Open Data check to see what to fix."}
         </Notice>
       ) : (
         <>
@@ -312,10 +311,17 @@ function Forecast({ product: p }: { product: Product }) {
               <strong>{num(p.forecast_total)} units</strong>
             </div>
             <div>
-              <small>Sales history</small>
-              <strong>{p.usable_days} days</strong>
+              <small>Average per day</small>
+              <strong>{num((p.forecast_total || 0) / future.length)} units</strong>
             </div>
           </div>
+          <div className="forecast-confidence">
+            <p>{last ? `In a past test, daily predictions differed from actual sales by about ${num(last.model.mae)} units on average.` : "This estimate has not been tested against enough past sales yet."} Future sales may differ.</p>
+            {p.inventory_eligible ? <Button onClick={onRestock}>Check how much to restock</Button> : <p>Stock recommendations aren’t available for this product yet. Review the forecast details before using this estimate.</p>}
+          </div>
+          {p.forecast_warning && <Notice tone="warning">{p.forecast_warning}</Notice>}
+          <details className="quiet-details">
+            <summary>View sales trend</summary>
           <svg
             className="live-chart"
             viewBox="0 0 740 260"
@@ -362,22 +368,11 @@ function Forecast({ product: p }: { product: Product }) {
               {Math.ceil(max)}
             </text>
           </svg>
-          <div className="forecast-confidence">
-            <strong>
-              {last
-                ? `Past test: off by about ${num(last.model.mae)} units per day`
-                : "Not enough history to test this forecast yet"}
-            </strong>
-            <p>
-              {p.inventory_eligible
-                ? "Stock planning is available for this product."
-                : "Use this estimate cautiously. Stock recommendations need stronger evidence."}
-            </p>
-          </div>
+          </details>
           <details className="quiet-details">
             <summary>How reliable is this forecast?</summary>
             <p>
-              We tested the method on past sales that were kept out of training.
+              Based on {p.usable_days} complete days of sales history. We tested the method on past sales that were kept out of training.
               Future sales can still differ. Selected method:{" "}
               {p.method?.replaceAll("_", " ")}.
             </p>
@@ -390,9 +385,6 @@ function Forecast({ product: p }: { product: Product }) {
                 coverage: {num(p.range.evaluation_daily_coverage * 100)}%.
                 Temporal dependence means coverage is not guaranteed.
               </Notice>
-            )}
-            {p.forecast_warning && (
-              <Notice tone="warning">{p.forecast_warning}</Notice>
             )}
             <p className="muted">
               {p.range_reason} {!p.range && "No prediction band is shown."}

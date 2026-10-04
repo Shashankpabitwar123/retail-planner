@@ -43,7 +43,7 @@ export default function BulkInventory({
   }
   return (
     <details className="panel">
-      <summary>Import inventory and incoming orders</summary>
+      <summary>Have a stock file? Import it here</summary>
       <label className="field">
         Inventory CSV
         <input
