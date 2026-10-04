@@ -344,7 +344,7 @@ export default function App() {
     await run(async () => {
       if (file.size > serverPolicy.max_upload_bytes)
         throw Error(
-          `Choose a CSV under ${serverPolicy.max_upload_bytes / 1024 / 1024} MiB for this server.`,
+          `This file is larger than ${serverPolicy.max_upload_bytes / 1024 / 1024} MB. Export fewer products or remove unnecessary columns, then upload the smaller CSV. Keep the sales history for each product together.`,
         );
       const u = await api<Upload>(
         "/uploads?name=" + encodeURIComponent(file.name),
@@ -571,12 +571,12 @@ export default function App() {
               >
                 <UploadCloud size={32} strokeWidth={1.5} />
                 <h2>Upload your sales file</h2>
-                <p>Drop your file here, or choose it below.</p>
+                <p>Drop your CSV file here, or choose a file.</p>
                 <Button
                   disabled={!ready || busy}
                   onClick={() => fileInput.current?.click()}
                 >
-                  {busy ? "Reading your file…" : "Choose CSV file"}
+                  {busy ? "Reading your file…" : "Choose file"}
                 </Button>
                 <input
                   ref={fileInput}
@@ -589,20 +589,19 @@ export default function App() {
                   }}
                 />
                 <p className="muted">
-                  CSV · Up to {serverPolicy.max_upload_bytes / 1024 / 1024} MiB
-                  · {num(serverPolicy.max_rows)} rows · One store
+                  CSV files up to {serverPolicy.max_upload_bytes / 1024 / 1024} MB
                 </p>
-                <button
-                  className="text-link"
-                  onClick={() =>
-                    download(
-                      "sales-template.csv",
-                      "date,product_id,product_name,units_sold\n",
-                    )
-                  }
-                >
-                  Download template
-                </button>
+                <p>
+                  <em>Need an example? <a className="text-link" href="/samples/01-daily.csv" download="sample-sales.csv">Download a sample</a></em>
+                </p>
+                <details className="file-requirements">
+                  <summary>File requirements</summary>
+                  <p className="muted">
+                    Up to {num(serverPolicy.max_rows)} sales records and {num(serverPolicy.max_products)} products per file.
+                    We analyze one store at a time. Include a date, product, and quantity sold.
+                    Keep each product’s sales history together when exporting a smaller file.
+                  </p>
+                </details>
               </section>
               <section className="intro-panel">
                 <h2>A clear path from data to decisions</h2>

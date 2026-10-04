@@ -477,7 +477,7 @@ def create_app(db_path=None, worker=True):
             if len(raw) > MAX_BYTES:
                 raise HTTPException(
                     413,
-                    f"Upload limit is {MAX_BYTES // 1024 // 1024} MiB. Split your CSV before uploading.",
+                    f"This file is larger than {MAX_BYTES // 1024 // 1024} MB. Export fewer products or remove unnecessary columns, then upload the smaller CSV. Keep each product’s sales history together.",
                 )
         with store.db() as db:
             if (

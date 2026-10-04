@@ -67,9 +67,13 @@ def read_csv(raw):
                     "A cell exceeds 4,000 characters. Remove long notes before uploading."
                 )
             rows.append(dict(zip(headers, (v.strip() for v in row))))
-            if len(rows) > MAX_ROWS or len(rows) * len(headers) > MAX_CELLS:
+            if len(rows) > MAX_ROWS:
                 raise DataError(
-                    f"File exceeds this server’s {MAX_ROWS:,}-row / {MAX_CELLS:,}-cell limit. Split the export."
+                    f"This file has more than {MAX_ROWS:,} sales records. Export fewer products and upload again. Keep each product’s sales history together."
+                )
+            if len(rows) * len(headers) > MAX_CELLS:
+                raise DataError(
+                    "This file contains too much spreadsheet data. Remove unnecessary columns or export fewer products, then upload again. Keep each product’s sales history together."
                 )
         if not rows:
             raise DataError("The CSV contains headers but no data.")

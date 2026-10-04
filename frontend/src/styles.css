@@ -2158,3 +2158,7 @@ details summary {
 @media(prefers-reduced-motion:reduce){.guided-card,.answer-option{animation:none;transition:none;transform:none}}
 .mobile-product{display:none}.missing-examples{padding-left:20px;color:#5c6c62;font-size:14px;line-height:1.7}
 @media(max-width:800px){.mobile-product{display:flex}.forecast-layout>.product-list{display:none}.live-main .page-heading{margin-bottom:20px}.live-main .action-row{margin-top:24px;margin-bottom:24px}.forecast-layout{gap:22px}.guided-card{margin-top:25px}.historical-note{font-size:13px}}
+
+.file-requirements { margin-top: 12px; max-width: 440px; text-align: center; }
+.file-requirements summary { font-size: 0.85rem; color: var(--muted); cursor: pointer; text-decoration: underline; }
+.file-requirements p { font-size: 0.85rem; line-height: 1.6; margin-top: 10px; }
