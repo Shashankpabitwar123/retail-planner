@@ -1916,10 +1916,35 @@ th {
   margin-top: 24px;
 }
 .product-list {
+  position: sticky;
+  top: 24px;
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 48px);
+  max-height: calc(100dvh - 48px);
+  min-height: 0;
   border-right: 1px solid var(--border);
   padding-right: 24px;
 }
+.product-list > .field {
+  flex: 0 0 auto;
+}
+.product-list-scroll {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: #bdd2c7 #f5f8f6;
+  padding: 3px;
+}
+.product-list-scroll:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
 .product-row {
+  overflow-wrap: anywhere;
   border: 0;
   background: white;
   display: flex;

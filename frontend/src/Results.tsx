@@ -171,6 +171,7 @@ export default function Results({
                   placeholder="Search name or ID"
                 />
               </label>
+              <div className="product-list-scroll" role="region" aria-label="Products" tabIndex={0}>
               {filtered.map((p) => (
                 <button
                   className={
@@ -194,6 +195,7 @@ export default function Results({
                 </button>
               ))}
               {!filtered.length && <p>No matching products.</p>}
+              </div>
             </aside>
             <div className="forecast-detail">
               {product && <Forecast key={product.product_id} product={product} onAddData={result.quality.config.synthetic ? onTryOwn : onAddData} onRestock={() => setTab("Inventory")} />}
