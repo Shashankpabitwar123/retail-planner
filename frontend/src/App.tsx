@@ -78,9 +78,9 @@ export default function App() {
   const [rowError, setRowError] = useState("");
   const [previewContext, setPreviewContext] = useState<Plan | null>(null);
   const [serverPolicy, setServerPolicy] = useState({
-    max_upload_bytes: 10485760,
+    max_upload_bytes: 20971520,
     max_rows: 200000,
-    max_products: 500,
+    max_products: 100,
     ephemeral: false,
     ai_available: false,
   });

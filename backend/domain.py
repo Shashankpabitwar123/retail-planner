@@ -14,7 +14,7 @@ from zoneinfo import ZoneInfo
 ENGINE_REVISION = "1.2.0"
 
 MAX_ROWS = max(1, min(200_000, int(os.environ.get("RETAIL_MAX_ROWS", "200000"))))
-MAX_CELLS = max(1, min(1_500_000, int(os.environ.get("RETAIL_MAX_CELLS", "1500000"))))
+MAX_CELLS = max(1, min(3_000_000, int(os.environ.get("RETAIL_MAX_CELLS", "3000000"))))
 MAX_PRODUCTS = max(1, min(500, int(os.environ.get("RETAIL_MAX_PRODUCTS", "500"))))
 MAX_DAYS = 3653
 MAX_GRID = max(1, min(250_000, int(os.environ.get("RETAIL_MAX_GRID", "250000"))))
@@ -57,6 +57,9 @@ def read_csv(raw):
                 "Duplicate column headers found. Give each column a unique name."
             )
         rows = []
+        # Reuse repeated product/date labels within this file, with bounded caches.
+        # Large daily exports otherwise retain a fresh string in every row.
+        value_caches = [{} for _ in headers]
         for row in reader:
             if not row or all(not c.strip() for c in row):
                 continue
@@ -68,7 +71,15 @@ def read_csv(raw):
                 raise DataError(
                     "A cell exceeds 4,000 characters. Remove long notes before uploading."
                 )
-            rows.append(dict(zip(headers, (v.strip() for v in row))))
+            values = []
+            for cache, value in zip(value_caches, row):
+                value = value.strip()
+                if value in cache:
+                    value = cache[value]
+                elif len(cache) < 4096:
+                    cache[value] = value
+                values.append(value)
+            rows.append(dict(zip(headers, values)))
             if len(rows) > MAX_ROWS:
                 raise DataError(
                     f"This file has more than {MAX_ROWS:,} sales records. Export fewer products and upload again. Keep each product’s sales history together."

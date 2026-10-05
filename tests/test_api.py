@@ -1,6 +1,6 @@
 import time
 from fastapi.testclient import TestClient
-from backend.app import create_app
+from backend.app import create_app, MAX_BYTES
 from test_engine import FIX, CFG
 
 H = {"X-Retail-Client": "web"}
@@ -112,7 +112,7 @@ def test_csrf_and_request_limits(tmp_path):
     assert (
         c.post(
             "/api/uploads",
-            headers={**H, "Content-Length": str(11 * 1024 * 1024)},
+            headers={**H, "Content-Length": str(MAX_BYTES + 1)},
             content=b"",
         ).status_code
         == 413
@@ -198,3 +198,35 @@ def test_health_and_job_cache_use_current_engine_revision(tmp_path,monkeypatch):
     monkeypatch.setattr(app_module,'ENGINE_REVISION','future-test-revision')
     newer=store.enqueue(original['owner'],original['upload'],'normalize',json.loads(original['config']))
     assert newer!=jid
+
+
+def test_job_performance_is_recorded_without_sales_content(tmp_path, capsys):
+    import json
+    c, store = client(tmp_path)
+    u, jid = review(c, store)
+    job = c.get('/api/jobs/' + jid).json()
+    perf = job['performance']
+    assert perf['state'] == 'completed'
+    assert perf['input_bytes'] > 0
+    assert perf['wall_seconds'] >= perf['stages']['normalize_seconds'] >= 0
+    assert perf['memory_after']['process_lifetime_peak_rss_bytes'] > 0
+    assert 'raw' not in perf and 'config' not in perf
+    records = [json.loads(line) for line in capsys.readouterr().out.splitlines() if 'retail_performance' in line]
+    assert any(r.get('job_id') == jid for r in records)
+    assert any(r.get('operation') == 'http_request' and r['status'] == 200 for r in records)
+    other = TestClient(c.app)
+    other.get('/api/session')
+    assert other.get('/api/jobs/' + jid).status_code == 404
+
+
+def test_failed_job_retains_measurements(tmp_path):
+    c, store = client(tmp_path)
+    u = upload(c)
+    with store.db() as db:
+        owner = db.execute('SELECT owner FROM uploads WHERE id=?', (u['id'],)).fetchone()['owner']
+    jid = store.enqueue(owner, u['id'], 'normalize', {})
+    store.run_one()
+    job = c.get('/api/jobs/' + jid).json()
+    assert job['state'] == 'failed'
+    assert job['performance']['state'] == 'failed'
+    assert job['performance']['stages']['normalize_seconds'] >= 0

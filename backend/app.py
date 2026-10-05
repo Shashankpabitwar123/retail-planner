@@ -29,6 +29,7 @@ from .domain import (
 )
 from .imports import supporting, compare, inventory_rows
 from .contracts import ImportSettings, InventorySettings, validate
+from .performance import Measurement, emit
 
 BASE = Path(__file__).resolve().parent.parent
 DEFAULT_ENV = (BASE.parents[1] if len(BASE.parents) > 1 else BASE) / ".env.local"
@@ -37,7 +38,7 @@ load_dotenv(
     override=False,
 )
 MAX_BYTES = max(
-    1024, min(10 * 1024 * 1024, int(os.environ.get("RETAIL_MAX_BYTES", "10485760")))
+    1024, min(20 * 1024 * 1024, int(os.environ.get("RETAIL_MAX_BYTES", "20971520")))
 )
 RETENTION = 7 * 86400
 
@@ -62,6 +63,8 @@ class Store:
             CREATE INDEX IF NOT EXISTS upload_owner ON uploads(owner);
             CREATE INDEX IF NOT EXISTS job_owner ON jobs(owner);
             """)
+            if "performance" not in {r[1] for r in db.execute("PRAGMA table_info(jobs)")}:
+                db.execute("ALTER TABLE jobs ADD COLUMN performance TEXT")
         self.path.chmod(0o600)
 
     @contextmanager
@@ -118,7 +121,7 @@ class Store:
             if prior:
                 if retry and prior["state"] in ("failed", "canceled"):
                     db.execute(
-                        "UPDATE jobs SET state='queued',stage='Queued for retry',cancel=0,error=NULL,result=NULL,done=0,total=0 WHERE id=?",
+                        "UPDATE jobs SET state='queued',stage='Queued for retry',cancel=0,error=NULL,result=NULL,performance=NULL,done=0,total=0 WHERE id=?",
                         (prior["id"],),
                     )
                 return prior["id"]
@@ -194,10 +197,14 @@ class Store:
                 (job["id"],),
             )
         jid = job["id"]
+        measurement = Measurement()
+        input_bytes = 0
+        result = None
         try:
             self.progress(jid, "Reading confirmed settings")
             config = json.loads(job["config"])
             source = self.owned("uploads", job["upload"], job["owner"])
+            input_bytes = len(source["raw"])
             progress = lambda stage, done=0, total=0: self.progress(
                 jid, stage, done, total
             )
@@ -209,7 +216,7 @@ class Store:
                     if config.get(field):
                         attachment = self.owned("uploads", config[field], job["owner"])
                         config[kind + "_rows"] = supporting(attachment["raw"], kind)
-                result = normalize(source["raw"], config, progress)
+                result = measurement.call("normalize", normalize, source["raw"], config, progress)
                 if config.get("compare_review_id"):
                     previous = self.owned(
                         "jobs", config["compare_review_id"], job["owner"]
@@ -226,9 +233,10 @@ class Store:
                 review = self.owned("jobs", config["review_id"], job["owner"])
                 if review["state"] != "completed" or review["kind"] != "normalize":
                     raise DataError("Finish reviewing data before forecasting.")
-                result = forecast(json.loads(review["result"]), progress)
+                report = measurement.call("read_review", json.loads, review["result"])
+                result = measurement.call("forecast", forecast, report, progress)
             self.progress(jid, "Saving results")
-            serialized_result = json.dumps(result)
+            serialized_result = measurement.call("serialize", json.dumps, result)
             with self.db() as db:
                 db.execute("BEGIN IMMEDIATE")
                 stored_bytes = db.execute(
@@ -259,6 +267,19 @@ class Store:
                     "UPDATE jobs SET state='failed',stage='Needs attention',error=? WHERE id=?",
                     (message, jid),
                 )
+        finally:
+            record = measurement.finish()
+            record.update({'operation': job['kind'], 'job_id': jid, 'input_bytes': input_bytes,
+                           'job_age_at_start_seconds': round(max(0, time.time() - job['created'] - record['wall_seconds']), 6)})
+            if isinstance(result, dict):
+                record['product_count'] = len(result.get('products', []))
+                if job['kind'] == 'normalize':
+                    record['rows'] = result.get('rows')
+            with self.db() as db:
+                final = db.execute('SELECT state FROM jobs WHERE id=?', (jid,)).fetchone()
+                record['state'] = final['state'] if final else 'deleted'
+                db.execute('UPDATE jobs SET performance=? WHERE id=?', (json.dumps(record), jid))
+            emit(record)
         return True
 
 
@@ -279,6 +300,8 @@ def public_job(row, result=True):
             "cancel",
         )
     }
+    if row.get("performance"):
+        item["performance"] = json.loads(row["performance"])
     if result and row["result"]:
         data = json.loads(row["result"])
         if row["kind"] == "normalize":
@@ -364,7 +387,15 @@ def create_app(db_path=None, worker=True):
             return JSONResponse(
                 {"detail": "Request exceeds the supported size limit."}, status_code=413
             )
+        measurement = Measurement()
         response = await call_next(request)
+        if request.method == 'POST' and request.url.path.startswith('/api/'):
+            record = measurement.finish()
+            route = request.scope.get('route')
+            record.update({'operation': 'http_request', 'route': getattr(route, 'path', '/api/unknown'),
+                           'status': response.status_code, 'request_bytes': size})
+            emit(record)
+            response.headers['Server-Timing'] = f"app;dur={record['wall_seconds'] * 1000:.3f}"
         response.headers["Cache-Control"] = "no-store"
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["Referrer-Policy"] = "same-origin"
