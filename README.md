@@ -37,7 +37,7 @@ The deterministic data, forecasting and inventory workflow works without OpenAI.
 
 ## Hosting
 
-See [DEPLOYMENT.md](DEPLOYMENT.md). `render-free.yaml` provides a free-compute portfolio demo with your existing OpenAI key configured separately as a secret. It has a 2 MiB / 50,000-row / 100-product limit. Temporary server uploads, jobs and chats can disappear when the free host sleeps or restarts; browser history and downloaded files remain separate.
+See [DEPLOYMENT.md](DEPLOYMENT.md). `render-free.yaml` provides a free-compute portfolio demo with your existing OpenAI key configured separately as a secret. It has a 10 MiB combined / 100,000-row / 100-product limit (up to 12 CSVs). The increased live limits are pending a large-file capacity check. Temporary server uploads, jobs and chats can disappear when the free host sleeps or restarts; browser history and downloaded files remain separate.
 
 `render-paid.yaml` is an optional paid persistent-storage configuration, not a prerequisite for finishing or showing the project. The public demo is deployed on Render’s free plan; no paid service was created. Free hosting still has shared usage allowances; OpenAI billing remains separate.
 
