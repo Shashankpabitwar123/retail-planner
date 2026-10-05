@@ -204,7 +204,7 @@ export default function Results({
     </>
   );
 }
-function Forecast({ product: p, onRestock, onAddData }: { product: Product; onRestock: () => void; onAddData: () => void }) {
+export function Forecast({ product: p, onRestock, onAddData }: { product: Product; onRestock: () => void; onAddData: () => void }) {
   const [expanded, setExpanded] = useState(false);
   const [activePoint, setActivePoint] = useState<string>("");
   const last = p.evaluation?.windows.at(-1);
@@ -269,7 +269,7 @@ function Forecast({ product: p, onRestock, onAddData }: { product: Product; onRe
             {!p.inventory_eligible && <p>Stock recommendations aren’t available for this product yet.</p>}
           </div>
           </div>
-          {p.forecast_warning && <Notice tone="warning">{p.forecast_warning}</Notice>}
+          {p.forecast_warning && <Notice tone="warning">This prediction is too uncertain to suggest an order.<details className="quiet-details"><summary>Why?</summary><p>{p.forecast_warning}</p></details></Notice>}
           <section className="daily-preview">
             <h3>Daily sales estimate</h3>
             <div className="table-scroll">
@@ -294,6 +294,7 @@ function Forecast({ product: p, onRestock, onAddData }: { product: Product; onRe
           </section>
           <section className="forecast-chart-section">
             <h3>Past sales and estimated sales</h3>
+            {future.length>1 && future.every(d=>d.units===future[0].units) && <p className="muted">This method estimates the same daily amount. Actual sales will vary.</p>}
             <p className="chart-legend">Gray solid: actual sales · Green dashed: estimates</p>
             <p className="chart-readout" aria-live="polite">{activePoint || "Select a point to see its date and units."}</p>
           <svg

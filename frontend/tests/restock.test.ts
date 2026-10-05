@@ -26,7 +26,7 @@ test('store-wide calculation keeps missing stock blank and isolates product fail
   assert.deepEqual(calls,['P0','P1'],'Blank stock must not become zero or be sent');
   const rows=[...w.document.querySelectorAll('tbody tr')];
   assert.match(rows.find(r=>r.textContent?.includes('Product 0'))!.textContent!,/10 units/);
-  assert.match(rows.find(r=>r.textContent?.includes('Product 1'))!.textContent!,/Test unavailable/);
+  assert.match(rows.find(r=>r.textContent?.includes('Product 1'))!.textContent!,/Needs review/);
   assert.match(rows.find(r=>r.textContent?.includes('Product 2'))!.textContent!,/Add stock count/);
   assert.match(w.document.body.textContent!,/1 products calculated/);
   const printed=w.document.querySelector('.restock-print')!;
@@ -49,5 +49,46 @@ test('store-wide calculation keeps missing stock blank and isolates product fail
   await act(async()=>close.click());
   assert.equal(w.document.querySelector('dialog'),null);
 
+ }finally{await act(async()=>root.unmount());globalThis.fetch=old;dom.window.close();}
+});
+
+test('blocked forecasts can be exported as a review list without invented orders',async()=>{
+ const dom=new JSDOM('<div id="root"></div>',{url:'http://localhost/'}),w=dom.window;
+ Object.assign(globalThis,{window:w,document:w.document,HTMLElement:w.HTMLElement,IS_REACT_ACT_ENVIRONMENT:true});
+ const result=JSON.parse(fs.readFileSync(new URL('../../samples/test-result.json',import.meta.url),'utf8')).result as Result;
+ result.products=result.products.map(p=>({...p,inventory_eligible:false,forecast_warning:'Failed past test'}));
+ const old=globalThis.fetch;globalThis.fetch=async()=>{throw Error('Ineligible products must not request an order');};
+ const root=createRoot(w.document.getElementById('root')!);
+ try{
+ await act(async()=>root.render(React.createElement(StoreRestock,{result,jobId:'job',saved:{},onSave:async()=>{},onAddData:()=>{}})));
+ await act(async()=>{(w.document.querySelector('input[type=checkbox]') as HTMLInputElement).click();});
+ await act(async()=>{[...w.document.querySelectorAll('button')].find(b=>b.textContent==='Calculate restock list')!.click();});
+ assert.equal([...w.document.querySelectorAll('button')].find(b=>b.textContent==='Download spreadsheet')!.disabled,false);
+ assert.match(w.document.querySelector('.restock-print')!.textContent!,/Needs review/);
+ assert.match(w.document.querySelector('.restock-print')!.textContent!,/Failed past test/);
+ assert.equal(w.document.querySelector('.restock-amount'),null);
+ }finally{await act(async()=>root.unmount());globalThis.fetch=old;dom.window.close();}
+});
+
+test('restoring a plan keeps its duration and changing shared delivery clears saved overrides',async()=>{
+ const dom=new JSDOM('<div id="root"></div>',{url:'http://localhost/'}),w=dom.window;
+ Object.assign(globalThis,{window:w,document:w.document,HTMLElement:w.HTMLElement,IS_REACT_ACT_ENVIRONMENT:true});
+ const result=JSON.parse(fs.readFileSync(new URL('../../samples/test-result.json',import.meta.url),'utf8')).result as Result;
+ result.products=[{...result.products[0],product_id:'P0',inventory_eligible:true}];
+ const plan={suggested_order_units:10,pre_arrival_unmet_units:0,arrival_date:'2026-07-21',planning_date:result.forecast_start,buffer_units:2,assumptions:{stock:200,lead_days:5,review_days:20,buffer_days:2}} as Plan;
+ const old=globalThis.fetch;let body:Record<string,unknown>={};globalThis.fetch=async(_i,init)=>{body=JSON.parse(String(init?.body));return Response.json(plan);};
+ const root=createRoot(w.document.getElementById('root')!);
+ try{
+ await act(async()=>root.render(React.createElement(StoreRestock,{result,jobId:'job',saved:{P0:plan},onSave:async()=>{},onAddData:()=>{}})));
+ const fields=w.document.querySelectorAll('.inventory-grid input');
+ assert.equal((fields[2] as HTMLInputElement).value,'20');
+ // React's native input event handling requires the DOM to exist before module import;
+ // use the mounted handler here to exercise the same state transition directly.
+ const input=fields[1] as HTMLInputElement;
+ const propKey=Object.keys(input).find(k=>k.startsWith('__reactProps'))!;
+ await act(async()=>{(input as unknown as Record<string,{onChange:(e:unknown)=>void}>)[propKey].onChange({target:{value:'2'}});});
+ await act(async()=>{(w.document.querySelector('input[type=checkbox]') as HTMLInputElement).click();});
+ await act(async()=>{[...w.document.querySelectorAll('button')].find(b=>b.textContent==='Update restock list')!.click();});
+ assert.equal(body.lead_days,2);assert.equal(body.review_days,20);assert.equal(body.buffer_days,2);
  }finally{await act(async()=>root.unmount());globalThis.fetch=old;dom.window.close();}
 });

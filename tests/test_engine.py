@@ -325,3 +325,12 @@ def test_bad_holdout_withholds_inventory_without_reselecting():
     output = forecast(r)
     assert all(not p["inventory_eligible"] for p in output["products"])
     assert all("past test error" in p["forecast_warning"] for p in output["products"])
+
+
+def test_inventory_horizon_boundary_has_actionable_error():
+    daily=[{'date':str(date(2026,1,1)+timedelta(days=i)),'units':10} for i in range(28)]
+    config=dict(stock=200,lead_days=2,review_days=20,buffer_days=2,pack_size=1,minimum_order=0,confirmed=True,snapshot_date='2026-01-01',mode='historical_replay',incoming=[])
+    assert inventory(daily,config)['suggested_order_units']>=0
+    inventory(daily,{**config,'review_days':24})
+    with pytest.raises(DataError,match='2 delivery \\+ 25 selling \\+ 2 extra = 29 days'):
+        inventory(daily,{**config,'review_days':25})

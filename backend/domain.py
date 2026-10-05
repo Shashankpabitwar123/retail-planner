@@ -797,7 +797,8 @@ def inventory(daily, config):
     moq = integer("minimum_order")
     if lead + review + buffer > len(daily):
         raise DataError(
-            "Lead time + review period + buffer must fit within the 28-day forecast."
+            f"{lead} delivery + {review} selling + {buffer} extra = {lead + review + buffer} days. "
+            f"This forecast covers {len(daily)} days. Reduce delivery, selling or extra days by at least {lead + review + buffer - len(daily)}."
         )
     start = date.fromisoformat(daily[0]["date"])
     if config.get("snapshot_date") != str(start):
