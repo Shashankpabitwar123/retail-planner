@@ -1,0 +1,730 @@
+{
+  "note": "Development dataset already inspected; not independent validation. No threshold changes.",
+  "old_mean_product_mae": 53.29583104720264,
+  "new_mean_product_mae": 54.59565982999754,
+  "old_eligible": 3,
+  "new_eligible": 4,
+  "changed_products": 15,
+  "products": [
+    {
+      "id": "20712",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 30.5,
+      "new_mae": 30.5,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "20719",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 32.50892857142857,
+      "new_mae": 32.50892857142857,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "20724",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 48.517857142857146,
+      "new_mae": 48.517857142857146,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "20725",
+      "old_method": "seasonal_naive",
+      "new_method": "seasonal_naive",
+      "old_mae": 58.07142857142857,
+      "new_mae": 58.07142857142857,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "20726",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 13.464285714285714,
+      "new_mae": 13.464285714285714,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "20727",
+      "old_method": "seasonal_naive",
+      "new_method": "seasonal_naive",
+      "old_mae": 19.571428571428573,
+      "new_mae": 19.571428571428573,
+      "old_eligible": true,
+      "new_eligible": true
+    },
+    {
+      "id": "20728",
+      "old_method": "weekday_mean",
+      "new_method": "recent_weekday_mean",
+      "old_mae": 26.669642857142858,
+      "new_mae": 30.017857142857142,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "20914",
+      "old_method": "exponential_level",
+      "new_method": "exponential_level",
+      "old_mae": 15.244629772426004,
+      "new_mae": 15.244629772426004,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "21034",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 6.0625,
+      "new_mae": 6.0625,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "21080",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 26.321428571428573,
+      "new_mae": 26.321428571428573,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "21175",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 38.36607142857143,
+      "new_mae": 38.36607142857143,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "21181",
+      "old_method": "weekday_mean",
+      "new_method": "recent_weekday_mean",
+      "old_mae": 51.625,
+      "new_mae": 50.982142857142854,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "21212",
+      "old_method": "mean_56",
+      "new_method": "mean_56",
+      "old_mae": 41.346938775510196,
+      "new_mae": 41.346938775510196,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "21232",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 47.035714285714285,
+      "new_mae": 47.035714285714285,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "21731",
+      "old_method": "mean_56",
+      "new_method": "mean_56",
+      "old_mae": 51.076530612244895,
+      "new_mae": 51.076530612244895,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "21733",
+      "old_method": "exponential_level",
+      "new_method": "exponential_level",
+      "old_mae": 29.98487126346476,
+      "new_mae": 29.98487126346476,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "21754",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 5.285714285714286,
+      "new_mae": 5.285714285714286,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "21790",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 54.339285714285715,
+      "new_mae": 54.339285714285715,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "21928",
+      "old_method": "seasonal_naive",
+      "new_method": "seasonal_naive",
+      "old_mae": 35.0,
+      "new_mae": 35.0,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "21929",
+      "old_method": "mean_56",
+      "new_method": "mean_56",
+      "old_mae": 21.778061224489797,
+      "new_mae": 21.778061224489797,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "21931",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 29.839285714285715,
+      "new_mae": 29.839285714285715,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "21977",
+      "old_method": "mean_28",
+      "new_method": "mean_28",
+      "old_mae": 40.367346938775505,
+      "new_mae": 40.367346938775505,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "22077",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 27.633928571428573,
+      "new_mae": 27.633928571428573,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "22086",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 134.86607142857142,
+      "new_mae": 134.86607142857142,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "22090",
+      "old_method": "croston_sba",
+      "new_method": "recent_weekday_mean",
+      "old_mae": 9.491555843580906,
+      "new_mae": 7.321428571428571,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "22111",
+      "old_method": "croston_sba",
+      "new_method": "croston_sba",
+      "old_mae": 26.62443840107631,
+      "new_mae": 26.62443840107631,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "22112",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 28.455357142857142,
+      "new_mae": 28.455357142857142,
+      "old_eligible": true,
+      "new_eligible": true
+    },
+    {
+      "id": "22138",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 16.053571428571427,
+      "new_mae": 16.053571428571427,
+      "old_eligible": true,
+      "new_eligible": true
+    },
+    {
+      "id": "22139",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 15.258928571428571,
+      "new_mae": 15.258928571428571,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "22178",
+      "old_method": "seasonal_naive",
+      "new_method": "seasonal_naive",
+      "old_mae": 69.60714285714286,
+      "new_mae": 69.60714285714286,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "22197",
+      "old_method": "seasonal_naive",
+      "new_method": "seasonal_naive",
+      "old_mae": 547.1785714285714,
+      "new_mae": 547.1785714285714,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "22355",
+      "old_method": "seasonal_naive",
+      "new_method": "recent_weekday_mean",
+      "old_mae": 59.32142857142857,
+      "new_mae": 65.14285714285714,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "22382",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 26.526785714285715,
+      "new_mae": 26.526785714285715,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "22383",
+      "old_method": "seasonal_naive",
+      "new_method": "recent_weekday_mean",
+      "old_mae": 35.07142857142857,
+      "new_mae": 15.928571428571429,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "22384",
+      "old_method": "seasonal_naive",
+      "new_method": "seasonal_naive",
+      "old_mae": 25.214285714285715,
+      "new_mae": 25.214285714285715,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "22386",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 76.04464285714286,
+      "new_mae": 76.04464285714286,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "22411",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 35.13392857142857,
+      "new_mae": 35.13392857142857,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "22423",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 22.910714285714285,
+      "new_mae": 22.910714285714285,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "22457",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 35.55357142857143,
+      "new_mae": 35.55357142857143,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "22469",
+      "old_method": "mean_56",
+      "new_method": "mean_56",
+      "old_mae": 58.765306122448976,
+      "new_mae": 58.765306122448976,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "22470",
+      "old_method": "seasonal_naive",
+      "new_method": "seasonal_naive",
+      "old_mae": 63.357142857142854,
+      "new_mae": 63.357142857142854,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "22558",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 25.196428571428573,
+      "new_mae": 25.196428571428573,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "22629",
+      "old_method": "mean_56",
+      "new_method": "mean_56",
+      "old_mae": 47.39795918367347,
+      "new_mae": 47.39795918367347,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "22630",
+      "old_method": "mean_56",
+      "new_method": "mean_56",
+      "old_mae": 24.72448979591837,
+      "new_mae": 24.72448979591837,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "22666",
+      "old_method": "mean_56",
+      "new_method": "damped_trend",
+      "old_mae": 29.892857142857142,
+      "new_mae": 74.85322600779264,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "22697",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 14.508928571428571,
+      "new_mae": 14.508928571428571,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "22698",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 15.732142857142858,
+      "new_mae": 15.732142857142858,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "22699",
+      "old_method": "croston_sba",
+      "new_method": "croston_sba",
+      "old_mae": 17.725299471581035,
+      "new_mae": 17.725299471581035,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "22720",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 19.214285714285715,
+      "new_mae": 19.214285714285715,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "22722",
+      "old_method": "croston_sba",
+      "new_method": "croston_sba",
+      "old_mae": 11.731562771662327,
+      "new_mae": 11.731562771662327,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "22726",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 17.732142857142858,
+      "new_mae": 17.732142857142858,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "22727",
+      "old_method": "mean_56",
+      "new_method": "mean_56",
+      "old_mae": 43.19642857142857,
+      "new_mae": 43.19642857142857,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "22728",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 16.330357142857142,
+      "new_mae": 16.330357142857142,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "22910",
+      "old_method": "weekday_mean",
+      "new_method": "recent_weekday_mean",
+      "old_mae": 65.73214285714286,
+      "new_mae": 65.60714285714286,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "22960",
+      "old_method": "mean_56",
+      "new_method": "mean_56",
+      "old_mae": 26.785714285714285,
+      "new_mae": 26.785714285714285,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "22961",
+      "old_method": "mean_56",
+      "new_method": "mean_56",
+      "old_mae": 61.931122448979586,
+      "new_mae": 61.931122448979586,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "22993",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 36.30357142857143,
+      "new_mae": 36.30357142857143,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "23084",
+      "old_method": "seasonal_naive",
+      "new_method": "damped_trend",
+      "old_mae": 345.9642857142857,
+      "new_mae": 428.6665542044282,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "23199",
+      "old_method": "seasonal_naive",
+      "new_method": "seasonal_naive",
+      "old_mae": 81.42857142857143,
+      "new_mae": 81.42857142857143,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "23201",
+      "old_method": "seasonal_naive",
+      "new_method": "seasonal_naive",
+      "old_mae": 123.64285714285714,
+      "new_mae": 123.64285714285714,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "23202",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 32.857142857142854,
+      "new_mae": 32.857142857142854,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "23203",
+      "old_method": "seasonal_naive",
+      "new_method": "seasonal_naive",
+      "old_mae": 168.39285714285714,
+      "new_mae": 168.39285714285714,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "23206",
+      "old_method": "weekday_mean",
+      "new_method": "recent_weekday_mean",
+      "old_mae": 22.892857142857142,
+      "new_mae": 20.607142857142858,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "23207",
+      "old_method": "seasonal_naive",
+      "new_method": "seasonal_naive",
+      "old_mae": 25.214285714285715,
+      "new_mae": 25.214285714285715,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "23209",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 24.848214285714285,
+      "new_mae": 24.848214285714285,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "23245",
+      "old_method": "seasonal_naive",
+      "new_method": "seasonal_naive",
+      "old_mae": 22.214285714285715,
+      "new_mae": 22.214285714285715,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "23298",
+      "old_method": "mean_28",
+      "new_method": "recent_weekday_mean",
+      "old_mae": 23.26530612244898,
+      "new_mae": 23.214285714285715,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "23300",
+      "old_method": "mean_28",
+      "new_method": "recent_weekday_mean",
+      "old_mae": 34.26530612244898,
+      "new_mae": 28.571428571428573,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "23301",
+      "old_method": "weekday_mean",
+      "new_method": "recent_weekday_mean",
+      "old_mae": 52.5,
+      "new_mae": 48.857142857142854,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "23355",
+      "old_method": "exponential_level",
+      "new_method": "recent_weekday_mean",
+      "old_mae": 35.86412625241984,
+      "new_mae": 27.839285714285715,
+      "old_eligible": false,
+      "new_eligible": true
+    },
+    {
+      "id": "47566",
+      "old_method": "mean_28",
+      "new_method": "recent_weekday_mean",
+      "old_mae": 25.47704081632653,
+      "new_mae": 23.857142857142858,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "82482",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 22.883928571428573,
+      "new_mae": 22.883928571428573,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "82494L",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 20.9375,
+      "new_mae": 20.9375,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "84879",
+      "old_method": "seasonal_naive",
+      "new_method": "seasonal_naive",
+      "old_mae": 259.14285714285717,
+      "new_mae": 259.14285714285717,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "84946",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 50.419642857142854,
+      "new_mae": 50.419642857142854,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "84991",
+      "old_method": "mean_56",
+      "new_method": "mean_56",
+      "old_mae": 46.086734693877546,
+      "new_mae": 46.086734693877546,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "85099B",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 140.22321428571428,
+      "new_mae": 140.22321428571428,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "85099C",
+      "old_method": "weekday_mean",
+      "new_method": "damped_trend",
+      "old_mae": 40.07142857142857,
+      "new_mae": 50.624500425739214,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "85099F",
+      "old_method": "seasonal_naive",
+      "new_method": "seasonal_naive",
+      "old_mae": 52.75,
+      "new_mae": 52.75,
+      "old_eligible": false,
+      "new_eligible": false
+    },
+    {
+      "id": "85123A",
+      "old_method": "weekday_mean",
+      "new_method": "weekday_mean",
+      "old_mae": 102.14285714285714,
+      "new_mae": 102.14285714285714,
+      "old_eligible": false,
+      "new_eligible": false
+    }
+  ]
+}

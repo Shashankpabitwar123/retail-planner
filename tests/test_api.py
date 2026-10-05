@@ -184,3 +184,17 @@ def test_review_can_resume_editing_from_server(tmp_path):
     other = TestClient(c.app)
     other.get("/api/session")
     assert other.get("/api/uploads/" + u["id"]).status_code == 404
+
+
+def test_health_and_job_cache_use_current_engine_revision(tmp_path,monkeypatch):
+    import backend.app as app_module
+    from backend.domain import ENGINE_REVISION
+    c,store=client(tmp_path)
+    assert c.get('/api/health').json()['engine']==ENGINE_REVISION
+    _,jid=review(c,store)
+    with store.db() as db:
+        original=dict(db.execute('SELECT * FROM jobs WHERE id=?',(jid,)).fetchone())
+    import json
+    monkeypatch.setattr(app_module,'ENGINE_REVISION','future-test-revision')
+    newer=store.enqueue(original['owner'],original['upload'],'normalize',json.loads(original['config']))
+    assert newer!=jid

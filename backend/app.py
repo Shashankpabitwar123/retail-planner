@@ -19,6 +19,7 @@ from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 from .domain import (
     DataError,
+    ENGINE_REVISION,
     inspect_csv,
     normalize,
     forecast,
@@ -107,7 +108,7 @@ class Store:
         source = self.owned("uploads", upload, owner)
         serialized = json.dumps(config, sort_keys=True)
         idem = hashlib.sha256(
-            ("1.1.0" + upload + kind + serialized).encode()
+            (ENGINE_REVISION + upload + kind + serialized).encode()
         ).hexdigest()
         with self.db() as db:
             db.execute("BEGIN IMMEDIATE")
@@ -1280,7 +1281,7 @@ def create_app(db_path=None, worker=True):
     def health():
         with store.db() as db:
             db.execute("SELECT 1").fetchone()
-        return {"status": "ok", "engine": "1.1.0"}
+        return {"status": "ok", "engine": ENGINE_REVISION}
 
     if os.environ.get("RETAIL_SERVE_FRONTEND") == "1":
         from fastapi.staticfiles import StaticFiles

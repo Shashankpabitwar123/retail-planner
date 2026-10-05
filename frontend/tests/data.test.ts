@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { restore, backup, csv, forecastCSV, type Snapshot } from "../src/data";
+import { restore, backup, csv, forecastCSV, forecastChecksCSV, type Snapshot } from "../src/data";
 import fs from "node:fs";
 const sample = JSON.parse(
   fs.readFileSync(
@@ -78,3 +78,12 @@ test('inventory backup rejects invalid dates and foreign products; strips nested
     (v:any)=>v.plans['foreign']=v.plans['0007'],
   ]) {const v=structuredClone(s);mutate(v);assert.throws(()=>restore(backup(v)));}
 });
+
+ test("forecast checks export one row per product and retain assumptions and test totals",()=>{
+ const result=structuredClone(sample.result);const p=result.products[0];p.assumed_zero_days=2;p.forecast_warning="Verify assumed zero days";p.inventory_eligible=false;
+ p.evaluation!.windows[0].model.period_mae={"7":12,"14":5,"28":3};
+ const output=forecastChecksCSV(result);
+ assert.equal(output.split("\r\n").length,result.products.length+1);
+ assert.match(output,/Actual units in test/);assert.match(output,/Assumed zero days/);assert.match(output,/Verify assumed zero days/);
+ const restored=restore(backup({...sample,result}));assert.equal(restored.result.products[0].assumed_zero_days,2);assert.deepEqual(restored.result.products[0].evaluation!.windows[0].model.period_mae,{"7":12,"14":5,"28":3});
+ });

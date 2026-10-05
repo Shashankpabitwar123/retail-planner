@@ -52,3 +52,15 @@ def test_combine_endpoint_is_owner_scoped_and_rechecked(tmp_path):
     job = c.get('/api/jobs/' + r.json()['id']).json()
     assert job['state'] == 'completed'
     assert sum(p['total_units'] for p in job['result']['products']) == 3724
+
+
+def test_invoice_proxy_basis_survives_merging_and_blocks_stock_advice():
+    from backend.domain import forecast
+    original=report()
+    original['config'].update(quantity_basis='positive_invoice_units_proxy',demo_proxy_confirmed=True,gross_sales_confirmed=False)
+    raw,cfg=combine_reports(original,original)
+    assert cfg['quantity_basis']=='positive_invoice_units_proxy'
+    assert cfg['gross_sales_confirmed'] is False
+    result=forecast(normalize(raw,cfg))
+    assert all(not p.get('inventory_eligible') for p in result['products'])
+    assert all('invoice quantities' in p['forecast_warning'] for p in result['products'] if p['forecast'])

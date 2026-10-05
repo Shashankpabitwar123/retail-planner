@@ -1,6 +1,6 @@
 {
   "products": 80,
-  "restock_eligible": 3,
+  "restock_eligible": 0,
   "methods": {
     "weekday_mean": 41,
     "seasonal_naive": 17,
@@ -23,7 +23,7 @@
       "id": "20712",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 127.3% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
+      "warning": "Restock advice is unavailable. 97 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 127.3% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -37,7 +37,12 @@
               "bias_units_per_day": 16.107142857142858,
               "total_absolute_error": 451.0,
               "actual_total": 671,
-              "predicted_total": 1122.0
+              "predicted_total": 1122.0,
+              "period_mae": {
+                "7": 112.75,
+                "14": 225.5,
+                "28": 451.0
+              }
             },
             "baseline": {
               "mae": 18.107142857142858,
@@ -45,7 +50,12 @@
               "bias_units_per_day": -3.392857142857143,
               "total_absolute_error": 95.0,
               "actual_total": 671,
-              "predicted_total": 576.0
+              "predicted_total": 576.0,
+              "period_mae": {
+                "7": 34.25,
+                "14": 68.5,
+                "28": 95.0
+              }
             }
           }
         ]
@@ -55,7 +65,7 @@
       "id": "20719",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 70.9% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
+      "warning": "Restock advice is unavailable. 99 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 70.9% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -69,7 +79,12 @@
               "bias_units_per_day": -12.767857142857142,
               "total_absolute_error": 357.5,
               "actual_total": 1284,
-              "predicted_total": 926.5
+              "predicted_total": 926.5,
+              "period_mae": {
+                "7": 98.6875,
+                "14": 178.75,
+                "28": 357.5
+              }
             },
             "baseline": {
               "mae": 24.285714285714285,
@@ -77,7 +92,12 @@
               "bias_units_per_day": -18.428571428571427,
               "total_absolute_error": 516.0,
               "actual_total": 1284,
-              "predicted_total": 768.0
+              "predicted_total": 768.0,
+              "period_mae": {
+                "7": 129.0,
+                "14": 258.0,
+                "28": 516.0
+              }
             }
           }
         ]
@@ -87,7 +107,7 @@
       "id": "20724",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 55.8% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
+      "warning": "Restock advice is unavailable. 88 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 55.8% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -101,7 +121,12 @@
               "bias_units_per_day": -32.035714285714285,
               "total_absolute_error": 897.0,
               "actual_total": 2433,
-              "predicted_total": 1536.0
+              "predicted_total": 1536.0,
+              "period_mae": {
+                "7": 224.25,
+                "14": 448.5,
+                "28": 897.0
+              }
             },
             "baseline": {
               "mae": 38.607142857142854,
@@ -109,7 +134,12 @@
               "bias_units_per_day": -15.464285714285714,
               "total_absolute_error": 433.0,
               "actual_total": 2433,
-              "predicted_total": 2000.0
+              "predicted_total": 2000.0,
+              "period_mae": {
+                "7": 138.25,
+                "14": 216.5,
+                "28": 433.0
+              }
             }
           }
         ]
@@ -119,7 +149,7 @@
       "id": "20725",
       "method": "seasonal_naive",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 102.3% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 76 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 102.3% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -133,7 +163,12 @@
               "bias_units_per_day": 29.642857142857142,
               "total_absolute_error": 830.0,
               "actual_total": 1590,
-              "predicted_total": 2420.0
+              "predicted_total": 2420.0,
+              "period_mae": {
+                "7": 222.5,
+                "14": 415.0,
+                "28": 830.0
+              }
             },
             "baseline": {
               "mae": 58.07142857142857,
@@ -141,7 +176,12 @@
               "bias_units_per_day": 29.642857142857142,
               "total_absolute_error": 830.0,
               "actual_total": 1590,
-              "predicted_total": 2420.0
+              "predicted_total": 2420.0,
+              "period_mae": {
+                "7": 222.5,
+                "14": 415.0,
+                "28": 830.0
+              }
             }
           }
         ]
@@ -151,7 +191,7 @@
       "id": "20726",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 63.3% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 87 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 63.3% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -165,7 +205,12 @@
               "bias_units_per_day": 2.7142857142857144,
               "total_absolute_error": 76.0,
               "actual_total": 596,
-              "predicted_total": 672.0
+              "predicted_total": 672.0,
+              "period_mae": {
+                "7": 25.0,
+                "14": 38.0,
+                "28": 76.0
+              }
             },
             "baseline": {
               "mae": 15.928571428571429,
@@ -173,7 +218,12 @@
               "bias_units_per_day": 0.0,
               "total_absolute_error": 0.0,
               "actual_total": 596,
-              "predicted_total": 596.0
+              "predicted_total": 596.0,
+              "period_mae": {
+                "7": 26.0,
+                "14": 21.0,
+                "28": 0.0
+              }
             }
           }
         ]
@@ -182,8 +232,8 @@
     {
       "id": "20727",
       "method": "seasonal_naive",
-      "eligible": true,
-      "warning": null,
+      "eligible": false,
+      "warning": "Restock advice is unavailable. 82 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -197,7 +247,12 @@
               "bias_units_per_day": -13.714285714285714,
               "total_absolute_error": 384.0,
               "actual_total": 1272,
-              "predicted_total": 888.0
+              "predicted_total": 888.0,
+              "period_mae": {
+                "7": 96.0,
+                "14": 192.0,
+                "28": 384.0
+              }
             },
             "baseline": {
               "mae": 19.571428571428573,
@@ -205,7 +260,12 @@
               "bias_units_per_day": -13.714285714285714,
               "total_absolute_error": 384.0,
               "actual_total": 1272,
-              "predicted_total": 888.0
+              "predicted_total": 888.0,
+              "period_mae": {
+                "7": 96.0,
+                "14": 192.0,
+                "28": 384.0
+              }
             }
           }
         ]
@@ -215,7 +275,7 @@
       "id": "20728",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 85.9% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
+      "warning": "Restock advice is unavailable. 81 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 85.9% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -229,7 +289,12 @@
               "bias_units_per_day": -3.017857142857143,
               "total_absolute_error": 84.5,
               "actual_total": 869,
-              "predicted_total": 784.5
+              "predicted_total": 784.5,
+              "period_mae": {
+                "7": 118.8125,
+                "14": 167.5,
+                "28": 84.5
+              }
             },
             "baseline": {
               "mae": 25.464285714285715,
@@ -237,7 +302,12 @@
               "bias_units_per_day": -5.321428571428571,
               "total_absolute_error": 149.0,
               "actual_total": 869,
-              "predicted_total": 720.0
+              "predicted_total": 720.0,
+              "period_mae": {
+                "7": 110.75,
+                "14": 167.5,
+                "28": 149.0
+              }
             }
           }
         ]
@@ -247,7 +317,7 @@
       "id": "20914",
       "method": "exponential_level",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 62.2% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 92 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 62.2% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -261,7 +331,12 @@
               "bias_units_per_day": -1.0250610620119858,
               "total_absolute_error": 28.7017097363356,
               "actual_total": 686,
-              "predicted_total": 657.2982902636644
+              "predicted_total": 657.2982902636644,
+              "period_mae": {
+                "7": 40.0,
+                "14": 14.3508548681678,
+                "28": 28.7017097363356
+              }
             },
             "baseline": {
               "mae": 23.214285714285715,
@@ -269,7 +344,12 @@
               "bias_units_per_day": -1.0714285714285714,
               "total_absolute_error": 30.0,
               "actual_total": 686,
-              "predicted_total": 656.0
+              "predicted_total": 656.0,
+              "period_mae": {
+                "7": 40.0,
+                "14": 15.0,
+                "28": 30.0
+              }
             }
           }
         ]
@@ -279,7 +359,7 @@
       "id": "21034",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 51.4% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 99 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 51.4% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -293,7 +373,12 @@
               "bias_units_per_day": -3.9642857142857144,
               "total_absolute_error": 111.0,
               "actual_total": 330,
-              "predicted_total": 219.0
+              "predicted_total": 219.0,
+              "period_mae": {
+                "7": 27.75,
+                "14": 55.5,
+                "28": 111.0
+              }
             },
             "baseline": {
               "mae": 8.5,
@@ -301,7 +386,12 @@
               "bias_units_per_day": 1.9285714285714286,
               "total_absolute_error": 54.0,
               "actual_total": 330,
-              "predicted_total": 384.0
+              "predicted_total": 384.0,
+              "period_mae": {
+                "7": 20.0,
+                "14": 27.0,
+                "28": 54.0
+              }
             }
           }
         ]
@@ -311,7 +401,7 @@
       "id": "21080",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 79.2% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 81 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 79.2% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -325,7 +415,12 @@
               "bias_units_per_day": -6.857142857142857,
               "total_absolute_error": 192.0,
               "actual_total": 930,
-              "predicted_total": 738.0
+              "predicted_total": 738.0,
+              "period_mae": {
+                "7": 104.75,
+                "14": 166.0,
+                "28": 192.0
+              }
             },
             "baseline": {
               "mae": 29.142857142857142,
@@ -333,7 +428,12 @@
               "bias_units_per_day": -11.642857142857142,
               "total_absolute_error": 326.0,
               "actual_total": 930,
-              "predicted_total": 604.0
+              "predicted_total": 604.0,
+              "period_mae": {
+                "7": 121.5,
+                "14": 166.0,
+                "28": 326.0
+              }
             }
           }
         ]
@@ -343,7 +443,7 @@
       "id": "21175",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 83.3% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 96 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 83.3% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -357,7 +457,12 @@
               "bias_units_per_day": -11.375,
               "total_absolute_error": 318.5,
               "actual_total": 1289,
-              "predicted_total": 970.5
+              "predicted_total": 970.5,
+              "period_mae": {
+                "7": 87.9375,
+                "14": 159.25,
+                "28": 318.5
+              }
             },
             "baseline": {
               "mae": 41.964285714285715,
@@ -365,7 +470,12 @@
               "bias_units_per_day": -10.607142857142858,
               "total_absolute_error": 297.0,
               "actual_total": 1289,
-              "predicted_total": 992.0
+              "predicted_total": 992.0,
+              "period_mae": {
+                "7": 85.25,
+                "14": 148.5,
+                "28": 297.0
+              }
             }
           }
         ]
@@ -375,7 +485,7 @@
       "id": "21181",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 88.4% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 168 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 88.4% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -389,7 +499,12 @@
               "bias_units_per_day": -9.392857142857142,
               "total_absolute_error": 263.0,
               "actual_total": 1636,
-              "predicted_total": 1373.0
+              "predicted_total": 1373.0,
+              "period_mae": {
+                "7": 299.5,
+                "14": 599.0,
+                "28": 263.0
+              }
             },
             "baseline": {
               "mae": 57.57142857142857,
@@ -397,7 +512,12 @@
               "bias_units_per_day": -57.0,
               "total_absolute_error": 1596.0,
               "actual_total": 1636,
-              "predicted_total": 40.0
+              "predicted_total": 40.0,
+              "period_mae": {
+                "7": 399.0,
+                "14": 798.0,
+                "28": 1596.0
+              }
             }
           }
         ]
@@ -407,7 +527,7 @@
       "id": "21212",
       "method": "mean_56",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 61.8% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 76 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 61.8% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -421,7 +541,12 @@
               "bias_units_per_day": 17.10714285714285,
               "total_absolute_error": 479.0,
               "actual_total": 1872,
-              "predicted_total": 2351.0
+              "predicted_total": 2351.0,
+              "period_mae": {
+                "7": 119.75,
+                "14": 239.5,
+                "28": 479.0
+              }
             },
             "baseline": {
               "mae": 48.142857142857146,
@@ -429,7 +554,12 @@
               "bias_units_per_day": -5.857142857142857,
               "total_absolute_error": 164.0,
               "actual_total": 1872,
-              "predicted_total": 1708.0
+              "predicted_total": 1708.0,
+              "period_mae": {
+                "7": 44.0,
+                "14": 82.0,
+                "28": 164.0
+              }
             }
           }
         ]
@@ -439,7 +569,7 @@
       "id": "21232",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 75.0% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 102 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 75.0% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -453,7 +583,12 @@
               "bias_units_per_day": -30.214285714285715,
               "total_absolute_error": 846.0,
               "actual_total": 1756,
-              "predicted_total": 910.0
+              "predicted_total": 910.0,
+              "period_mae": {
+                "7": 222.25,
+                "14": 423.0,
+                "28": 846.0
+              }
             },
             "baseline": {
               "mae": 54.714285714285715,
@@ -461,7 +596,12 @@
               "bias_units_per_day": -38.714285714285715,
               "total_absolute_error": 1084.0,
               "actual_total": 1756,
-              "predicted_total": 672.0
+              "predicted_total": 672.0,
+              "period_mae": {
+                "7": 271.0,
+                "14": 542.0,
+                "28": 1084.0
+              }
             }
           }
         ]
@@ -471,7 +611,7 @@
       "id": "21731",
       "method": "mean_56",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 69.6% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 104 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 69.6% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -485,7 +625,12 @@
               "bias_units_per_day": -35.10714285714286,
               "total_absolute_error": 983.0,
               "actual_total": 2055,
-              "predicted_total": 1072.0
+              "predicted_total": 1072.0,
+              "period_mae": {
+                "7": 245.75,
+                "14": 491.5,
+                "28": 983.0
+              }
             },
             "baseline": {
               "mae": 54.75,
@@ -493,7 +638,12 @@
               "bias_units_per_day": -40.964285714285715,
               "total_absolute_error": 1147.0,
               "actual_total": 2055,
-              "predicted_total": 908.0
+              "predicted_total": 908.0,
+              "period_mae": {
+                "7": 286.75,
+                "14": 573.5,
+                "28": 1147.0
+              }
             }
           }
         ]
@@ -503,7 +653,7 @@
       "id": "21733",
       "method": "exponential_level",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 77.6% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
+      "warning": "Restock advice is unavailable. 123 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 77.6% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -517,7 +667,12 @@
               "bias_units_per_day": 5.251241701396186,
               "total_absolute_error": 147.03476763909316,
               "actual_total": 1082,
-              "predicted_total": 1229.0347676390932
+              "predicted_total": 1229.0347676390932,
+              "period_mae": {
+                "7": 53.0,
+                "14": 73.51738381954658,
+                "28": 147.03476763909316
+              }
             },
             "baseline": {
               "mae": 22.857142857142858,
@@ -525,7 +680,12 @@
               "bias_units_per_day": -13.214285714285714,
               "total_absolute_error": 370.0,
               "actual_total": 1082,
-              "predicted_total": 712.0
+              "predicted_total": 712.0,
+              "period_mae": {
+                "7": 92.5,
+                "14": 185.0,
+                "28": 370.0
+              }
             }
           }
         ]
@@ -535,7 +695,7 @@
       "id": "21754",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 69.5% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 93 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 69.5% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -549,7 +709,12 @@
               "bias_units_per_day": -2.017857142857143,
               "total_absolute_error": 56.5,
               "actual_total": 213,
-              "predicted_total": 156.5
+              "predicted_total": 156.5,
+              "period_mae": {
+                "7": 14.6875,
+                "14": 28.25,
+                "28": 56.5
+              }
             },
             "baseline": {
               "mae": 5.535714285714286,
@@ -557,7 +722,12 @@
               "bias_units_per_day": -0.03571428571428571,
               "total_absolute_error": 1.0,
               "actual_total": 213,
-              "predicted_total": 212.0
+              "predicted_total": 212.0,
+              "period_mae": {
+                "7": 8.75,
+                "14": 5.5,
+                "28": 1.0
+              }
             }
           }
         ]
@@ -567,7 +737,7 @@
       "id": "21790",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 64.9% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 93 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 64.9% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -581,7 +751,12 @@
               "bias_units_per_day": -18.678571428571427,
               "total_absolute_error": 523.0,
               "actual_total": 2345,
-              "predicted_total": 1822.0
+              "predicted_total": 1822.0,
+              "period_mae": {
+                "7": 205.5,
+                "14": 261.5,
+                "28": 523.0
+              }
             },
             "baseline": {
               "mae": 68.39285714285714,
@@ -589,7 +764,12 @@
               "bias_units_per_day": 11.107142857142858,
               "total_absolute_error": 311.0,
               "actual_total": 2345,
-              "predicted_total": 2656.0
+              "predicted_total": 2656.0,
+              "period_mae": {
+                "7": 155.75,
+                "14": 201.5,
+                "28": 311.0
+              }
             }
           }
         ]
@@ -599,7 +779,7 @@
       "id": "21928",
       "method": "seasonal_naive",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 143.3% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 106 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 143.3% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -613,7 +793,12 @@
               "bias_units_per_day": 26.142857142857142,
               "total_absolute_error": 732.0,
               "actual_total": 684,
-              "predicted_total": 1416.0
+              "predicted_total": 1416.0,
+              "period_mae": {
+                "7": 183.0,
+                "14": 366.0,
+                "28": 732.0
+              }
             },
             "baseline": {
               "mae": 35.0,
@@ -621,7 +806,12 @@
               "bias_units_per_day": 26.142857142857142,
               "total_absolute_error": 732.0,
               "actual_total": 684,
-              "predicted_total": 1416.0
+              "predicted_total": 1416.0,
+              "period_mae": {
+                "7": 183.0,
+                "14": 366.0,
+                "28": 732.0
+              }
             }
           }
         ]
@@ -631,7 +821,7 @@
       "id": "21929",
       "method": "mean_56",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 111.7% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 95 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 111.7% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -645,7 +835,12 @@
               "bias_units_per_day": 9.089285714285715,
               "total_absolute_error": 254.5,
               "actual_total": 546,
-              "predicted_total": 800.5
+              "predicted_total": 800.5,
+              "period_mae": {
+                "7": 63.625,
+                "14": 127.25,
+                "28": 254.5
+              }
             },
             "baseline": {
               "mae": 48.0,
@@ -653,7 +848,12 @@
               "bias_units_per_day": 27.5,
               "total_absolute_error": 770.0,
               "actual_total": 546,
-              "predicted_total": 1316.0
+              "predicted_total": 1316.0,
+              "period_mae": {
+                "7": 192.5,
+                "14": 385.0,
+                "28": 770.0
+              }
             }
           }
         ]
@@ -663,7 +863,7 @@
       "id": "21931",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 96.7% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 85 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 96.7% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -677,7 +877,12 @@
               "bias_units_per_day": 16.571428571428573,
               "total_absolute_error": 464.0,
               "actual_total": 864,
-              "predicted_total": 1328.0
+              "predicted_total": 1328.0,
+              "period_mae": {
+                "7": 116.0,
+                "14": 232.0,
+                "28": 464.0
+              }
             },
             "baseline": {
               "mae": 65.07142857142857,
@@ -685,7 +890,12 @@
               "bias_units_per_day": 43.142857142857146,
               "total_absolute_error": 1208.0,
               "actual_total": 864,
-              "predicted_total": 2072.0
+              "predicted_total": 2072.0,
+              "period_mae": {
+                "7": 302.0,
+                "14": 604.0,
+                "28": 1208.0
+              }
             }
           }
         ]
@@ -695,7 +905,7 @@
       "id": "21977",
       "method": "mean_28",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 83.6% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 97 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 83.6% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -709,7 +919,12 @@
               "bias_units_per_day": -25.857142857142858,
               "total_absolute_error": 724.0,
               "actual_total": 1352,
-              "predicted_total": 628.0
+              "predicted_total": 628.0,
+              "period_mae": {
+                "7": 181.0,
+                "14": 362.0,
+                "28": 724.0
+              }
             },
             "baseline": {
               "mae": 54.285714285714285,
@@ -717,7 +932,12 @@
               "bias_units_per_day": -12.428571428571429,
               "total_absolute_error": 348.0,
               "actual_total": 1352,
-              "predicted_total": 1004.0
+              "predicted_total": 1004.0,
+              "period_mae": {
+                "7": 108.5,
+                "14": 217.0,
+                "28": 348.0
+              }
             }
           }
         ]
@@ -727,7 +947,7 @@
       "id": "22077",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 94.7% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
+      "warning": "Restock advice is unavailable. 86 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 94.7% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -741,7 +961,12 @@
               "bias_units_per_day": 16.339285714285715,
               "total_absolute_error": 457.5,
               "actual_total": 817,
-              "predicted_total": 1274.5
+              "predicted_total": 1274.5,
+              "period_mae": {
+                "7": 114.375,
+                "14": 228.75,
+                "28": 457.5
+              }
             },
             "baseline": {
               "mae": 19.178571428571427,
@@ -749,7 +974,12 @@
               "bias_units_per_day": -1.3214285714285714,
               "total_absolute_error": 37.0,
               "actual_total": 817,
-              "predicted_total": 780.0
+              "predicted_total": 780.0,
+              "period_mae": {
+                "7": 31.25,
+                "14": 62.5,
+                "28": 37.0
+              }
             }
           }
         ]
@@ -759,7 +989,7 @@
       "id": "22086",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 52.8% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
+      "warning": "Restock advice is unavailable. 213 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 52.8% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -773,7 +1003,12 @@
               "bias_units_per_day": -126.55357142857143,
               "total_absolute_error": 3543.5,
               "actual_total": 7149,
-              "predicted_total": 3605.5
+              "predicted_total": 3605.5,
+              "period_mae": {
+                "7": 885.875,
+                "14": 1771.75,
+                "28": 3543.5
+              }
             },
             "baseline": {
               "mae": 109.46428571428571,
@@ -781,7 +1016,12 @@
               "bias_units_per_day": -66.89285714285714,
               "total_absolute_error": 1873.0,
               "actual_total": 7149,
-              "predicted_total": 5276.0
+              "predicted_total": 5276.0,
+              "period_mae": {
+                "7": 468.25,
+                "14": 936.5,
+                "28": 1873.0
+              }
             }
           }
         ]
@@ -791,7 +1031,7 @@
       "id": "22090",
       "method": "croston_sba",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 94.6% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 112 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 94.6% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -805,7 +1045,12 @@
               "bias_units_per_day": 1.4406420763122518,
               "total_absolute_error": 40.33797813674306,
               "actual_total": 281,
-              "predicted_total": 321.33797813674306
+              "predicted_total": 321.33797813674306,
+              "period_mae": {
+                "7": 10.084494534185765,
+                "14": 20.16898906837153,
+                "28": 40.33797813674306
+              }
             },
             "baseline": {
               "mae": 15.178571428571429,
@@ -813,7 +1058,12 @@
               "bias_units_per_day": 8.25,
               "total_absolute_error": 231.0,
               "actual_total": 281,
-              "predicted_total": 512.0
+              "predicted_total": 512.0,
+              "period_mae": {
+                "7": 57.75,
+                "14": 115.5,
+                "28": 231.0
+              }
             }
           }
         ]
@@ -823,7 +1073,7 @@
       "id": "22111",
       "method": "croston_sba",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 70.6% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
+      "warning": "Restock advice is unavailable. 184 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 70.6% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -837,7 +1087,12 @@
               "bias_units_per_day": -10.456423329354093,
               "total_absolute_error": 292.77985322191466,
               "actual_total": 1056,
-              "predicted_total": 763.2201467780853
+              "predicted_total": 763.2201467780853,
+              "period_mae": {
+                "7": 81.09748165273933,
+                "14": 146.38992661095733,
+                "28": 292.77985322191466
+              }
             },
             "baseline": {
               "mae": 23.142857142857142,
@@ -845,7 +1100,12 @@
               "bias_units_per_day": 1.8571428571428572,
               "total_absolute_error": 52.0,
               "actual_total": 1056,
-              "predicted_total": 1108.0
+              "predicted_total": 1108.0,
+              "period_mae": {
+                "7": 67.0,
+                "14": 37.0,
+                "28": 52.0
+              }
             }
           }
         ]
@@ -854,8 +1114,8 @@
     {
       "id": "22112",
       "method": "weekday_mean",
-      "eligible": true,
-      "warning": null,
+      "eligible": false,
+      "warning": "Restock advice is unavailable. 152 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -869,7 +1129,12 @@
               "bias_units_per_day": -26.357142857142858,
               "total_absolute_error": 738.0,
               "actual_total": 1616,
-              "predicted_total": 878.0
+              "predicted_total": 878.0,
+              "period_mae": {
+                "7": 184.5,
+                "14": 369.0,
+                "28": 738.0
+              }
             },
             "baseline": {
               "mae": 32.92857142857143,
@@ -877,7 +1142,12 @@
               "bias_units_per_day": 1.2857142857142858,
               "total_absolute_error": 36.0,
               "actual_total": 1616,
-              "predicted_total": 1652.0
+              "predicted_total": 1652.0,
+              "period_mae": {
+                "7": 74.0,
+                "14": 18.0,
+                "28": 36.0
+              }
             }
           }
         ]
@@ -886,8 +1156,8 @@
     {
       "id": "22138",
       "method": "weekday_mean",
-      "eligible": true,
-      "warning": null,
+      "eligible": false,
+      "warning": "Restock advice is unavailable. 118 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -901,7 +1171,12 @@
               "bias_units_per_day": -4.160714285714286,
               "total_absolute_error": 116.5,
               "actual_total": 957,
-              "predicted_total": 840.5
+              "predicted_total": 840.5,
+              "period_mae": {
+                "7": 52.75,
+                "14": 105.5,
+                "28": 116.5
+              }
             },
             "baseline": {
               "mae": 20.035714285714285,
@@ -909,7 +1184,12 @@
               "bias_units_per_day": 7.964285714285714,
               "total_absolute_error": 223.0,
               "actual_total": 957,
-              "predicted_total": 1180.0
+              "predicted_total": 1180.0,
+              "period_mae": {
+                "7": 81.25,
+                "14": 111.5,
+                "28": 223.0
+              }
             }
           }
         ]
@@ -919,7 +1199,7 @@
       "id": "22139",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 51.4% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
+      "warning": "Restock advice is unavailable. 105 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 51.4% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -933,7 +1213,12 @@
               "bias_units_per_day": -11.553571428571429,
               "total_absolute_error": 323.5,
               "actual_total": 831,
-              "predicted_total": 507.5
+              "predicted_total": 507.5,
+              "period_mae": {
+                "7": 80.875,
+                "14": 161.75,
+                "28": 323.5
+              }
             },
             "baseline": {
               "mae": 14.821428571428571,
@@ -941,7 +1226,12 @@
               "bias_units_per_day": -7.25,
               "total_absolute_error": 203.0,
               "actual_total": 831,
-              "predicted_total": 628.0
+              "predicted_total": 628.0,
+              "period_mae": {
+                "7": 50.75,
+                "14": 101.5,
+                "28": 203.0
+              }
             }
           }
         ]
@@ -951,7 +1241,7 @@
       "id": "22178",
       "method": "seasonal_naive",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 86.4% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 84 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 86.4% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -965,7 +1255,12 @@
               "bias_units_per_day": -27.25,
               "total_absolute_error": 763.0,
               "actual_total": 2255,
-              "predicted_total": 1492.0
+              "predicted_total": 1492.0,
+              "period_mae": {
+                "7": 190.75,
+                "14": 381.5,
+                "28": 763.0
+              }
             },
             "baseline": {
               "mae": 69.60714285714286,
@@ -973,7 +1268,12 @@
               "bias_units_per_day": -27.25,
               "total_absolute_error": 763.0,
               "actual_total": 2255,
-              "predicted_total": 1492.0
+              "predicted_total": 1492.0,
+              "period_mae": {
+                "7": 190.75,
+                "14": 381.5,
+                "28": 763.0
+              }
             }
           }
         ]
@@ -983,7 +1283,7 @@
       "id": "22197",
       "method": "seasonal_naive",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 110.2% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 80 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 110.2% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -997,7 +1297,12 @@
               "bias_units_per_day": 85.03571428571429,
               "total_absolute_error": 2381.0,
               "actual_total": 13899,
-              "predicted_total": 16280.0
+              "predicted_total": 16280.0,
+              "period_mae": {
+                "7": 1414.25,
+                "14": 1190.5,
+                "28": 2381.0
+              }
             },
             "baseline": {
               "mae": 547.1785714285714,
@@ -1005,7 +1310,12 @@
               "bias_units_per_day": 85.03571428571429,
               "total_absolute_error": 2381.0,
               "actual_total": 13899,
-              "predicted_total": 16280.0
+              "predicted_total": 16280.0,
+              "period_mae": {
+                "7": 1414.25,
+                "14": 1190.5,
+                "28": 2381.0
+              }
             }
           }
         ]
@@ -1015,7 +1325,7 @@
       "id": "22355",
       "method": "seasonal_naive",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 62.9% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 89 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 62.9% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -1029,7 +1339,12 @@
               "bias_units_per_day": -34.535714285714285,
               "total_absolute_error": 967.0,
               "actual_total": 2639,
-              "predicted_total": 1672.0
+              "predicted_total": 1672.0,
+              "period_mae": {
+                "7": 269.75,
+                "14": 483.5,
+                "28": 967.0
+              }
             },
             "baseline": {
               "mae": 59.32142857142857,
@@ -1037,7 +1352,12 @@
               "bias_units_per_day": -34.535714285714285,
               "total_absolute_error": 967.0,
               "actual_total": 2639,
-              "predicted_total": 1672.0
+              "predicted_total": 1672.0,
+              "period_mae": {
+                "7": 269.75,
+                "14": 483.5,
+                "28": 967.0
+              }
             }
           }
         ]
@@ -1047,7 +1367,7 @@
       "id": "22382",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 67.5% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 88 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 67.5% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -1061,7 +1381,12 @@
               "bias_units_per_day": -5.767857142857143,
               "total_absolute_error": 161.5,
               "actual_total": 1101,
-              "predicted_total": 939.5
+              "predicted_total": 939.5,
+              "period_mae": {
+                "7": 144.25,
+                "14": 288.5,
+                "28": 161.5
+              }
             },
             "baseline": {
               "mae": 38.75,
@@ -1069,7 +1394,12 @@
               "bias_units_per_day": 29.107142857142858,
               "total_absolute_error": 815.0,
               "actual_total": 1101,
-              "predicted_total": 1916.0
+              "predicted_total": 1916.0,
+              "period_mae": {
+                "7": 208.25,
+                "14": 407.5,
+                "28": 815.0
+              }
             }
           }
         ]
@@ -1079,7 +1409,7 @@
       "id": "22383",
       "method": "seasonal_naive",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 131.3% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 87 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 131.3% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -1093,7 +1423,12 @@
               "bias_units_per_day": 22.0,
               "total_absolute_error": 616.0,
               "actual_total": 748,
-              "predicted_total": 1364.0
+              "predicted_total": 1364.0,
+              "period_mae": {
+                "7": 154.0,
+                "14": 308.0,
+                "28": 616.0
+              }
             },
             "baseline": {
               "mae": 35.07142857142857,
@@ -1101,7 +1436,12 @@
               "bias_units_per_day": 22.0,
               "total_absolute_error": 616.0,
               "actual_total": 748,
-              "predicted_total": 1364.0
+              "predicted_total": 1364.0,
+              "period_mae": {
+                "7": 154.0,
+                "14": 308.0,
+                "28": 616.0
+              }
             }
           }
         ]
@@ -1111,7 +1451,7 @@
       "id": "22384",
       "method": "seasonal_naive",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 105.7% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 82 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 105.7% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -1125,7 +1465,12 @@
               "bias_units_per_day": 14.142857142857142,
               "total_absolute_error": 396.0,
               "actual_total": 668,
-              "predicted_total": 1064.0
+              "predicted_total": 1064.0,
+              "period_mae": {
+                "7": 99.0,
+                "14": 198.0,
+                "28": 396.0
+              }
             },
             "baseline": {
               "mae": 25.214285714285715,
@@ -1133,7 +1478,12 @@
               "bias_units_per_day": 14.142857142857142,
               "total_absolute_error": 396.0,
               "actual_total": 668,
-              "predicted_total": 1064.0
+              "predicted_total": 1064.0,
+              "period_mae": {
+                "7": 99.0,
+                "14": 198.0,
+                "28": 396.0
+              }
             }
           }
         ]
@@ -1143,7 +1493,7 @@
       "id": "22386",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 147.9% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 86 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 147.9% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -1157,7 +1507,12 @@
               "bias_units_per_day": 44.767857142857146,
               "total_absolute_error": 1253.5,
               "actual_total": 1440,
-              "predicted_total": 2693.5
+              "predicted_total": 2693.5,
+              "period_mae": {
+                "7": 313.375,
+                "14": 626.75,
+                "28": 1253.5
+              }
             },
             "baseline": {
               "mae": 79.21428571428571,
@@ -1165,7 +1520,12 @@
               "bias_units_per_day": 16.714285714285715,
               "total_absolute_error": 468.0,
               "actual_total": 1440,
-              "predicted_total": 1908.0
+              "predicted_total": 1908.0,
+              "period_mae": {
+                "7": 173.0,
+                "14": 234.0,
+                "28": 468.0
+              }
             }
           }
         ]
@@ -1175,7 +1535,7 @@
       "id": "22411",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 69.5% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 88 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 69.5% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -1189,7 +1549,12 @@
               "bias_units_per_day": -7.5,
               "total_absolute_error": 210.0,
               "actual_total": 1415,
-              "predicted_total": 1205.0
+              "predicted_total": 1205.0,
+              "period_mae": {
+                "7": 64.125,
+                "14": 105.0,
+                "28": 210.0
+              }
             },
             "baseline": {
               "mae": 68.89285714285714,
@@ -1197,7 +1562,12 @@
               "bias_units_per_day": 23.892857142857142,
               "total_absolute_error": 669.0,
               "actual_total": 1415,
-              "predicted_total": 2084.0
+              "predicted_total": 2084.0,
+              "period_mae": {
+                "7": 167.25,
+                "14": 334.5,
+                "28": 669.0
+              }
             }
           }
         ]
@@ -1207,7 +1577,7 @@
       "id": "22423",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 55.7% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 73 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 55.7% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -1221,7 +1591,12 @@
               "bias_units_per_day": -10.25,
               "total_absolute_error": 287.0,
               "actual_total": 1151,
-              "predicted_total": 864.0
+              "predicted_total": 864.0,
+              "period_mae": {
+                "7": 90.75,
+                "14": 143.5,
+                "28": 287.0
+              }
             },
             "baseline": {
               "mae": 30.25,
@@ -1229,7 +1604,12 @@
               "bias_units_per_day": -6.25,
               "total_absolute_error": 175.0,
               "actual_total": 1151,
-              "predicted_total": 976.0
+              "predicted_total": 976.0,
+              "period_mae": {
+                "7": 76.75,
+                "14": 87.5,
+                "28": 175.0
+              }
             }
           }
         ]
@@ -1239,7 +1619,7 @@
       "id": "22457",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 69.4% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 77 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 69.4% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -1253,7 +1633,12 @@
               "bias_units_per_day": -26.464285714285715,
               "total_absolute_error": 741.0,
               "actual_total": 1434,
-              "predicted_total": 693.0
+              "predicted_total": 693.0,
+              "period_mae": {
+                "7": 200.875,
+                "14": 387.0,
+                "28": 741.0
+              }
             },
             "baseline": {
               "mae": 39.642857142857146,
@@ -1261,7 +1646,12 @@
               "bias_units_per_day": -16.785714285714285,
               "total_absolute_error": 470.0,
               "actual_total": 1434,
-              "predicted_total": 964.0
+              "predicted_total": 964.0,
+              "period_mae": {
+                "7": 193.5,
+                "14": 387.0,
+                "28": 470.0
+              }
             }
           }
         ]
@@ -1271,7 +1661,7 @@
       "id": "22469",
       "method": "mean_56",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 106.6% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 116 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 106.6% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -1285,7 +1675,12 @@
               "bias_units_per_day": 9.928571428571425,
               "total_absolute_error": 278.0,
               "actual_total": 1544,
-              "predicted_total": 1822.0
+              "predicted_total": 1822.0,
+              "period_mae": {
+                "7": 245.75,
+                "14": 157.0,
+                "28": 278.0
+              }
             },
             "baseline": {
               "mae": 64.42857142857143,
@@ -1293,7 +1688,12 @@
               "bias_units_per_day": 11.0,
               "total_absolute_error": 308.0,
               "actual_total": 1544,
-              "predicted_total": 1852.0
+              "predicted_total": 1852.0,
+              "period_mae": {
+                "7": 249.5,
+                "14": 157.0,
+                "28": 308.0
+              }
             }
           }
         ]
@@ -1303,7 +1703,7 @@
       "id": "22470",
       "method": "seasonal_naive",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 146.4% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 133 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 146.4% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -1317,7 +1717,12 @@
               "bias_units_per_day": 2.5714285714285716,
               "total_absolute_error": 72.0,
               "actual_total": 1212,
-              "predicted_total": 1284.0
+              "predicted_total": 1284.0,
+              "period_mae": {
+                "7": 284.0,
+                "14": 328.0,
+                "28": 72.0
+              }
             },
             "baseline": {
               "mae": 63.357142857142854,
@@ -1325,7 +1730,12 @@
               "bias_units_per_day": 2.5714285714285716,
               "total_absolute_error": 72.0,
               "actual_total": 1212,
-              "predicted_total": 1284.0
+              "predicted_total": 1284.0,
+              "period_mae": {
+                "7": 284.0,
+                "14": 328.0,
+                "28": 72.0
+              }
             }
           }
         ]
@@ -1335,7 +1745,7 @@
       "id": "22558",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 104.7% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 98 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 104.7% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -1349,7 +1759,12 @@
               "bias_units_per_day": -0.2857142857142857,
               "total_absolute_error": 8.0,
               "actual_total": 674,
-              "predicted_total": 666.0
+              "predicted_total": 666.0,
+              "period_mae": {
+                "7": 55.25,
+                "14": 108.0,
+                "28": 8.0
+              }
             },
             "baseline": {
               "mae": 34.357142857142854,
@@ -1357,7 +1772,12 @@
               "bias_units_per_day": 7.357142857142857,
               "total_absolute_error": 206.0,
               "actual_total": 674,
-              "predicted_total": 880.0
+              "predicted_total": 880.0,
+              "period_mae": {
+                "7": 82.0,
+                "14": 108.0,
+                "28": 206.0
+              }
             }
           }
         ]
@@ -1367,7 +1787,7 @@
       "id": "22629",
       "method": "mean_56",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 96.1% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
+      "warning": "Restock advice is unavailable. 93 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 96.1% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -1381,7 +1801,12 @@
               "bias_units_per_day": -11.107142857142856,
               "total_absolute_error": 311.0,
               "actual_total": 1381,
-              "predicted_total": 1070.0
+              "predicted_total": 1070.0,
+              "period_mae": {
+                "7": 133.0,
+                "14": 155.5,
+                "28": 311.0
+              }
             },
             "baseline": {
               "mae": 43.035714285714285,
@@ -1389,7 +1814,12 @@
               "bias_units_per_day": -1.3214285714285714,
               "total_absolute_error": 37.0,
               "actual_total": 1381,
-              "predicted_total": 1344.0
+              "predicted_total": 1344.0,
+              "period_mae": {
+                "7": 98.75,
+                "14": 149.5,
+                "28": 37.0
+              }
             }
           }
         ]
@@ -1399,7 +1829,7 @@
       "id": "22630",
       "method": "mean_56",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 80.9% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 95 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 80.9% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -1413,7 +1843,12 @@
               "bias_units_per_day": 0.14285714285714413,
               "total_absolute_error": 4.0,
               "actual_total": 856,
-              "predicted_total": 860.0
+              "predicted_total": 860.0,
+              "period_mae": {
+                "7": 65.5,
+                "14": 131.0,
+                "28": 4.0
+              }
             },
             "baseline": {
               "mae": 27.571428571428573,
@@ -1421,7 +1856,12 @@
               "bias_units_per_day": -4.285714285714286,
               "total_absolute_error": 120.0,
               "actual_total": 856,
-              "predicted_total": 736.0
+              "predicted_total": 736.0,
+              "period_mae": {
+                "7": 65.5,
+                "14": 131.0,
+                "28": 120.0
+              }
             }
           }
         ]
@@ -1431,7 +1871,7 @@
       "id": "22666",
       "method": "mean_56",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 90.5% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 80 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 90.5% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -1445,7 +1885,12 @@
               "bias_units_per_day": 7.964285714285714,
               "total_absolute_error": 223,
               "actual_total": 925,
-              "predicted_total": 1148
+              "predicted_total": 1148,
+              "period_mae": {
+                "7": 123.75,
+                "14": 147.5,
+                "28": 223
+              }
             },
             "baseline": {
               "mae": 49.964285714285715,
@@ -1453,7 +1898,12 @@
               "bias_units_per_day": 7.964285714285714,
               "total_absolute_error": 223.0,
               "actual_total": 925,
-              "predicted_total": 1148.0
+              "predicted_total": 1148.0,
+              "period_mae": {
+                "7": 123.75,
+                "14": 147.5,
+                "28": 223.0
+              }
             }
           }
         ]
@@ -1463,7 +1913,7 @@
       "id": "22697",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 60.8% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 85 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 60.8% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -1477,7 +1927,12 @@
               "bias_units_per_day": -3.25,
               "total_absolute_error": 91.0,
               "actual_total": 668,
-              "predicted_total": 577.0
+              "predicted_total": 577.0,
+              "period_mae": {
+                "7": 46.875,
+                "14": 85.0,
+                "28": 91.0
+              }
             },
             "baseline": {
               "mae": 15.285714285714286,
@@ -1485,7 +1940,12 @@
               "bias_units_per_day": -7.571428571428571,
               "total_absolute_error": 212.0,
               "actual_total": 668,
-              "predicted_total": 456.0
+              "predicted_total": 456.0,
+              "period_mae": {
+                "7": 62.0,
+                "14": 106.0,
+                "28": 212.0
+              }
             }
           }
         ]
@@ -1495,7 +1955,7 @@
       "id": "22698",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 83.3% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
+      "warning": "Restock advice is unavailable. 132 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 83.3% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -1509,7 +1969,12 @@
               "bias_units_per_day": 0.5178571428571429,
               "total_absolute_error": 14.5,
               "actual_total": 529,
-              "predicted_total": 543.5
+              "predicted_total": 543.5,
+              "period_mae": {
+                "7": 29.6875,
+                "14": 48.5,
+                "28": 14.5
+              }
             },
             "baseline": {
               "mae": 11.892857142857142,
@@ -1517,7 +1982,12 @@
               "bias_units_per_day": -6.035714285714286,
               "total_absolute_error": 169.0,
               "actual_total": 529,
-              "predicted_total": 360.0
+              "predicted_total": 360.0,
+              "period_mae": {
+                "7": 43.25,
+                "14": 84.5,
+                "28": 169.0
+              }
             }
           }
         ]
@@ -1527,7 +1997,7 @@
       "id": "22699",
       "method": "croston_sba",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 65.2% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 91 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 65.2% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -1541,7 +2011,12 @@
               "bias_units_per_day": -8.832764030705954,
               "total_absolute_error": 247.31739285976676,
               "actual_total": 761,
-              "predicted_total": 513.6826071402332
+              "predicted_total": 513.6826071402332,
+              "period_mae": {
+                "7": 61.82934821494169,
+                "14": 123.65869642988338,
+                "28": 247.31739285976676
+              }
             },
             "baseline": {
               "mae": 20.035714285714285,
@@ -1549,7 +2024,12 @@
               "bias_units_per_day": -12.178571428571429,
               "total_absolute_error": 341.0,
               "actual_total": 761,
-              "predicted_total": 420.0
+              "predicted_total": 420.0,
+              "period_mae": {
+                "7": 85.25,
+                "14": 170.5,
+                "28": 341.0
+              }
             }
           }
         ]
@@ -1559,7 +2039,7 @@
       "id": "22720",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 108.5% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
+      "warning": "Restock advice is unavailable. 112 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 108.5% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -1573,7 +2053,12 @@
               "bias_units_per_day": 15.571428571428571,
               "total_absolute_error": 436.0,
               "actual_total": 496,
-              "predicted_total": 932.0
+              "predicted_total": 932.0,
+              "period_mae": {
+                "7": 109.0,
+                "14": 218.0,
+                "28": 436.0
+              }
             },
             "baseline": {
               "mae": 10.071428571428571,
@@ -1581,7 +2066,12 @@
               "bias_units_per_day": -2.4285714285714284,
               "total_absolute_error": 68.0,
               "actual_total": 496,
-              "predicted_total": 428.0
+              "predicted_total": 428.0,
+              "period_mae": {
+                "7": 26.0,
+                "14": 38.0,
+                "28": 68.0
+              }
             }
           }
         ]
@@ -1591,7 +2081,7 @@
       "id": "22722",
       "method": "croston_sba",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 73.8% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 173 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 73.8% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -1605,7 +2095,12 @@
               "bias_units_per_day": 2.2926125579610033,
               "total_absolute_error": 64.19315162290809,
               "actual_total": 445,
-              "predicted_total": 509.1931516229081
+              "predicted_total": 509.1931516229081,
+              "period_mae": {
+                "7": 45.89914395286351,
+                "14": 70.5,
+                "28": 64.19315162290809
+              }
             },
             "baseline": {
               "mae": 14.25,
@@ -1613,7 +2108,12 @@
               "bias_units_per_day": 4.678571428571429,
               "total_absolute_error": 131.0,
               "actual_total": 445,
-              "predicted_total": 576.0
+              "predicted_total": 576.0,
+              "period_mae": {
+                "7": 54.25,
+                "14": 70.5,
+                "28": 131.0
+              }
             }
           }
         ]
@@ -1623,7 +2123,7 @@
       "id": "22726",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 51.1% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 124 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 51.1% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -1637,7 +2137,12 @@
               "bias_units_per_day": -1.7142857142857142,
               "total_absolute_error": 48.0,
               "actual_total": 971,
-              "predicted_total": 923.0
+              "predicted_total": 923.0,
+              "period_mae": {
+                "7": 42.75,
+                "14": 85.5,
+                "28": 48.0
+              }
             },
             "baseline": {
               "mae": 24.25,
@@ -1645,7 +2150,12 @@
               "bias_units_per_day": 13.75,
               "total_absolute_error": 385.0,
               "actual_total": 971,
-              "predicted_total": 1356.0
+              "predicted_total": 1356.0,
+              "period_mae": {
+                "7": 96.25,
+                "14": 192.5,
+                "28": 385.0
+              }
             }
           }
         ]
@@ -1655,7 +2165,7 @@
       "id": "22727",
       "method": "mean_56",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 77.2% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 84 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 77.2% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -1669,7 +2179,12 @@
               "bias_units_per_day": -20.714285714285715,
               "total_absolute_error": 580.0,
               "actual_total": 1567,
-              "predicted_total": 987.0
+              "predicted_total": 987.0,
+              "period_mae": {
+                "7": 211.125,
+                "14": 413.5,
+                "28": 580.0
+              }
             },
             "baseline": {
               "mae": 43.964285714285715,
@@ -1677,7 +2192,12 @@
               "bias_units_per_day": -11.678571428571429,
               "total_absolute_error": 327.0,
               "actual_total": 1567,
-              "predicted_total": 1240.0
+              "predicted_total": 1240.0,
+              "period_mae": {
+                "7": 242.75,
+                "14": 413.5,
+                "28": 327.0
+              }
             }
           }
         ]
@@ -1687,7 +2207,7 @@
       "id": "22728",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 77.6% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
+      "warning": "Restock advice is unavailable. 95 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 77.6% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -1701,7 +2221,12 @@
               "bias_units_per_day": 6.196428571428571,
               "total_absolute_error": 173.5,
               "actual_total": 589,
-              "predicted_total": 762.5
+              "predicted_total": 762.5,
+              "period_mae": {
+                "7": 57.5625,
+                "14": 86.75,
+                "28": 173.5
+              }
             },
             "baseline": {
               "mae": 11.678571428571429,
@@ -1709,7 +2234,12 @@
               "bias_units_per_day": -2.3214285714285716,
               "total_absolute_error": 65.0,
               "actual_total": 589,
-              "predicted_total": 524.0
+              "predicted_total": 524.0,
+              "period_mae": {
+                "7": 42.25,
+                "14": 84.5,
+                "28": 65.0
+              }
             }
           }
         ]
@@ -1719,7 +2249,7 @@
       "id": "22910",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 52.0% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
+      "warning": "Restock advice is unavailable. 225 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 52.0% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -1733,7 +2263,12 @@
               "bias_units_per_day": -57.107142857142854,
               "total_absolute_error": 1599.0,
               "actual_total": 3537,
-              "predicted_total": 1938.0
+              "predicted_total": 1938.0,
+              "period_mae": {
+                "7": 399.75,
+                "14": 799.5,
+                "28": 1599.0
+              }
             },
             "baseline": {
               "mae": 57.892857142857146,
@@ -1741,7 +2276,12 @@
               "bias_units_per_day": -21.321428571428573,
               "total_absolute_error": 597.0,
               "actual_total": 3537,
-              "predicted_total": 2940.0
+              "predicted_total": 2940.0,
+              "period_mae": {
+                "7": 173.75,
+                "14": 347.5,
+                "28": 597.0
+              }
             }
           }
         ]
@@ -1751,7 +2291,7 @@
       "id": "22960",
       "method": "mean_56",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 78.9% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 79 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 78.9% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -1765,7 +2305,12 @@
               "bias_units_per_day": -6.714285714285714,
               "total_absolute_error": 188.0,
               "actual_total": 951,
-              "predicted_total": 763.0
+              "predicted_total": 763.0,
+              "period_mae": {
+                "7": 56.375,
+                "14": 104.5,
+                "28": 188.0
+              }
             },
             "baseline": {
               "mae": 33.892857142857146,
@@ -1773,7 +2318,12 @@
               "bias_units_per_day": -10.107142857142858,
               "total_absolute_error": 283.0,
               "actual_total": 951,
-              "predicted_total": 668.0
+              "predicted_total": 668.0,
+              "period_mae": {
+                "7": 70.75,
+                "14": 141.5,
+                "28": 283.0
+              }
             }
           }
         ]
@@ -1783,7 +2333,7 @@
       "id": "22961",
       "method": "mean_56",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 82.4% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
+      "warning": "Restock advice is unavailable. 88 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 82.4% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -1797,7 +2347,12 @@
               "bias_units_per_day": -25.999999999999996,
               "total_absolute_error": 728.0,
               "actual_total": 2105,
-              "predicted_total": 1377.0
+              "predicted_total": 1377.0,
+              "period_mae": {
+                "7": 223.125,
+                "14": 364.0,
+                "28": 728.0
+              }
             },
             "baseline": {
               "mae": 49.25,
@@ -1805,7 +2360,12 @@
               "bias_units_per_day": -31.464285714285715,
               "total_absolute_error": 881.0,
               "actual_total": 2105,
-              "predicted_total": 1224.0
+              "predicted_total": 1224.0,
+              "period_mae": {
+                "7": 242.25,
+                "14": 440.5,
+                "28": 881.0
+              }
             }
           }
         ]
@@ -1815,7 +2375,7 @@
       "id": "22993",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 60.3% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 130 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 60.3% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -1829,7 +2389,12 @@
               "bias_units_per_day": -21.142857142857142,
               "total_absolute_error": 592.0,
               "actual_total": 1687,
-              "predicted_total": 1095.0
+              "predicted_total": 1095.0,
+              "period_mae": {
+                "7": 148.0,
+                "14": 296.0,
+                "28": 592.0
+              }
             },
             "baseline": {
               "mae": 45.607142857142854,
@@ -1837,7 +2402,12 @@
               "bias_units_per_day": -11.535714285714286,
               "total_absolute_error": 323.0,
               "actual_total": 1687,
-              "predicted_total": 1364.0
+              "predicted_total": 1364.0,
+              "period_mae": {
+                "7": 80.75,
+                "14": 161.5,
+                "28": 323.0
+              }
             }
           }
         ]
@@ -1847,7 +2417,7 @@
       "id": "23084",
       "method": "seasonal_naive",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 65.9% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 238 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 65.9% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -1861,7 +2431,12 @@
               "bias_units_per_day": -99.75,
               "total_absolute_error": 2793.0,
               "actual_total": 14693,
-              "predicted_total": 11900.0
+              "predicted_total": 11900.0,
+              "period_mae": {
+                "7": 1109.75,
+                "14": 1396.5,
+                "28": 2793.0
+              }
             },
             "baseline": {
               "mae": 345.9642857142857,
@@ -1869,7 +2444,12 @@
               "bias_units_per_day": -99.75,
               "total_absolute_error": 2793.0,
               "actual_total": 14693,
-              "predicted_total": 11900.0
+              "predicted_total": 11900.0,
+              "period_mae": {
+                "7": 1109.75,
+                "14": 1396.5,
+                "28": 2793.0
+              }
             }
           }
         ]
@@ -1879,7 +2459,7 @@
       "id": "23199",
       "method": "seasonal_naive",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 221.4% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 176 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 221.4% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -1893,7 +2473,12 @@
               "bias_units_per_day": 57.357142857142854,
               "total_absolute_error": 1606.0,
               "actual_total": 1030,
-              "predicted_total": 2636.0
+              "predicted_total": 2636.0,
+              "period_mae": {
+                "7": 401.5,
+                "14": 803.0,
+                "28": 1606.0
+              }
             },
             "baseline": {
               "mae": 81.42857142857143,
@@ -1901,7 +2486,12 @@
               "bias_units_per_day": 57.357142857142854,
               "total_absolute_error": 1606.0,
               "actual_total": 1030,
-              "predicted_total": 2636.0
+              "predicted_total": 2636.0,
+              "period_mae": {
+                "7": 401.5,
+                "14": 803.0,
+                "28": 1606.0
+              }
             }
           }
         ]
@@ -1911,7 +2501,7 @@
       "id": "23201",
       "method": "seasonal_naive",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 224.5% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 176 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 224.5% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -1925,7 +2515,12 @@
               "bias_units_per_day": 77.64285714285714,
               "total_absolute_error": 2174.0,
               "actual_total": 1542,
-              "predicted_total": 3716.0
+              "predicted_total": 3716.0,
+              "period_mae": {
+                "7": 543.5,
+                "14": 1087.0,
+                "28": 2174.0
+              }
             },
             "baseline": {
               "mae": 123.64285714285714,
@@ -1933,7 +2528,12 @@
               "bias_units_per_day": 77.64285714285714,
               "total_absolute_error": 2174.0,
               "actual_total": 1542,
-              "predicted_total": 3716.0
+              "predicted_total": 3716.0,
+              "period_mae": {
+                "7": 543.5,
+                "14": 1087.0,
+                "28": 2174.0
+              }
             }
           }
         ]
@@ -1943,7 +2543,7 @@
       "id": "23202",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 60.1% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 190 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 60.1% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -1957,7 +2557,12 @@
               "bias_units_per_day": -15.803571428571429,
               "total_absolute_error": 442.5,
               "actual_total": 1532,
-              "predicted_total": 1089.5
+              "predicted_total": 1089.5,
+              "period_mae": {
+                "7": 110.625,
+                "14": 221.25,
+                "28": 442.5
+              }
             },
             "baseline": {
               "mae": 55.214285714285715,
@@ -1965,7 +2570,12 @@
               "bias_units_per_day": 9.428571428571429,
               "total_absolute_error": 264.0,
               "actual_total": 1532,
-              "predicted_total": 1796.0
+              "predicted_total": 1796.0,
+              "period_mae": {
+                "7": 66.0,
+                "14": 132.0,
+                "28": 264.0
+              }
             }
           }
         ]
@@ -1975,7 +2585,7 @@
       "id": "23203",
       "method": "seasonal_naive",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 173.3% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 191 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 173.3% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -1989,7 +2599,12 @@
               "bias_units_per_day": 138.25,
               "total_absolute_error": 3871.0,
               "actual_total": 2721,
-              "predicted_total": 6592.0
+              "predicted_total": 6592.0,
+              "period_mae": {
+                "7": 967.75,
+                "14": 1935.5,
+                "28": 3871.0
+              }
             },
             "baseline": {
               "mae": 168.39285714285714,
@@ -1997,7 +2612,12 @@
               "bias_units_per_day": 138.25,
               "total_absolute_error": 3871.0,
               "actual_total": 2721,
-              "predicted_total": 6592.0
+              "predicted_total": 6592.0,
+              "period_mae": {
+                "7": 967.75,
+                "14": 1935.5,
+                "28": 3871.0
+              }
             }
           }
         ]
@@ -2007,7 +2627,7 @@
       "id": "23206",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 67.8% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 176 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 67.8% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -2021,7 +2641,12 @@
               "bias_units_per_day": 3.0,
               "total_absolute_error": 84.0,
               "actual_total": 946,
-              "predicted_total": 1030.0
+              "predicted_total": 1030.0,
+              "period_mae": {
+                "7": 93.25,
+                "14": 123.0,
+                "28": 84.0
+              }
             },
             "baseline": {
               "mae": 46.285714285714285,
@@ -2029,7 +2654,12 @@
               "bias_units_per_day": 24.785714285714285,
               "total_absolute_error": 694.0,
               "actual_total": 946,
-              "predicted_total": 1640.0
+              "predicted_total": 1640.0,
+              "period_mae": {
+                "7": 173.5,
+                "14": 347.0,
+                "28": 694.0
+              }
             }
           }
         ]
@@ -2039,7 +2669,7 @@
       "id": "23207",
       "method": "seasonal_naive",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 95.9% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 178 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 95.9% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -2053,7 +2683,12 @@
               "bias_units_per_day": 5.714285714285714,
               "total_absolute_error": 160.0,
               "actual_total": 736,
-              "predicted_total": 896.0
+              "predicted_total": 896.0,
+              "period_mae": {
+                "7": 110.0,
+                "14": 157.0,
+                "28": 160.0
+              }
             },
             "baseline": {
               "mae": 25.214285714285715,
@@ -2061,7 +2696,12 @@
               "bias_units_per_day": 5.714285714285714,
               "total_absolute_error": 160.0,
               "actual_total": 736,
-              "predicted_total": 896.0
+              "predicted_total": 896.0,
+              "period_mae": {
+                "7": 110.0,
+                "14": 157.0,
+                "28": 160.0
+              }
             }
           }
         ]
@@ -2071,7 +2711,7 @@
       "id": "23209",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 50.2% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 192 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 50.2% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -2085,7 +2725,12 @@
               "bias_units_per_day": -2.4464285714285716,
               "total_absolute_error": 68.5,
               "actual_total": 1387,
-              "predicted_total": 1318.5
+              "predicted_total": 1318.5,
+              "period_mae": {
+                "7": 50.4375,
+                "14": 34.25,
+                "28": 68.5
+              }
             },
             "baseline": {
               "mae": 63.035714285714285,
@@ -2093,7 +2738,12 @@
               "bias_units_per_day": 40.035714285714285,
               "total_absolute_error": 1121.0,
               "actual_total": 1387,
-              "predicted_total": 2508.0
+              "predicted_total": 2508.0,
+              "period_mae": {
+                "7": 280.25,
+                "14": 560.5,
+                "28": 1121.0
+              }
             }
           }
         ]
@@ -2103,7 +2753,7 @@
       "id": "23245",
       "method": "seasonal_naive",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 85.7% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 218 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 85.7% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -2117,7 +2767,12 @@
               "bias_units_per_day": 3.2142857142857144,
               "total_absolute_error": 90.0,
               "actual_total": 726,
-              "predicted_total": 816.0
+              "predicted_total": 816.0,
+              "period_mae": {
+                "7": 32.5,
+                "14": 45.0,
+                "28": 90.0
+              }
             },
             "baseline": {
               "mae": 22.214285714285715,
@@ -2125,7 +2780,12 @@
               "bias_units_per_day": 3.2142857142857144,
               "total_absolute_error": 90.0,
               "actual_total": 726,
-              "predicted_total": 816.0
+              "predicted_total": 816.0,
+              "period_mae": {
+                "7": 32.5,
+                "14": 45.0,
+                "28": 90.0
+              }
             }
           }
         ]
@@ -2135,7 +2795,7 @@
       "id": "23298",
       "method": "mean_28",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 79.4% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 189 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 79.4% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -2149,7 +2809,12 @@
               "bias_units_per_day": -13.428571428571429,
               "total_absolute_error": 376.0,
               "actual_total": 820,
-              "predicted_total": 444.0
+              "predicted_total": 444.0,
+              "period_mae": {
+                "7": 100.5,
+                "14": 201.0,
+                "28": 376.0
+              }
             },
             "baseline": {
               "mae": 29.428571428571427,
@@ -2157,7 +2822,12 @@
               "bias_units_per_day": -4.571428571428571,
               "total_absolute_error": 128.0,
               "actual_total": 820,
-              "predicted_total": 692.0
+              "predicted_total": 692.0,
+              "period_mae": {
+                "7": 123.0,
+                "14": 201.0,
+                "28": 128.0
+              }
             }
           }
         ]
@@ -2167,7 +2837,7 @@
       "id": "23300",
       "method": "mean_28",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 67.7% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
+      "warning": "Restock advice is unavailable. 200 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 67.7% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -2181,7 +2851,12 @@
               "bias_units_per_day": -16.821428571428573,
               "total_absolute_error": 471.0,
               "actual_total": 1417,
-              "predicted_total": 946.0
+              "predicted_total": 946.0,
+              "period_mae": {
+                "7": 117.75,
+                "14": 235.5,
+                "28": 471.0
+              }
             },
             "baseline": {
               "mae": 28.892857142857142,
@@ -2189,7 +2864,12 @@
               "bias_units_per_day": 6.25,
               "total_absolute_error": 175.0,
               "actual_total": 1417,
-              "predicted_total": 1592.0
+              "predicted_total": 1592.0,
+              "period_mae": {
+                "7": 66.75,
+                "14": 120.5,
+                "28": 175.0
+              }
             }
           }
         ]
@@ -2199,7 +2879,7 @@
       "id": "23301",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 58.9% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
+      "warning": "Restock advice is unavailable. 200 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 58.9% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -2213,7 +2893,12 @@
               "bias_units_per_day": -45.125,
               "total_absolute_error": 1263.5,
               "actual_total": 2496,
-              "predicted_total": 1232.5
+              "predicted_total": 1232.5,
+              "period_mae": {
+                "7": 315.875,
+                "14": 631.75,
+                "28": 1263.5
+              }
             },
             "baseline": {
               "mae": 43.857142857142854,
@@ -2221,7 +2906,12 @@
               "bias_units_per_day": -1.1428571428571428,
               "total_absolute_error": 32.0,
               "actual_total": 2496,
-              "predicted_total": 2464.0
+              "predicted_total": 2464.0,
+              "period_mae": {
+                "7": 114.0,
+                "14": 27.0,
+                "28": 32.0
+              }
             }
           }
         ]
@@ -2231,7 +2921,7 @@
       "id": "23355",
       "method": "exponential_level",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 51.4% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 280 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 51.4% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -2245,7 +2935,12 @@
               "bias_units_per_day": 18.698124935346964,
               "total_absolute_error": 523.547498189715,
               "actual_total": 1955,
-              "predicted_total": 2478.547498189715
+              "predicted_total": 2478.547498189715,
+              "period_mae": {
+                "7": 130.88687454742876,
+                "14": 261.7737490948575,
+                "28": 523.547498189715
+              }
             },
             "baseline": {
               "mae": 63.107142857142854,
@@ -2253,7 +2948,12 @@
               "bias_units_per_day": 54.17857142857143,
               "total_absolute_error": 1517.0,
               "actual_total": 1955,
-              "predicted_total": 3472.0
+              "predicted_total": 3472.0,
+              "period_mae": {
+                "7": 379.25,
+                "14": 758.5,
+                "28": 1517.0
+              }
             }
           }
         ]
@@ -2263,7 +2963,7 @@
       "id": "47566",
       "method": "mean_28",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 81.6% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
+      "warning": "Restock advice is unavailable. 80 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 81.6% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -2277,7 +2977,12 @@
               "bias_units_per_day": -12.535714285714286,
               "total_absolute_error": 351.0,
               "actual_total": 874,
-              "predicted_total": 523.0
+              "predicted_total": 523.0,
+              "period_mae": {
+                "7": 120.0,
+                "14": 240.0,
+                "28": 351.0
+              }
             },
             "baseline": {
               "mae": 23.714285714285715,
@@ -2285,7 +2990,12 @@
               "bias_units_per_day": -9.214285714285714,
               "total_absolute_error": 258.0,
               "actual_total": 874,
-              "predicted_total": 616.0
+              "predicted_total": 616.0,
+              "period_mae": {
+                "7": 120.0,
+                "14": 240.0,
+                "28": 258.0
+              }
             }
           }
         ]
@@ -2295,7 +3005,7 @@
       "id": "82482",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 91.3% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 82 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 91.3% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -2309,7 +3019,12 @@
               "bias_units_per_day": 6.375,
               "total_absolute_error": 178.5,
               "actual_total": 702,
-              "predicted_total": 880.5
+              "predicted_total": 880.5,
+              "period_mae": {
+                "7": 54.0,
+                "14": 89.25,
+                "28": 178.5
+              }
             },
             "baseline": {
               "mae": 50.0,
@@ -2317,7 +3032,12 @@
               "bias_units_per_day": 28.214285714285715,
               "total_absolute_error": 790.0,
               "actual_total": 702,
-              "predicted_total": 1492.0
+              "predicted_total": 1492.0,
+              "period_mae": {
+                "7": 197.5,
+                "14": 395.0,
+                "28": 790.0
+              }
             }
           }
         ]
@@ -2327,7 +3047,7 @@
       "id": "82494L",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 62.8% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 118 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 62.8% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -2341,7 +3061,12 @@
               "bias_units_per_day": -10.446428571428571,
               "total_absolute_error": 292.5,
               "actual_total": 934,
-              "predicted_total": 641.5
+              "predicted_total": 641.5,
+              "period_mae": {
+                "7": 84.3125,
+                "14": 146.25,
+                "28": 292.5
+              }
             },
             "baseline": {
               "mae": 26.0,
@@ -2349,7 +3074,12 @@
               "bias_units_per_day": -11.357142857142858,
               "total_absolute_error": 318.0,
               "actual_total": 934,
-              "predicted_total": 616.0
+              "predicted_total": 616.0,
+              "period_mae": {
+                "7": 87.5,
+                "14": 159.0,
+                "28": 318.0
+              }
             }
           }
         ]
@@ -2359,7 +3089,7 @@
       "id": "84879",
       "method": "seasonal_naive",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 176.5% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 74 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 176.5% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -2373,7 +3103,12 @@
               "bias_units_per_day": 111.42857142857143,
               "total_absolute_error": 3120.0,
               "actual_total": 4112,
-              "predicted_total": 7232.0
+              "predicted_total": 7232.0,
+              "period_mae": {
+                "7": 780.0,
+                "14": 1560.0,
+                "28": 3120.0
+              }
             },
             "baseline": {
               "mae": 259.14285714285717,
@@ -2381,7 +3116,12 @@
               "bias_units_per_day": 111.42857142857143,
               "total_absolute_error": 3120.0,
               "actual_total": 4112,
-              "predicted_total": 7232.0
+              "predicted_total": 7232.0,
+              "period_mae": {
+                "7": 780.0,
+                "14": 1560.0,
+                "28": 3120.0
+              }
             }
           }
         ]
@@ -2391,7 +3131,7 @@
       "id": "84946",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 52.5% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 99 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 52.5% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -2405,7 +3145,12 @@
               "bias_units_per_day": -25.642857142857142,
               "total_absolute_error": 718.0,
               "actual_total": 2687,
-              "predicted_total": 1969.0
+              "predicted_total": 1969.0,
+              "period_mae": {
+                "7": 231.625,
+                "14": 382.5,
+                "28": 718.0
+              }
             },
             "baseline": {
               "mae": 62.107142857142854,
@@ -2413,7 +3158,12 @@
               "bias_units_per_day": 17.892857142857142,
               "total_absolute_error": 501.0,
               "actual_total": 2687,
-              "predicted_total": 3188.0
+              "predicted_total": 3188.0,
+              "period_mae": {
+                "7": 206.75,
+                "14": 382.5,
+                "28": 501.0
+              }
             }
           }
         ]
@@ -2423,7 +3173,7 @@
       "id": "84991",
       "method": "mean_56",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 109.6% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
+      "warning": "Restock advice is unavailable. 107 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 109.6% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -2437,7 +3187,12 @@
               "bias_units_per_day": 4.928571428571431,
               "total_absolute_error": 138.0,
               "actual_total": 1177,
-              "predicted_total": 1315.0
+              "predicted_total": 1315.0,
+              "period_mae": {
+                "7": 177.25,
+                "14": 354.5,
+                "28": 138.0
+              }
             },
             "baseline": {
               "mae": 41.107142857142854,
@@ -2445,7 +3200,12 @@
               "bias_units_per_day": -7.75,
               "total_absolute_error": 217.0,
               "actual_total": 1177,
-              "predicted_total": 960.0
+              "predicted_total": 960.0,
+              "period_mae": {
+                "7": 177.25,
+                "14": 354.5,
+                "28": 217.0
+              }
             }
           }
         ]
@@ -2455,7 +3215,7 @@
       "id": "85099B",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 99.7% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 74 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 99.7% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -2469,7 +3229,12 @@
               "bias_units_per_day": 63.142857142857146,
               "total_absolute_error": 1768.0,
               "actual_total": 3937,
-              "predicted_total": 5705.0
+              "predicted_total": 5705.0,
+              "period_mae": {
+                "7": 503.375,
+                "14": 884.0,
+                "28": 1768.0
+              }
             },
             "baseline": {
               "mae": 270.89285714285717,
@@ -2477,7 +3242,12 @@
               "bias_units_per_day": 185.39285714285714,
               "total_absolute_error": 5191.0,
               "actual_total": 3937,
-              "predicted_total": 9128.0
+              "predicted_total": 9128.0,
+              "period_mae": {
+                "7": 1297.75,
+                "14": 2595.5,
+                "28": 5191.0
+              }
             }
           }
         ]
@@ -2487,7 +3257,7 @@
       "id": "85099C",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 74.5% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 89 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 74.5% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -2501,7 +3271,12 @@
               "bias_units_per_day": -12.857142857142858,
               "total_absolute_error": 360.0,
               "actual_total": 1506,
-              "predicted_total": 1146.0
+              "predicted_total": 1146.0,
+              "period_mae": {
+                "7": 194.0,
+                "14": 180.0,
+                "28": 360.0
+              }
             },
             "baseline": {
               "mae": 49.5,
@@ -2509,7 +3284,12 @@
               "bias_units_per_day": -13.5,
               "total_absolute_error": 378.0,
               "actual_total": 1506,
-              "predicted_total": 1128.0
+              "predicted_total": 1128.0,
+              "period_mae": {
+                "7": 194.0,
+                "14": 189.0,
+                "28": 378.0
+              }
             }
           }
         ]
@@ -2519,7 +3299,7 @@
       "id": "85099F",
       "method": "seasonal_naive",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 200.4% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
+      "warning": "Restock advice is unavailable. 111 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 200.4% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -2533,7 +3313,12 @@
               "bias_units_per_day": 20.821428571428573,
               "total_absolute_error": 583.0,
               "actual_total": 737,
-              "predicted_total": 1320.0
+              "predicted_total": 1320.0,
+              "period_mae": {
+                "7": 145.75,
+                "14": 291.5,
+                "28": 583.0
+              }
             },
             "baseline": {
               "mae": 52.75,
@@ -2541,7 +3326,12 @@
               "bias_units_per_day": 20.821428571428573,
               "total_absolute_error": 583.0,
               "actual_total": 737,
-              "predicted_total": 1320.0
+              "predicted_total": 1320.0,
+              "period_mae": {
+                "7": 145.75,
+                "14": 291.5,
+                "28": 583.0
+              }
             }
           }
         ]
@@ -2551,7 +3341,7 @@
       "id": "85123A",
       "method": "weekday_mean",
       "eligible": false,
-      "warning": "Restock advice is unavailable. The past test error was 75.5% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
+      "warning": "Restock advice is unavailable. 69 days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice. The past test error was 75.5% of recorded sales, above this app\u2019s 50% limit for stock advice. Check unusual sales and missing records; more data alone may not fix this. This is an error measure, not an accuracy percentage. In the past test, this forecast performed worse than repeating the previous week\u2019s sales. Review the sales estimate manually before ordering.",
       "evaluation": {
         "kind": "untouched_final_holdout",
         "windows": [
@@ -2565,7 +3355,12 @@
               "bias_units_per_day": -48.089285714285715,
               "total_absolute_error": 1346.5,
               "actual_total": 3790,
-              "predicted_total": 2443.5
+              "predicted_total": 2443.5,
+              "period_mae": {
+                "7": 336.625,
+                "14": 673.25,
+                "28": 1346.5
+              }
             },
             "baseline": {
               "mae": 80.35714285714286,
@@ -2573,7 +3368,12 @@
               "bias_units_per_day": -57.214285714285715,
               "total_absolute_error": 1602.0,
               "actual_total": 3790,
-              "predicted_total": 2188.0
+              "predicted_total": 2188.0,
+              "period_mae": {
+                "7": 400.5,
+                "14": 801.0,
+                "28": 1602.0
+              }
             }
           }
         ]

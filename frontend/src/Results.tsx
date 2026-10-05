@@ -5,6 +5,7 @@ import {
   friendlyDate,
   download,
   forecastCSV,
+  forecastChecksCSV,
   type Result,
   type Product,
   type Plan,
@@ -138,7 +139,7 @@ export default function Results({
       >
         <div hidden={tab !== "Inventory"}><StoreRestock result={result} jobId={jobId} saved={plans} onSave={onSaveAll} onAddData={onAddData}/></div>
         {tab === "Data quality" ? (
-          <QualityView quality={quality} />
+          <><QualityView quality={quality} /><Button variant="text" onClick={()=>download(`forecast-checks-${result.forecast_start}.csv`,forecastChecksCSV(result))}>Download forecast checks</Button></>
         ) : tab === "Forecasts" ? (
           <div className="forecast-layout">
             <label className="field mobile-product">
@@ -269,7 +270,7 @@ export function Forecast({ product: p, onRestock, onAddData }: { product: Produc
             {!p.inventory_eligible && <p>Stock recommendations aren’t available for this product yet.</p>}
           </div>
           </div>
-          {p.forecast_warning && <Notice tone="warning">This prediction is too uncertain to suggest an order.<details className="quiet-details"><summary>Why?</summary><p>{p.forecast_warning}</p></details></Notice>}
+          {p.forecast_warning && <Notice tone="warning">{p.assumed_zero_days ? "Some zero-sales days are assumptions. Check them before planning stock." : "This prediction did not pass the checks for stock advice."}<details className="quiet-details"><summary>Why?</summary><p>{p.forecast_warning}</p></details></Notice>}
           <section className="daily-preview">
             <h3>Daily sales estimate</h3>
             <div className="table-scroll">
@@ -402,6 +403,7 @@ export function Forecast({ product: p, onRestock, onAddData }: { product: Produc
                     total error: {num(last.model.total_absolute_error)} units.{" "}
                     {p.evaluation?.windows.length} evaluation window(s).
                   </p>
+                  {last.model.period_mae && <p>Past test: 7-day totals differed by {num(last.model.period_mae['7'])} units on average; 14-day totals by {num(last.model.period_mae['14'])} units. These checks describe totals, not delivery timing, and do not override the stock-advice checks.</p>}
                   <p className="muted">
                     Lower error is better. These are historical errors, not a
                     percentage guarantee of future accuracy.

@@ -11,6 +11,8 @@ from decimal import Decimal, InvalidOperation
 from statistics import mean
 from zoneinfo import ZoneInfo
 
+ENGINE_REVISION = "1.2.0"
+
 MAX_ROWS = max(1, min(200_000, int(os.environ.get("RETAIL_MAX_ROWS", "200000"))))
 MAX_CELLS = max(1, min(1_500_000, int(os.environ.get("RETAIL_MAX_CELLS", "1500000"))))
 MAX_PRODUCTS = max(1, min(500, int(os.environ.get("RETAIL_MAX_PRODUCTS", "500"))))
@@ -249,6 +251,7 @@ def normalize(raw, config, progress=lambda *_: None):
         if status not in (
             "observed",
             "zero_confirmed",
+            "zero_assumed",
             "closed",
             "unknown",
             "censored_stockout",
@@ -363,6 +366,7 @@ def normalize(raw, config, progress=lambda *_: None):
                 if status not in (
                     "observed",
                     "zero_confirmed",
+                    "zero_assumed",
                     "closed",
                     "unknown",
                     "censored_stockout",
@@ -370,9 +374,9 @@ def normalize(raw, config, progress=lambda *_: None):
                     raise DataError(
                         "Unknown observation status. Map it to the supported status vocabulary."
                     )
-                if status in ("zero_confirmed", "closed") and amount != 0:
+                if status in ("zero_confirmed", "zero_assumed", "closed") and amount != 0:
                     raise DataError(
-                        "Closed or zero-confirmed days cannot have positive sales."
+                        "Closed or zero-sales days cannot have positive sales."
                     )
                 if layout == "transactions":
                     if event not in ("", "sale", "return", "cancellation"):
@@ -415,8 +419,16 @@ def normalize(raw, config, progress=lambda *_: None):
                         raise DataError(
                             "Conflicting unknown and observed transactions."
                         )
+                    if (old_status in ("zero_confirmed", "zero_assumed", "closed") or status in ("zero_confirmed", "zero_assumed", "closed")) and old_amount + amount > 0:
+                        raise DataError("Positive sales conflict with a zero-sales or closed-day record. Correct this product and date.")
+                    if "unknown" in (status, old_status) and status != old_status:
+                        raise DataError("Conflicting unknown and observed transactions.")
                     amount += old_amount
-                    if old_status != "observed":
+                    if "censored_stockout" in (old_status, status):
+                        status = "censored_stockout"
+                    elif "zero_assumed" in (old_status, status):
+                        status = "zero_assumed"
+                    elif old_status != "observed":
                         status = old_status
                 data[key] = (amount, status)
             except DataError as exc:
@@ -433,7 +445,7 @@ def normalize(raw, config, progress=lambda *_: None):
         raise DataError("Coverage file must include each product in this import.")
     products, canonical = [], []
     for pid in sorted(names):
-        series, missing, censored = [], 0, 0
+        series, missing, censored, assumed = [], 0, 0, 0
         product_start, product_end = coverage.get(pid, (start, end))
         product_days = (product_end - product_start).days + 1
         if any(
@@ -457,7 +469,7 @@ def normalize(raw, config, progress=lambda *_: None):
             amount, status = found
             if (pid, day) in date_statuses:
                 override = date_statuses[pid, day]
-                if override in ("closed", "zero_confirmed"):
+                if override in ("closed", "zero_confirmed", "zero_assumed"):
                     if amount not in (None, 0):
                         issue(
                             "status_conflict",
@@ -469,12 +481,14 @@ def normalize(raw, config, progress=lambda *_: None):
                 if override == "observed" and amount is None:
                     override = "unknown"
                 status = override
+            if status == "zero_assumed":
+                assumed += 1
             if status == "unknown":
                 missing += 1
             if status == "censored_stockout":
                 censored += 1
             target = (
-                amount if status in ("observed", "closed", "zero_confirmed") else None
+                amount if status in ("observed", "closed", "zero_confirmed", "zero_assumed") else None
             )
             series.append(target)
             canonical.append(
@@ -486,6 +500,8 @@ def normalize(raw, config, progress=lambda *_: None):
                     "observation_status": status,
                 }
             )
+        if assumed:
+            issue("assumed_zero_dates", f"{assumed} days were assumed to have zero sales. Forecasts are for exploration; verify these days before using stock advice.", pid, blocking=False)
         if missing:
             issue(
                 "unknown_dates",
@@ -551,6 +567,7 @@ def normalize(raw, config, progress=lambda *_: None):
                 "total_units": total,
                 "missing_days": missing,
                 "stockout_days": censored,
+                "assumed_zero_days": assumed,
                 "series": series,
             }
         )
@@ -612,6 +629,7 @@ def metrics(actual, predicted):
         "total_absolute_error": abs(sum(predicted) - total),
         "actual_total": total,
         "predicted_total": sum(predicted),
+        "period_mae": {str(days): mean(abs(sum(predicted[i:i+days])-sum(actual[i:i+days])) for i in range(0,len(actual)-days+1,days)) for days in (7,14,28) if len(actual)>=days},
     }
 
 
@@ -754,8 +772,14 @@ def forecast(report, progress=lambda *_: None):
             and tested_wape <= 0.5
             and last["model"]["mae"] <= last["baseline"]["mae"] + 1e-9
         )
-        item["inventory_eligible"] = acceptable
+        assumed = p.get("assumed_zero_days", 0)
+        proxy = report["config"].get("quantity_basis") == "positive_invoice_units_proxy"
+        item["inventory_eligible"] = acceptable and not assumed and not proxy
         reasons = []
+        if assumed:
+            reasons.append(f"{assumed} days were filled with assumed zero sales. Verify those days or upload complete records before using stock advice.")
+        if proxy:
+            reasons.append("These are invoice quantities used for exploration, not verified completed sales. Stock advice is unavailable.")
         if not last:
             reasons.append(f"We need more sales history to test this forecast: {n} complete days are available; at least 84 are needed (56 to learn and 28 to test). Add at least {max(0, 84-n)} more complete days. Passing that test is still required before stock advice is available.")
         elif tested_wape is None:
@@ -768,7 +792,7 @@ def forecast(report, progress=lambda *_: None):
         item["forecast_warning"] = "Restock advice is unavailable. " + " ".join(reasons) if reasons else None
         output.append(item)
     return {
-        "engine_revision": "1.1.0",
+        "engine_revision": ENGINE_REVISION,
         "horizon_days": 28,
         "forecast_start": str(start),
         "forecast_end": str(start + timedelta(days=27)),

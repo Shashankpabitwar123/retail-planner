@@ -334,3 +334,53 @@ def test_inventory_horizon_boundary_has_actionable_error():
     inventory(daily,{**config,'review_days':24})
     with pytest.raises(DataError,match='2 delivery \\+ 25 selling \\+ 2 extra = 29 days'):
         inventory(daily,{**config,'review_days':25})
+
+
+def test_assumed_zeros_allow_exploration_but_never_stock_advice():
+    raw=(FIX/'01-daily.csv').read_bytes()
+    base=report()
+    from backend.merge import combine_reports
+    # Keep original quantities except one explicit test assumption.
+    import copy
+    altered=copy.deepcopy(base)
+    row=altered['canonical'][0]
+    row['units_sold']=0;row['observation_status']='zero_assumed'
+    raw,cfg=combine_reports(altered,altered)
+    normalized=normalize(raw,cfg)
+    p=next(p for p in normalized['products'] if p['product_id']==row['product_id'])
+    assert p['assumed_zero_days']==1
+    predicted=next(p for p in forecast(normalized)['products'] if p['product_id']==row['product_id'])
+    assert len(predicted['forecast'])==28
+    assert not predicted['inventory_eligible']
+    assert 'assumed zero' in predicted['forecast_warning']
+    assert any(i['code']=='assumed_zero_dates' for i in normalized['issues'])
+
+
+@pytest.mark.parametrize('reverse',[False,True])
+def test_positive_transactions_cannot_coexist_with_closed_or_zero_day(reverse):
+    for status in ('closed','zero_confirmed','zero_assumed','unknown'):
+        rows=[['2026-01-01','A',10,'observed'],['2026-01-01','A',0,status]]
+        if reverse:rows.reverse()
+        out=io.StringIO();w=csv.writer(out);w.writerow(['date','product_id','units_sold','observation_status']);w.writerows(rows)
+        cfg={**CFG,'mapping':{'date':'date','product_id':'product_id','units':'units_sold','date_status':'observation_status'},'layout':'transactions','coverage_start':'2026-01-01','coverage_end':'2026-01-01'}
+        result=normalize(out.getvalue().encode(),cfg)
+        assert result['products'][0]['status']=='needs_review'
+        assert any(i['code']=='invalid_row' for i in result['issues'])
+
+
+def test_period_error_exposes_total_error_without_hiding_daily_error():
+    actual=[0,20]*14; predicted=[10]*28
+    result=metrics(actual,predicted)
+    assert result['mae']==10
+    assert result['period_mae']['14']==0
+    assert result['period_mae']['28']==0
+    assert result['period_mae']['7']==10
+
+
+@pytest.mark.parametrize('statuses',[('zero_confirmed','zero_assumed'),('zero_assumed','zero_confirmed'),('zero_assumed','censored_stockout'),('censored_stockout','zero_assumed')])
+def test_transaction_status_preserves_uncertainty(statuses):
+    out=io.StringIO();w=csv.writer(out);w.writerow(['date','product_id','units_sold','observation_status'])
+    for status in statuses:w.writerow(['2026-01-01','A',0,status])
+    cfg={**CFG,'mapping':{'date':'date','product_id':'product_id','units':'units_sold','date_status':'observation_status'},'layout':'transactions','coverage_start':'2026-01-01','coverage_end':'2026-01-01'}
+    result=normalize(out.getvalue().encode(),cfg)
+    assert result['canonical'][0]['observation_status']==('censored_stockout' if 'censored_stockout' in statuses else 'zero_assumed')

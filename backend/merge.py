@@ -71,4 +71,7 @@ def combine_reports(old, new):
     writer.writeheader()
     writer.writerows(records[k] for k in sorted(records))
     config = dict(mapping={'date':'date','product_id':'product_id','product_name':'product_name','units':'units_sold','date_status':'observation_status'},layout='daily',date_format='ISO',number_format='dot',timezone=old['config'].get('timezone','Etc/UTC'),store_id=old['config'].get('store_id',''),coverage_start=min(old['coverage_start'],new['coverage_start']),coverage_end=max(old['coverage_end'],new['coverage_end']),coverage_confirmed=True,gross_sales_confirmed=True,missing_days_zero=False,synthetic=bool(old['config'].get('synthetic') or new['config'].get('synthetic')))
+    # Never turn an exploratory invoice proxy into confirmed completed sales.
+    if any(r['config'].get('quantity_basis') == 'positive_invoice_units_proxy' for r in (old, new)):
+        config.update(quantity_basis='positive_invoice_units_proxy', demo_proxy_confirmed=True, gross_sales_confirmed=False)
     return stream.getvalue().encode(), config

@@ -44,6 +44,7 @@ export type Issue = {
   blocking: boolean;
 };
 export type Metric = {
+  period_mae?: Record<string,number>;
   mae: number;
   wape: number | null;
   bias_units_per_day: number;
@@ -72,6 +73,7 @@ export type Product = {
   total_units: number;
   missing_days: number;
   stockout_days: number;
+  assumed_zero_days?: number;
   history?: { date: string; units: number | null }[];
   forecast?: { date: string; units: number }[];
   forecast_total?: number;
@@ -240,6 +242,13 @@ export function forecastCSV(result: Result) {
     }),
   ]);
 }
+// One product per row, with the evidence behind its restock eligibility.
+export function forecastChecksCSV(result: Result) {
+  return csv([
+    ['Product','Product ID','Method','Test starts','Test ends','Actual units in test','Predicted units in test','Daily error (units)','Daily error relative to sales (%)','28-day total error (units)','7-day totals error (units)','14-day totals error (units)','Baseline daily error (units)','Assumed zero days','Restock check','Reason'],
+    ...result.products.map(p=>{const test=p.evaluation?.windows.at(-1);return [p.name,p.product_id,p.method||'',test?.start||'',test?.end||'',test?.model.actual_total??'',test?.model.predicted_total??'',test?.model.mae??'',test?.model.wape==null?'':test.model.wape*100,test?.model.total_absolute_error??'',test?.model.period_mae?.['7']??'',test?.model.period_mae?.['14']??'',test?.baseline.mae??'',p.assumed_zero_days??0,p.inventory_eligible?'Passed':'Needs review',p.forecast_warning||(!p.forecast?.length?'Check missing records and sales history.':'Estimates are not guaranteed sales.')];}),
+  ]);
+}
 // Detect accidental edits/corruption; this checksum is not a security signature.
 function checksum(value: unknown) {
   let hash = 2166136261;
@@ -384,6 +393,7 @@ export function restore(text: string): Snapshot {
               total_absolute_error: m.total_absolute_error,
               actual_total: m.actual_total,
               predicted_total: m.predicted_total,
+              period_mae: m.period_mae && typeof m.period_mae === "object" ? Object.fromEntries(Object.entries(m.period_mae).filter(([k,v])=>["7","14","28"].includes(k)&&finite(v)&&v>=0)) : undefined,
             };
           };
           return {
@@ -448,6 +458,7 @@ export function restore(text: string): Snapshot {
       total_units: p.total_units,
       missing_days: p.missing_days,
       stockout_days: p.stockout_days,
+      assumed_zero_days: Number.isInteger(p.assumed_zero_days) && p.assumed_zero_days! >= 0 && p.assumed_zero_days! <= p.days ? p.assumed_zero_days : undefined,
       history,
       forecast,
       forecast_total: forecast.reduce((n, d) => n + d.units, 0),
