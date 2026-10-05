@@ -2344,18 +2344,6 @@ details summary {
 .restock-table details { min-width:130px; max-width:260px; }
 .store-restock .check-row { margin:24px 0 18px; }
 .print-only { display:none; }
-@media print {
- body * { visibility:hidden; }
- .store-restock, .store-restock * { visibility:visible; }
- .store-restock { position:absolute; inset:0; width:100%; background:white; color:black; font-size:10pt; }
- .store-restock .restock-edit-area { display:none!important; }
- .store-restock .print-only { display:block; }
- .store-restock .table-scroll { overflow:visible; }
- .restock-table { table-layout:fixed; }
- .restock-table td, .restock-table th { overflow-wrap:anywhere; padding:8px; }
- .restock-table thead { display:table-header-group; }
- .restock-table tr { break-inside:avoid; }
-}
 
 .sales-update-card { display:flex; justify-content:space-between; align-items:center; gap:20px; padding:18px 20px; margin:0 0 24px; border:1px solid var(--border); border-radius:10px; background:#f8faf8; }
 .sales-update-card.needs-data { background:#fff9ed; border-color:#eed6a8; }
@@ -2364,11 +2352,46 @@ details summary {
 .sales-update-card .button { flex-shrink:0; }
 @media(max-width:650px) { .sales-update-card { flex-direction:column; align-items:flex-start; gap:14px; } }
 
-.restock-table .buy-quantity { background:#edf5ef; }
-.restock-table .buy-number { font-size:1.1rem; display:block; }
-.restock-table .product-settings { margin-top:12px; font-size:.8rem; }
-.restock-table .order-explanation { margin-top:12px; font-size:.8rem; max-width:340px; line-height:1.6; }
-.restock-table .order-explanation summary { color:var(--green); cursor:pointer; }
-.restock-table .order-explanation p { margin:10px 0; }
-.restock-table .stock-shortage { margin:12px 0 0; padding:10px; background:#fff4de; color:#805719; font-size:.8rem; max-width:300px; }
-@media print { .restock-table .buy-quantity { background:white; } }
+
+/* Compact rows: wrap all text so badges and warnings contain their content. */
+.restock-table { table-layout:fixed; min-width:600px; }
+.restock-table th:first-child { width:36%; }
+.restock-table th:nth-child(2) { width:18%; }
+.restock-table th:nth-child(3) { width:24%; }
+.restock-table th:nth-child(4) { width:22%; }
+.restock-table th, .restock-table td { white-space:normal; overflow-wrap:anywhere; }
+.restock-table th { background:#f7f9f8; }
+.restock-table td { background:white; vertical-align:middle; padding:18px 16px; }
+.restock-table .restock-detail-link { display:block; margin-top:5px; font-size:.78rem; }
+.restock-amount { display:inline-block; max-width:100%; box-sizing:border-box; padding:5px 10px; border-radius:6px; background:#edf6f0; color:#365c48; font-size:.95rem; line-height:1.5; white-space:normal; }
+.stock-shortage { display:block; box-sizing:border-box; white-space:normal; overflow-wrap:anywhere; margin:8px 0 0; padding:6px 9px; background:#fff8e9; color:#795c2e; border-radius:5px; font-size:.78rem; line-height:1.5; }
+.restock-ready { margin-top:24px; padding:18px; border:1px solid #dfe9e2; border-radius:8px; background:#f8fbf9; }
+.restock-ready p { margin:0; }
+.restock-ready .restock-result-actions { margin-top:12px; }
+.restock-print-button { background:#edf6f0!important; color:#365c48!important; border-color:#d5e5db!important; }
+.restock-dialog { position:fixed; inset:0 0 0 auto; margin:0; width:min(480px,100%); max-width:100%; max-height:100dvh; height:100dvh; box-sizing:border-box; border:0; border-left:1px solid #dfe9e2; padding:28px; background:#fff; color:var(--text); overflow-y:auto; }
+.restock-dialog::backdrop { background:rgba(50,65,55,.16); }
+.restock-dialog-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
+.restock-dialog h2 { font-size:1.35rem; margin:0; }
+.restock-dialog h3 { font-size:1rem; margin:24px 0 14px; }
+.restock-dialog p { font-size:.85rem; line-height:1.6; }
+.restock-dialog .field { margin:16px 0; }
+.restock-breakdown { display:grid; grid-template-columns:1fr auto; gap:12px 20px; padding:16px; background:#f6faf7; border-radius:8px; font-size:.88rem; }
+.restock-breakdown dd { margin:0; text-align:right; }
+.restock-print { display:none; }
+@media print {
+ @page { size:auto; margin:16mm; @bottom-center { content:"Page " counter(page); } }
+ body > :not(.restock-print) { display:none!important; }
+ .restock-print { display:block!important; color:#000; background:#fff; font-family:Arial,sans-serif; font-size:10pt; line-height:1.4; }
+ .restock-print h1 { font-size:20pt; margin:0 0 8pt; }
+ .restock-print h2 { font-size:12pt; margin:18pt 0 8pt; break-after:avoid; }
+ .restock-print p { margin:6pt 0; }
+ .restock-print table { width:100%; table-layout:fixed; border-collapse:collapse; margin:12pt 0; font-size:9pt; }
+ .restock-print th, .restock-print td { color:#000; background:#fff; border-bottom:1px solid #ccc; padding:7pt 5pt; white-space:normal; overflow-wrap:anywhere; text-align:left; }
+ .restock-print th { font-weight:bold; border-bottom:1px solid #555; }
+ .restock-print > table:first-of-type th:first-child { width:5%; }
+ .restock-print small { display:block; font-size:8pt; }
+ .restock-print thead { display:table-header-group; }
+ .restock-print tr, .restock-print li { break-inside:avoid; }
+ .restock-print-note { border-top:1px solid #ccc; padding-top:10pt; font-size:9pt; }
+}
