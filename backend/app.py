@@ -656,18 +656,6 @@ def create_app(db_path=None, worker=True):
     async def review(uid: str, request: Request):
         config = validate(ImportSettings, await body(request))
         source = store.owned("uploads", uid, owner(request))
-        sample_hashes = {
-            hashlib.sha256((BASE / "samples" / name).read_bytes()).hexdigest()
-            for name in (
-                "01-daily.csv",
-                "02-transactions.csv",
-                "03-wide-dates.csv",
-                "05-missing-period.csv",
-                "11-short-history.csv",
-            )
-        }
-        if source["digest"] in sample_hashes:
-            config["synthetic"] = True
         for field in ("coverage_upload_id", "date_status_upload_id"):
             if config.get(field):
                 store.owned("uploads", config[field], owner(request))

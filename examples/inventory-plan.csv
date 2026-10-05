@@ -1,2 +1,0 @@
-"product_id","product_name","planning_mode","planning_date","arrival_date","suggested_order_units","unmet_units_before_arrival","assumptions"
-"0007","Notebook","historical_replay","2026-07-16","2026-07-21","132","35","{""product_id"":""0007"",""stock"":25,""snapshot_date"":""2026-07-16"",""lead_days"":5,""review_days"":7,""buffer_days"":2,""pack_size"":12,""minimum_order"":0,""mode"":""historical_replay"",""confirmed"":true,""incoming"":[],""timezone"":""America/New_York""}"

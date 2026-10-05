@@ -38,8 +38,8 @@ Column suggestions send headers only and require review. Chat sends bounded sele
 
 ## Free hosting and recovery
 
-The free profile allows 2 MiB, 50,000 source rows, 100 products and 50,000 product-days. Server state is temporary and may disappear during sleep/recreation. Results in IndexedDB and downloaded workspace files are independent of server storage. Restored results are inspectable, not proof of authentic computation; recalculation requires re-uploading the source.
+The current render.yaml profile allows 20 MiB, 200,000 source rows, 100 products and 200,000 product-days. Server state is temporary and may disappear during sleep/recreation. Results in IndexedDB and downloaded workspace files are independent of server storage. Restored results are inspectable, not proof of authentic computation; recalculation requires re-uploading the source.
 
 ## Statistical limits
 
-Forecasts estimate observed sales under the confirmed coverage assumptions. They do not recover hidden demand during stockouts. Model selection, calibration (where enough history exists), and the final historical test use separate periods. Historical WAPE is an error ratio and can exceed 100%. The inventory safeguard is provisional, not a service-level guarantee. See README and evidence for poor real-data outcomes as well as synthetic examples.
+Forecasts estimate observed sales under the confirmed coverage assumptions. They do not recover hidden demand during stockouts. Model selection, calibration (where enough history exists), and the final historical test use separate periods. Historical WAPE is an error ratio and can exceed 100%. The inventory safeguard is provisional, not a service-level guarantee.

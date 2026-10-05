@@ -7,3 +7,11 @@ frontend/node_modules/
 frontend/dist/
 frontend/*.tsbuildinfo
 .venv/
+
+# Keep uploaded files and generated analysis exports local.
+*.csv
+*.xlsx
+*.xls
+*.parquet
+*.retailplan.json
+*.sqlite*

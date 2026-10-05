@@ -1,7 +1,6 @@
 from backend.batch import prepare_batch
 from test_batch import source
-from test_engine import FIX
-from test_api import client,H
+from test_api import client, H
 
 A=b'date,sku,units_sold\n2025-01-01,A,2\n2025-01-02,A,3\n'
 B=b'date,sku,units_sold\n2025-02-01,A,4\n2025-02-02,A,5\n'
@@ -11,11 +10,6 @@ def test_unrelated_catalogs_rejected_even_with_yes_answer():
     result=prepare_batch([source(A),source(B.replace(b',A,',b',RESTAURANT,'))],{'complete_all':'yes','same_store':'yes'})
     assert not result['ready']
     assert 'product IDs do not overlap' in result['blocked']
-
-
-def test_builtin_sample_and_real_data_rejected():
-    result=prepare_batch([source((FIX/'01-daily.csv').read_bytes()),source(A)],{'complete_all':'yes','same_store':'yes'})
-    assert not result['ready'] and 'Sample data cannot' in result['blocked']
 
 
 def test_same_store_question_requires_explicit_yes():

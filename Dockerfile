@@ -11,6 +11,5 @@ COPY requirements.lock.txt ./
 RUN pip install --no-cache-dir -r requirements.lock.txt
 COPY backend/ backend/
 COPY --from=frontend /build/dist frontend/dist/
-COPY --from=frontend /build/public/samples samples/
 ENV RETAIL_SERVE_FRONTEND=1 RETAIL_DB=/var/data/retail.sqlite3
 CMD ["sh", "-c", "uvicorn backend.app:app --host 0.0.0.0 --port ${PORT:-8000} --workers 1"]

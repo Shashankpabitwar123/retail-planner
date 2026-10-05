@@ -1,8 +1,6 @@
 """Deterministic onboarding: infer supported formats; ask only unresolved questions."""
 
-import hashlib
 import re
-from pathlib import Path
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 from .domain import read_csv, inspect_csv, parse_date, DataError, ALIASES
 
@@ -282,46 +280,29 @@ def guide(raw, answers, timezone="Etc/UTC"):
                     opts,
                 )
             cfg["layout"] = layout
-    # Only byte-identical built-in fixtures can bypass unknowable business assumptions.
-    sample_dir = Path(__file__).resolve().parent.parent / "samples"
-    known = any(
-        hashlib.sha256(raw).digest() == hashlib.sha256(p.read_bytes()).digest()
-        for p in (
-            sample_dir / n
-            for n in [
-                "01-daily.csv",
-                "02-transactions.csv",
-                "03-wide-dates.csv",
-                "05-missing-period.csv",
-                "11-short-history.csv",
-            ]
+    cfg["synthetic"] = False
+    opts = [
+        option(
+            "yes",
+            "Yes, this is the complete export",
+            "All sales are included, returns are separate, and these products were available throughout this period.",
+        ),
+        option("unsure", "I’m not sure", "Show me what I need to check."),
+    ]
+    confirm = choice("complete", opts)
+    if confirm == "unsure":
+        return {
+            "config": cfg,
+            "ready": False,
+            "blocked": "Export all sales for these dates, with sold quantities and returns separate. If a product launched later or was discontinued, add its dates under Import details. We’ll keep unknown days separate from zero sales.",
+        }
+    if not confirm:
+        return question(
+            "complete",
+            "Is this the complete sales export?",
+            f"We found sales from {cfg['coverage_start']} to {cfg['coverage_end']}. This is the one detail the file cannot tell us.",
+            opts,
         )
-        if p.exists()
-    )
-    cfg["synthetic"] = known
-    if not known:
-        opts = [
-            option(
-                "yes",
-                "Yes, this is the complete export",
-                "All sales are included, returns are separate, and these products were available throughout this period.",
-            ),
-            option("unsure", "I’m not sure", "Show me what I need to check."),
-        ]
-        confirm = choice("complete", opts)
-        if confirm == "unsure":
-            return {
-                "config": cfg,
-                "ready": False,
-                "blocked": "Export all sales for these dates, with sold quantities and returns separate. If a product launched later or was discontinued, add its dates under Import details. We’ll keep unknown days separate from zero sales.",
-            }
-        if not confirm:
-            return question(
-                "complete",
-                "Is this the complete sales export?",
-                f"We found sales from {cfg['coverage_start']} to {cfg['coverage_end']}. This is the one detail the file cannot tell us.",
-                opts,
-            )
     cfg["coverage_confirmed"] = True
     cfg["gross_sales_confirmed"] = True
     return {"config": cfg, "ready": True, "question": None}

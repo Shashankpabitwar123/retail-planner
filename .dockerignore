@@ -5,7 +5,4 @@
 **/.pytest_cache
 **/dist
 .git
-samples
-evidence
-examples
 previews

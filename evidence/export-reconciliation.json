@@ -1,5 +1,0 @@
-{
-  "matched_forecast_rows": 2240,
-  "products": 80,
-  "result": "Every supplied prediction matches the local engine. This verifies computation/export consistency, not prediction accuracy."
-}

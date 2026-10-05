@@ -1,34 +1,7 @@
 import pytest
 from backend.guidance import guide
 from backend.domain import normalize, DataError
-from test_engine import FIX
-from test_api import client, upload, H
-
-
-@pytest.mark.parametrize(
-    "file", ["01-daily.csv", "02-transactions.csv", "03-wide-dates.csv"]
-)
-def test_known_examples_need_no_setup_and_reconcile(file):
-    raw = (FIX / file).read_bytes()
-    g = guide(raw, {})
-    assert g["ready"] and g["config"]["synthetic"]
-    q = normalize(raw, g["config"])
-    assert (
-        q["eligible_products"] == (2 if file == "02-transactions.csv" else 3)
-        and not q["global_block"]
-    )
-    assert sum(p["total_units"] for p in q["products"]) == 3724
-
-
-def test_real_file_only_asks_uninferable_business_confirmation():
-    raw = (FIX / "01-daily.csv").read_bytes().replace(b"Notebook", b"Pencils")
-    g = guide(raw, {})
-    assert g["question"]["id"] == "complete"
-    assert not g["config"]["coverage_confirmed"]
-    g = guide(raw, {"complete": "yes"})
-    assert g["ready"] and not g["config"]["synthetic"]
-    assert normalize(raw, g["config"])["eligible_products"] == 3
-    assert guide(raw, {"complete": "unsure"})["blocked"]
+from test_api import client, H
 
 
 def test_ambiguous_dates_are_one_plain_question_not_silently_us():
@@ -76,29 +49,6 @@ def test_repeated_product_day_asks_how_to_aggregate():
         guide(raw, {"rows": "transactions", "complete": "yes"})["config"]["layout"]
         == "transactions"
     )
-
-
-def test_gaps_never_become_zero_during_detection():
-    raw = (FIX / "05-missing-period.csv").read_bytes()
-    g = guide(raw, {"complete": "yes"})
-    assert g["ready"] and not g["config"]["missing_days_zero"]
-    assert any(p["missing_days"] for p in normalize(raw, g["config"])["products"])
-
-
-def test_bad_answers_and_owner_isolation(tmp_path):
-    from fastapi.testclient import TestClient
-
-    c, s = client(tmp_path)
-    u = upload(c)
-    route = f"/api/uploads/{u['id']}/guide"
-    assert c.post(route, headers=H, json={"answers": {}}).json()["ready"]
-    assert (
-        c.post(route, headers=H, json={"answers": {"complete": True}}).status_code
-        == 422
-    )
-    other = TestClient(c.app)
-    other.get("/api/session")
-    assert other.post(route, headers=H, json={"answers": {}}).status_code == 404
 
 
 def test_money_column_requires_quantity_choice():

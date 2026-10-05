@@ -1,4 +1,0 @@
-event_id,date,product_id,quantity,event_type
-e1,2026-01-01,0007,10,sale
-e2,2026-01-01,0007,2,return
-e3,2026-01-01,0007,3,cancellation
