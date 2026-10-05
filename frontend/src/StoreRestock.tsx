@@ -13,20 +13,37 @@ export default function StoreRestock({result,jobId,saved,onSave,onAddData}:{resu
  const [calculated,setCalculated]=useState(Object.keys(saved).length>0);
  const [detailId,setDetailId]=useState<string|null>(null);
  const dialogRef=useRef<HTMLDialogElement>(null);
+ const calculating=useRef(false);
  useEffect(()=>{if(detailId && dialogRef.current && !dialogRef.current.open) dialogRef.current.showModal();},[detailId]);
  const changed=(id?:string)=>{setDirty(new Set(id?[...dirty,id]:result.products.map(p=>p.product_id)));setConfirmed(false);setMessage('');setErrors(prev=>id?Object.fromEntries(Object.entries(prev).filter(([key])=>key!==id)):{});};
  const edit=(id:string,k:keyof Entry,v:unknown)=>{setEntries(prev=>({...prev,[id]:{...prev[id],[k]:v}}));changed(id);};
  function status(id:string,eligible:boolean|undefined) {if(dirty.has(id)&&plans[id])return 'Recalculate to update';if(errors[id])return errors[id];if(!eligible)return 'Needs review';if(entries[id].stock.trim()==='')return 'Add stock count';if(!plans[id])return 'Ready to calculate';return plans[id].pre_arrival_unmet_units>0?'May run out before delivery':plans[id].suggested_order_units>0?'Restock needed':'No order needed';}
  function dayProblem(id:string) {const delivery=Number(entries[id].lead||lead), selling=Number(days), extra=Number(buffer), horizon=result.products.find(p=>p.product_id===id)?.forecast?.length||28;if(!Number.isInteger(delivery)||delivery<1||!Number.isInteger(selling)||selling<1||!Number.isInteger(extra)||extra<0)return 'Enter whole days: delivery and stock duration at least 1, extra days at least 0.';const maximum=Math.max(0,horizon-delivery-extra);return delivery+selling+extra>horizon?`${delivery} delivery + ${selling} selling + ${extra} extra = ${delivery+selling+extra} days. This forecast covers ${horizon}. ${maximum>0?`Choose ${maximum} or fewer days after delivery.`:'Reduce delivery or extra days first.'}`:'';}
- async function calculate(){setBusy(true);setMessage('');const next:Record<string,Plan>={};const problems:Record<string,string>={};try{for(const p of result.products){const e=entries[p.product_id];if(!p.inventory_eligible)continue;if(!e.stock.trim()){problems[p.product_id]='Add stock count';continue;}try{const problem=dayProblem(p.product_id);if(problem)throw Error(problem);next[p.product_id]=await post<Plan>(`/jobs/${jobId}/inventory`,{product_id:p.product_id,stock:Number(e.stock),snapshot_date:date,lead_days:Number(e.lead||lead),review_days:Number(days),buffer_days:Number(buffer),pack_size:Number(e.pack),minimum_order:Number(e.minimum),incoming:e.incoming,mode:'historical_replay',confirmed:true});}catch(error){problems[p.product_id]=(error as Error).message;}}setPlans(next);setCalculated(true);setErrors(problems);setDirty(new Set());setMessage(`${Object.keys(next).length} products calculated. ${result.products.length-Object.keys(next).length} need review or stock details.`);}finally{setBusy(false);}}
- const ordered=[...result.products].sort((a,b)=>Number(!!b.inventory_eligible)-Number(!!a.inventory_eligible)||(plans[b.product_id]?.pre_arrival_unmet_units||0)-(plans[a.product_id]?.pre_arrival_unmet_units||0)||(plans[b.product_id]?.suggested_order_units||0)-(plans[a.product_id]?.suggested_order_units||0));
+ async function calculate(){if(calculating.current||!jobId||!confirmed)return;calculating.current=true;setBusy(true);setMessage('');const next:Record<string,Plan>={};const problems:Record<string,string>={};try{for(const p of result.products){const e=entries[p.product_id];if(!p.inventory_eligible)continue;if(!e.stock.trim()){problems[p.product_id]='Add stock count';continue;}try{const problem=dayProblem(p.product_id);if(problem)throw Error(problem);next[p.product_id]=await post<Plan>(`/jobs/${jobId}/inventory`,{product_id:p.product_id,stock:Number(e.stock),snapshot_date:date,lead_days:Number(e.lead||lead),review_days:Number(days),buffer_days:Number(buffer),pack_size:Number(e.pack),minimum_order:Number(e.minimum),incoming:e.incoming,mode:'historical_replay',confirmed:true});}catch(error){problems[p.product_id]=(error as Error).message;}}setPlans(next);setCalculated(true);setErrors(problems);setDirty(new Set());setMessage(`${Object.keys(next).length} products calculated. ${result.products.length-Object.keys(next).length} need review or stock details.`);}finally{calculating.current=false;setBusy(false);}}
+ async function calculateProduct(id:string){
+  const product=result.products.find(p=>p.product_id===id);
+  if(calculating.current||!jobId||!product?.inventory_eligible)return;
+  const e=entries[id];
+  if(!e.stock.trim()){setErrors(prev=>({...prev,[id]:'Add stock count'}));return;}
+  calculating.current=true;setBusy(true);setMessage('');
+  try{
+   const problem=dayProblem(id);if(problem)throw Error(problem);
+   const plan=await post<Plan>(`/jobs/${jobId}/inventory`,{product_id:id,stock:Number(e.stock),snapshot_date:date,lead_days:Number(e.lead||lead),review_days:Number(days),buffer_days:Number(buffer),pack_size:Number(e.pack),minimum_order:Number(e.minimum),incoming:e.incoming,mode:'historical_replay',confirmed:true});
+   setPlans(prev=>({...prev,[id]:plan}));
+   setErrors(prev=>Object.fromEntries(Object.entries(prev).filter(([key])=>key!==id)));
+   setDirty(prev=>{const next=new Set(prev);next.delete(id);return next;});
+   setCalculated(true);setMessage(`${product.name} updated.`);
+  }catch(error){setErrors(prev=>({...prev,[id]:(error as Error).message}));setPlans(prev=>Object.fromEntries(Object.entries(prev).filter(([key])=>key!==id)));}
+  finally{calculating.current=false;setBusy(false);}
+ }
+ const ordered=[...result.products].sort((a,b)=>Number(!!b.inventory_eligible)-Number(!!a.inventory_eligible));
  const validPlans=Object.fromEntries(Object.entries(plans).filter(([id])=>!dirty.has(id)));
  const canExport=!busy && dirty.size===0 && calculated;
  const printPlan=()=>{if(canExport) window.print();};
  function reviewReason(id:string) {const product=result.products.find(p=>p.product_id===id)!;return product.inventory_eligible?status(id,true):(product.forecast_warning||'Not enough reliable sales history to recommend an order.');}
  function exportSheet(){if(!canExport)return;download(`restock-list-${result.forecast_start}.csv`,csv([['Product','Product ID','You have (units)','Buy this many more (units)','Expected arrival','Notes','Plan date','Delivery days','Days after delivery','Extra days'],...ordered.map(p=>{const plan=validPlans[p.product_id];return [p.name,p.product_id,entries[p.product_id].stock,plan?.suggested_order_units??'',plan && plan.suggested_order_units > 0 ? friendlyDate(plan.arrival_date):'',reviewReason(p.product_id),friendlyDate(plan?.planning_date||date),plan?.assumptions.lead_days??(entries[p.product_id].lead||lead),plan?.assumptions.review_days??days,plan?.assumptions.buffer_days??buffer];})]));}
  return <section className="store-restock">
-  <div className="restock-heading"><h2>Your store’s restock list</h2><p className="muted">Enter what you have. We’ll calculate how many more units to buy.</p></div>
+  <div className="restock-heading"><h2>Your store’s restock list</h2><p className="muted">Enter what you have, then press Enter to calculate that product. Use the button below to calculate the whole list.</p></div>
   {!jobId&&<Notice>Saved results are shown below. Upload the sales files again to calculate a new plan.</Notice>}
   {result.quality.config.synthetic&&<Notice>Example stock counts are filled in. Change them to explore different plans.</Notice>}
   <div className="restock-edit-area">
@@ -42,7 +59,7 @@ export default function StoreRestock({result,jobId,saved,onSave,onAddData}:{resu
   <tbody>{ordered.map(p=>{const id=p.product_id,e=entries[id],plan=validPlans[id];return <tr key={id}>
     <td><strong>{p.name}</strong><button className="text-link restock-detail-link" onClick={()=>setDetailId(id)} aria-label={`Details for ${p.name}`}>Details</button>
     {plan && plan.pre_arrival_unmet_units > 0 && <p className="stock-shortage">May run out{plan.first_shortfall_date ? ` on ${friendlyDate(plan.first_shortfall_date)}` : ''}, before delivery.</p>}</td>
-    <td><input aria-label={`Stock for ${p.name}`} type="number" min="0" step="1" disabled={busy||!jobId} value={e.stock} placeholder="Count" onChange={ev=>edit(id,'stock',ev.target.value)}/></td>
+    <td><input aria-label={`Stock for ${p.name}`} type="number" min="0" step="1" disabled={busy||!jobId} value={e.stock} placeholder="Count" onChange={ev=>edit(id,'stock',ev.target.value)} onKeyDown={async ev=>{if(ev.key!=='Enter'||ev.nativeEvent.isComposing)return;ev.preventDefault();const input=ev.currentTarget;if(!input.reportValidity())return;await calculateProduct(id);setTimeout(()=>{if(input.isConnected)input.focus({preventScroll:true});},0);}}/></td>
     <td>{plan ? <strong className={plan.suggested_order_units>0?'restock-amount':'muted'}>{plan.suggested_order_units>0?`${num(plan.suggested_order_units)} units`:'No order needed'}</strong>:<span className="muted">{errors[id]&&errors[id]!=='Add stock count'?'Needs review':status(id,p.inventory_eligible)}</span>}</td>
     <td>{plan && plan.suggested_order_units>0?friendlyDate(plan.arrival_date):'—'}</td>
   </tr>;})}</tbody></table></div>

@@ -1,0 +1,137 @@
+{
+  "scope": "Single user-reported successful live synthetic run; durations exclude user think time and rendering. Process peak is lifetime high-water mark.",
+  "records": [
+    {
+      "timestamp": "2026-10-05T03:26:39.778036458Z",
+      "event": "retail_performance",
+      "wall_seconds": 12.66816,
+      "process_cpu_seconds": 1.890882,
+      "memory_before": {
+        "process_lifetime_peak_rss_bytes": 52641792,
+        "process_current_rss_bytes": 53628928
+      },
+      "memory_after": {
+        "process_lifetime_peak_rss_bytes": 247111680,
+        "process_current_rss_bytes": 59641856
+      },
+      "stages": {},
+      "measurement_scope": "Server operation only; excludes user thinking and browser rendering. CPU/RSS are shared process metrics; peak RSS is process lifetime, not per-job allocation.",
+      "operation": "http_request",
+      "route": "/api/uploads",
+      "status": 200,
+      "request_bytes": 19686588
+    },
+    {
+      "timestamp": "2026-10-05T03:27:25.463373938Z",
+      "event": "retail_performance",
+      "wall_seconds": 45.56255,
+      "process_cpu_seconds": 6.835972,
+      "memory_before": {
+        "process_lifetime_peak_rss_bytes": 247111680,
+        "process_current_rss_bytes": 61612032
+      },
+      "memory_after": {
+        "process_lifetime_peak_rss_bytes": 364503040,
+        "process_current_rss_bytes": 162349056
+      },
+      "stages": {},
+      "measurement_scope": "Server operation only; excludes user thinking and browser rendering. CPU/RSS are shared process metrics; peak RSS is process lifetime, not per-job allocation.",
+      "operation": "http_request",
+      "route": "/api/batches/prepare",
+      "status": 200,
+      "request_bytes": 78
+    },
+    {
+      "timestamp": "2026-10-05T03:29:46.469405535Z",
+      "event": "retail_performance",
+      "wall_seconds": 96.017835,
+      "process_cpu_seconds": 14.413723,
+      "memory_before": {
+        "process_lifetime_peak_rss_bytes": 364503040,
+        "process_current_rss_bytes": 160256000
+      },
+      "memory_after": {
+        "process_lifetime_peak_rss_bytes": 371838976,
+        "process_current_rss_bytes": 197214208
+      },
+      "stages": {},
+      "measurement_scope": "Server operation only; excludes user thinking and browser rendering. CPU/RSS are shared process metrics; peak RSS is process lifetime, not per-job allocation.",
+      "operation": "http_request",
+      "route": "/api/batches/prepare",
+      "status": 200,
+      "request_bytes": 98
+    },
+    {
+      "timestamp": "2026-10-05T03:30:35.706562631Z",
+      "event": "retail_performance",
+      "wall_seconds": 47.014286,
+      "process_cpu_seconds": 6.99881,
+      "memory_before": {
+        "process_lifetime_peak_rss_bytes": 371838976,
+        "process_current_rss_bytes": 196169728
+      },
+      "memory_after": {
+        "process_lifetime_peak_rss_bytes": 436772864,
+        "process_current_rss_bytes": 407166976
+      },
+      "stages": {
+        "normalize_seconds": 43.597472,
+        "serialize_seconds": 1.592755
+      },
+      "measurement_scope": "Server operation only; excludes user thinking and browser rendering. CPU/RSS are shared process metrics; peak RSS is process lifetime, not per-job allocation.",
+      "operation": "normalize",
+      "job_id": "350b4a9b851c425f929da8b81e3f91ab",
+      "input_bytes": 12118547,
+      "job_age_at_start_seconds": 0.11323,
+      "product_count": 100,
+      "rows": 200000,
+      "state": "completed"
+    },
+    {
+      "timestamp": "2026-10-05T03:30:47.762725371Z",
+      "event": "retail_performance",
+      "wall_seconds": 2.196443,
+      "process_cpu_seconds": 0.338946,
+      "memory_before": {
+        "process_lifetime_peak_rss_bytes": 473616384,
+        "process_current_rss_bytes": 337657856
+      },
+      "memory_after": {
+        "process_lifetime_peak_rss_bytes": 473616384,
+        "process_current_rss_bytes": 334544896
+      },
+      "stages": {},
+      "measurement_scope": "Server operation only; excludes user thinking and browser rendering. CPU/RSS are shared process metrics; peak RSS is process lifetime, not per-job allocation.",
+      "operation": "http_request",
+      "route": "/api/jobs/{jid}/forecast",
+      "status": 200,
+      "request_bytes": 2
+    },
+    {
+      "timestamp": "2026-10-05T03:30:59.492974429Z",
+      "event": "retail_performance",
+      "wall_seconds": 11.406668,
+      "process_cpu_seconds": 1.711162,
+      "memory_before": {
+        "process_lifetime_peak_rss_bytes": 473616384,
+        "process_current_rss_bytes": 334561280
+      },
+      "memory_after": {
+        "process_lifetime_peak_rss_bytes": 473616384,
+        "process_current_rss_bytes": 396845056
+      },
+      "stages": {
+        "read_review_seconds": 1.410001,
+        "forecast_seconds": 8.796493,
+        "serialize_seconds": 0.091719
+      },
+      "measurement_scope": "Server operation only; excludes user thinking and browser rendering. CPU/RSS are shared process metrics; peak RSS is process lifetime, not per-job allocation.",
+      "operation": "forecast",
+      "job_id": "ba50476ea70848cb9a9e0b8c72de8ac3",
+      "input_bytes": 12118547,
+      "job_age_at_start_seconds": 0.499679,
+      "product_count": 100,
+      "state": "completed"
+    }
+  ]
+}

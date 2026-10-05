@@ -92,3 +92,35 @@ test('restoring a plan keeps its duration and changing shared delivery clears sa
  assert.equal(body.lead_days,2);assert.equal(body.review_days,20);assert.equal(body.buffer_days,2);
  }finally{await act(async()=>root.unmount());globalThis.fetch=old;dom.window.close();}
 });
+
+test('Enter calculates only the edited product, preserves other plans and keeps row order',async()=>{
+ const dom=new JSDOM('<div id="root"></div>',{url:'http://localhost/'}),w=dom.window;
+ Object.assign(globalThis,{window:w,document:w.document,HTMLElement:w.HTMLElement,IS_REACT_ACT_ENVIRONMENT:true});
+ const result=JSON.parse(fs.readFileSync(new URL('../../samples/test-result.json',import.meta.url),'utf8')).result as Result;
+ result.products=result.products.slice(0,3).map((p,i)=>({...p,product_id:`P${i}`,name:`Product ${i}`,inventory_eligible:i!==2}));
+ const plan=(id:string,n:number)=>({product_id:id,suggested_order_units:n,pre_arrival_unmet_units:0,arrival_date:'2026-07-21',planning_date:result.forecast_start,buffer_units:2,assumptions:{stock:20,lead_days:5,review_days:7,buffer_days:2}} as Plan);
+ const old=globalThis.fetch;const calls:Record<string,unknown>[]=[];let fail=false;
+ globalThis.fetch=async(_i,init)=>{const body=JSON.parse(String(init?.body));calls.push(body);return fail?Response.json({detail:'Try again'},{status:422}):Response.json(plan(body.product_id,999));};
+ const root=createRoot(w.document.getElementById('root')!);
+ const props=(input:HTMLInputElement)=>(input as any)[Object.keys(input).find(k=>k.startsWith('__reactProps'))!];
+ try{
+ await act(async()=>root.render(React.createElement(StoreRestock,{result,jobId:'job',saved:{P0:plan('P0',10),P1:plan('P1',20)},onSave:async()=>{},onAddData:()=>{}})));
+ const input=w.document.querySelector('input[aria-label="Stock for Product 1"]') as HTMLInputElement;
+ const focusCalls:FocusOptions[]=[];input.focus=options=>{focusCalls.push(options||{});};
+ await act(async()=>props(input).onChange({target:{value:'123'}}));
+ await act(async()=>props(input).onKeyDown({key:'Enter',nativeEvent:{isComposing:false},preventDefault(){},currentTarget:input}));
+ await act(async()=>{await new Promise(resolve=>setTimeout(resolve,5));});
+ assert.equal(focusCalls.at(-1)?.preventScroll,true);
+ assert.equal(calls.length,1);assert.equal(calls[0].product_id,'P1');assert.equal(calls[0].stock,123);
+ const rows=[...w.document.querySelectorAll('.restock-table tbody tr')];
+ assert.match(rows[0].textContent!,/Product 0.*10 units/);assert.match(rows[1].textContent!,/Product 1.*999 units/);
+ assert.equal((w.document.querySelector('input[type=checkbox]') as HTMLInputElement).checked,false,'Single-row action does not confirm the entire list');
+ fail=true;
+ await act(async()=>props(input).onChange({target:{value:'124'}}));
+ await act(async()=>props(input).onKeyDown({key:'Enter',nativeEvent:{isComposing:false},preventDefault(){},currentTarget:input}));
+ assert.doesNotMatch(rows[1].textContent!,/999 units/,'Failed updates must not show stale order quantities');
+ const blocked=w.document.querySelector('input[aria-label="Stock for Product 2"]') as HTMLInputElement;blocked.focus=()=>{};
+ await act(async()=>props(blocked).onKeyDown({key:'Enter',nativeEvent:{isComposing:false},preventDefault(){},currentTarget:blocked}));
+ assert.equal(calls.length,2,'Enter cannot bypass forecast eligibility');
+ }finally{await act(async()=>root.unmount());globalThis.fetch=old;dom.window.close();}
+});
