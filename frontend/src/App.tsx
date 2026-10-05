@@ -111,6 +111,7 @@ export default function App() {
   const [batchFiles, setBatchFiles] = useState<File[] | null>(null);
   const [addingData, setAddingData] = useState(false);
   const mergeBase = useRef<string | null>(null);
+  const updatingSales = useRef(false);
   const extraFileInput = useRef<HTMLInputElement>(null);
   const fileInput = useRef<HTMLInputElement>(null),
     backupInput = useRef<HTMLInputElement>(null),
@@ -326,6 +327,10 @@ export default function App() {
               result,
               plans: { ...(existing?.plans || {}), ...serverPlans },
             };
+            if (updatingSales.current) {
+              setToast(`Your forecast is updated. Sales history now covers ${friendlyDate(result.quality.coverage_start)} to ${friendlyDate(result.quality.coverage_end)}.`);
+              updatingSales.current = false;
+            }
             setSnapshot(saved);
             setServerId(next.id);
             setSelected(
@@ -476,6 +481,7 @@ export default function App() {
     });
   }
   function reset() {
+    updatingSales.current = false;
     setBatchQuestionOpen(false);
     setExampleFile(null);
     setBatchFiles(null);
@@ -555,7 +561,7 @@ export default function App() {
       if (contextRef.current === sourceContext) setAsking(false);
     }
   }
-  const batchPanel = batchFiles && <BatchUpload aiAvailable={serverPolicy.ai_available} onFilesChange={setBatchFiles} onQuestionChange={setBatchQuestionOpen} embedded={phase === "upload"} files={batchFiles} maxBytes={serverPolicy.max_upload_bytes} onCancel={() => { setBatchFiles(null); mergeBase.current = null; }} onReady={(id, uploadId, count) => {
+  const batchPanel = batchFiles && <BatchUpload aiAvailable={serverPolicy.ai_available} onFilesChange={setBatchFiles} onQuestionChange={setBatchQuestionOpen} embedded={phase === "upload"} files={batchFiles} maxBytes={serverPolicy.max_upload_bytes} onCancel={() => { setBatchFiles(null); mergeBase.current = null; updatingSales.current = false; }} onReady={(id, uploadId, count) => {
           setBatchFiles(null);
           automatic.current = true;
           missingAnswered.current = false;
@@ -597,14 +603,14 @@ export default function App() {
       <main id="main" tabIndex={-1} ref={main} className="main live-main">
         <div id="batch-question-root" />
         <div hidden={batchQuestionOpen} style={batchQuestionOpen ? {display: "none"} : undefined}>
-        <input ref={extraFileInput} type="file" multiple accept=".csv,text/csv" hidden onChange={e => { const files = Array.from(e.target.files || []); if (files.length) { setAddingData(false); setBatchFiles(files); } e.target.value = ""; }} />
+        <input ref={extraFileInput} type="file" multiple accept=".csv,text/csv" hidden onChange={e => { const files = Array.from(e.target.files || []); if (files.length) { updatingSales.current = true; setAddingData(false); setBatchFiles(files); } e.target.value = ""; }} />
         {phase !== "upload" && batchPanel}
         {addingData && <section className="panel">
-          <h2>Update your sales data</h2>
-          <p>Add complete daily sales for the same store and matching product IDs. Matching days count once. Different totals for the same day need a corrected complete file.</p>
+          <h2>Add sales from the same store</h2>
+          <p>We’ll combine them with your existing sales and check for duplicates.</p>
           <div className="inline-actions">
-            <Button disabled={!(serverId || reviewId)} onClick={() => { mergeBase.current = serverId || reviewId; extraFileInput.current?.click(); }}>Add more sales</Button>
-            <Button variant="secondary" onClick={() => { mergeBase.current = null; extraFileInput.current?.click(); }}>Replace with complete file</Button>
+            <Button disabled={!(serverId || reviewId)} onClick={() => { mergeBase.current = serverId || reviewId; extraFileInput.current?.click(); }}>Choose files</Button>
+            <Button variant="text" onClick={() => { mergeBase.current = null; extraFileInput.current?.click(); }}>Replace existing data instead</Button>
             <Button variant="text" onClick={() => { mergeBase.current = null; setAddingData(false); }}>Cancel</Button>
           </div>
           {!(serverId || reviewId) && <p>Your original upload is no longer available here. Upload one complete file to continue.</p>}

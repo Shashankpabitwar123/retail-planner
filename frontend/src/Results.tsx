@@ -51,6 +51,14 @@ export default function Results({
     (p.product_id + " " + p.name).toLowerCase().includes(query.toLowerCase()),
   );
   const quality = { ...result.quality, products: result.products };
+  const olderSales = result.forecast_start < new Date().toISOString().slice(0, 10);
+  const missingSales = result.products.some(p => p.missing_days > 0);
+  const shortHistory = result.products.some(p => p.usable_days < 84);
+  const updatePrompt = olderSales
+    ? {message: `Your sales end on ${friendlyDate(result.quality.coverage_end)}. Add recent sales to update your plan.`, label: "Add recent sales"}
+    : missingSales ? {message: "Some sales days are missing. Add those records to complete your history.", label: "Add missing sales"}
+    : shortHistory ? {message: "More sales history will help us test this forecast.", label: "Add more sales"}
+    : {message: "Have newer sales? Keep your forecast up to date.", label: "Update sales"};
   return (
     <>
       <div className="page-heading results-heading">
@@ -70,11 +78,10 @@ export default function Results({
         <Button variant="text" onClick={onTryOwn}>Use my own files</Button>
         <details><summary>About this example</summary><p>Fictional sales with fixed dates and repeating patterns. Real sales may be less predictable. Example stock values can be edited in Restock.</p></details>
       </div>}
-      {!result.quality.config.synthetic && result.forecast_start < new Date().toISOString().slice(0, 10) && (
-        <p className="muted historical-note">
-          This forecast uses older sales. Upload your latest sales to plan ahead.
-        </p>
-      )}
+      {!result.quality.config.synthetic && <section className={"sales-update-card" + (olderSales || missingSales || shortHistory ? " needs-data" : "")}>
+        <div><strong>{olderSales || missingSales || shortHistory ? "Improve your sales history" : "Keep your plan up to date"}</strong><p>{updatePrompt.message}</p></div>
+        <Button variant="secondary" onClick={onAddData}>{updatePrompt.label}</Button>
+      </section>}
       {result.products.some((p) => !p.forecast?.length) && (
         <Notice tone="warning">
           Some products need more complete sales history. Select a product to
@@ -123,7 +130,7 @@ export default function Results({
           </Button>
         </div>
       </div>
-      {!result.quality.config.synthetic && <div className="data-update-action"><Button variant="text" onClick={onAddData}>Add or update sales data</Button></div>}
+
       <section
         id="result-panel"
         role="tabpanel"
