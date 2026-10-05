@@ -2395,3 +2395,14 @@ details summary {
  .restock-print tr, .restock-print li { break-inside:avoid; }
  .restock-print-note { border-top:1px solid #ccc; padding-top:10pt; font-size:9pt; }
 }
+
+.live-drawer .past-analysis { padding:22px 0; }
+.live-drawer .past-analysis > p { margin:5px 0; line-height:1.5; }
+.past-analysis .history-forecast { font-size:12px; }
+.past-analysis .inline-actions { margin-top:14px; align-items:flex-start; }
+.past-analysis .history-options > summary { list-style:none; border:1px solid #dfe6e1; border-radius:7px; background:#f8faf9; padding:10px 14px; line-height:1.4; }
+.past-analysis .history-options > summary::-webkit-details-marker { display:none; }
+.past-analysis .history-options[open] { flex-basis:auto; }
+.history-menu { padding:12px; margin-top:8px; background:#f8faf9; border:1px solid #e0e8e2; border-radius:8px; max-width:100%; overflow-wrap:anywhere; }
+.history-menu button { display:block; text-align:left; }
+.history-menu ul { padding-left:20px; }

@@ -123,6 +123,8 @@ export type Result = {
   notice: string;
 };
 export type Job = {
+  source_files?: string[];
+  review_id?: string;
   settings?: Config;
   source_name?: string;
   source_digest?: string;
@@ -165,6 +167,7 @@ export type Plan = {
   assumptions: Record<string, unknown>;
 };
 export type Snapshot = {
+  sourceFiles?: string[];
   summaryOnly?: boolean;
   id: string;
   created: string;
@@ -560,6 +563,7 @@ export function restore(text: string): Snapshot {
     id: crypto.randomUUID(),
     created: new Date().toISOString(),
     name: s.name.slice(0, 120),
+    sourceFiles: Array.isArray(s.sourceFiles) ? s.sourceFiles.filter((v: unknown) => typeof v === "string").slice(0,12).map((v: string) => v.slice(0,120)) : undefined,
     digest: typeof s.digest === "string" ? s.digest : "",
     result,
     plans: validatePlans(s.plans, new Set(products.map((p) => p.product_id))),

@@ -54,6 +54,7 @@ class Store:
             CREATE TABLE IF NOT EXISTS sessions(id TEXT PRIMARY KEY, expires REAL NOT NULL);
             CREATE TABLE IF NOT EXISTS uploads(id TEXT PRIMARY KEY, owner TEXT NOT NULL, name TEXT NOT NULL, digest TEXT NOT NULL, raw BLOB NOT NULL, created REAL NOT NULL, expires REAL NOT NULL);
             CREATE TABLE IF NOT EXISTS jobs(id TEXT PRIMARY KEY, owner TEXT NOT NULL, upload TEXT NOT NULL, kind TEXT NOT NULL, config TEXT NOT NULL, idem TEXT NOT NULL, state TEXT NOT NULL, stage TEXT NOT NULL, done INTEGER DEFAULT 0, total INTEGER DEFAULT 0, cancel INTEGER DEFAULT 0, result TEXT, error TEXT, created REAL NOT NULL, expires REAL NOT NULL, UNIQUE(owner,idem));
+            CREATE TABLE IF NOT EXISTS upload_sources(upload TEXT PRIMARY KEY, names TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS plans(id INTEGER PRIMARY KEY, owner TEXT NOT NULL, job TEXT NOT NULL, product TEXT NOT NULL, result TEXT NOT NULL, created REAL NOT NULL);
             CREATE TABLE IF NOT EXISTS messages(id INTEGER PRIMARY KEY, owner TEXT NOT NULL, job TEXT NOT NULL, product TEXT NOT NULL, question TEXT NOT NULL, answer TEXT NOT NULL, citations TEXT NOT NULL, created REAL NOT NULL);
             CREATE TABLE IF NOT EXISTS ai_usage(owner TEXT NOT NULL, created REAL NOT NULL);
@@ -81,6 +82,7 @@ class Store:
             now = time.time()
             db.execute("DELETE FROM jobs WHERE expires<=?", (now,))
             db.execute("DELETE FROM uploads WHERE expires<=?", (now,))
+            db.execute("DELETE FROM upload_sources WHERE upload NOT IN (SELECT id FROM uploads)")
             db.execute("DELETE FROM sessions WHERE expires<=?", (now,))
             db.execute("DELETE FROM plans WHERE job NOT IN (SELECT id FROM jobs)")
             db.execute("DELETE FROM messages WHERE job NOT IN (SELECT id FROM jobs)")
@@ -709,7 +711,8 @@ def create_app(db_path=None, worker=True):
                 raise HTTPException(429, "Remove an old upload from History before continuing.")
             if db.execute("SELECT COALESCE(SUM(length(raw)),0) FROM uploads").fetchone()[0] + len(raw) > 200 * 1024 * 1024:
                 raise HTTPException(429, "Upload storage is full. Try again later.")
-            db.execute("INSERT INTO uploads VALUES(?,?,?,?,?,?,?)", (uid,user,f"Combined sales ({len(ids)} files).csv",hashlib.sha256(raw).hexdigest(),raw,now,now+RETENTION))
+            db.execute("INSERT INTO uploads VALUES(?,?,?,?,?,?,?)", (uid,user,sources[0]["name"] if len(ids)==1 else f"Combined sales ({len(ids)} files).csv",hashlib.sha256(raw).hexdigest(),raw,now,now+RETENTION))
+            db.execute("INSERT INTO upload_sources VALUES(?,?)", (uid, json.dumps([s["name"] for s in sources])))
         return {"ready": True, "id": store.enqueue(user, uid, "normalize", cfg), "upload_id": uid, "file_count": len(ids)}
 
     @app.post("/api/jobs/{jid}/combine")
@@ -770,18 +773,23 @@ def create_app(db_path=None, worker=True):
         user = owner(request)
         with store.db() as db:
             rows = db.execute(
-                "SELECT * FROM jobs WHERE owner=? AND expires>? ORDER BY created DESC LIMIT 50",
+                "SELECT j.*, u.name AS source_name, m.names AS source_files FROM jobs j JOIN uploads u ON u.id=j.upload AND u.owner=j.owner LEFT JOIN upload_sources m ON m.upload=u.id WHERE j.owner=? AND j.expires>? ORDER BY j.created DESC LIMIT 50",
                 (user, time.time()),
             ).fetchall()
-        return [public_job(dict(r), False) for r in rows]
+        return [{**public_job(dict(r), False), "source_name": r["source_name"],
+                 "source_files": json.loads(r["source_files"]) if r["source_files"] else [],
+                 "review_id": json.loads(r["config"]).get("review_id")} for r in rows]
 
     @app.get("/api/jobs/{jid}")
     def job(jid: str, request: Request):
         user = owner(request)
         row = store.owned("jobs", jid, user)
         source = store.owned("uploads", row["upload"], user)
+        with store.db() as db:
+            metadata = db.execute("SELECT names FROM upload_sources WHERE upload=?", (row["upload"],)).fetchone()
         return {
             **public_job(row),
+            "source_files": json.loads(metadata["names"]) if metadata else [],
             "source_name": source["name"],
             "source_digest": source["digest"],
             "settings": json.loads(row["config"])
@@ -822,6 +830,7 @@ def create_app(db_path=None, worker=True):
                 )
             db.execute("DELETE FROM jobs WHERE upload=? AND owner=?", (uid, user))
             db.execute("DELETE FROM uploads WHERE id=? AND owner=?", (uid, user))
+            db.execute("DELETE FROM upload_sources WHERE upload=?", (uid,))
         return {"deleted": True}
 
     @app.get("/api/jobs/{jid}/normalized.csv")

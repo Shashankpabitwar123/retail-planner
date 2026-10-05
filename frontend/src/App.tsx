@@ -9,6 +9,8 @@ import {
 import { Button, Notice, Steps } from "./UI";
 import { Setup, QualityView } from "./Review";
 import Results from "./Results";
+import PastAnalyses from "./PastAnalyses";
+import {pastAnalyses, type HistoryEntry} from "./historyEntries";
 import BatchUpload from "./BatchUpload";
 import FilePreviews from "./FilePreviews";
 import GuidedImport, { type Guidance } from "./GuidedImport";
@@ -96,6 +98,7 @@ export default function App() {
     [review, setReview] = useState<Quality | null>(null),
     [snapshot, setSnapshot] = useState<Snapshot | null>(null),
     [serverId, setServerId] = useState<string | null>(null);
+  const [hiddenHistory,setHiddenHistory]=useState<string[]>(()=>{try{const v=JSON.parse(localStorage.getItem('retail-hidden-history')||'[]');return Array.isArray(v)?v.filter(x=>typeof x==='string'):[];}catch{return [];}});
   const [drawer, setDrawer] = useState<"help" | "history" | null>(null),
     [history, setHistory] = useState<Snapshot[]>([]),
     [jobs, setJobs] = useState<Job[]>([]),
@@ -322,6 +325,7 @@ export default function App() {
               id: next.id,
               created: new Date(next.created * 1000).toISOString(),
               name: next.source_name || existing?.name || name,
+              sourceFiles: next.source_files?.length ? next.source_files : existing?.sourceFiles,
               digest:
                 next.source_digest || existing?.digest || upload?.digest || "",
               result,
@@ -525,8 +529,39 @@ export default function App() {
     setDrawer(null);
     setError("");
     setToast(
-      "Opened saved results. Re-upload the source file for new calculations or live AI. No raw CSV is stored in this backup.",
+      "Your saved results are available. Upload the files again to use AI or update calculations.",
     );
+  }
+  async function openHistoryEntry(e:HistoryEntry) {
+    await run(async()=>{
+      try {
+        const live=await api<Job>(`/jobs/${e.id}`);
+        setDrawer(null);start(live.id);
+      } catch(error) {
+        if(e.snapshot){openSaved(e.snapshot);if(![404,410].includes(Number((error as {status?:number}).status)))setToast('Opened saved results. The live analysis is unavailable right now.');}
+        else throw error;
+      }
+    });
+  }
+  async function deleteHistoryUpload(e:HistoryEntry) {
+    if(!e.job || !window.confirm('Delete this uploaded data and its live analyses? Saved results and downloaded backups will remain.'))return;
+    const uploadId=e.job.upload;
+    await run(async()=>{
+      await api(`/uploads/${uploadId}`,{method:'DELETE'});
+      setJobs(jobs.filter(j=>j.upload!==uploadId));
+      if(job?.upload===uploadId){if(snapshot)openSaved(snapshot);else reset();}
+      setToast('Uploaded data deleted. Saved results and downloaded copies remain.');
+    });
+  }
+  async function removeHistoryEntry(e:HistoryEntry) {
+    await run(async()=>{
+      const next=[...new Set([...hiddenHistory,e.id,...(e.job?.review_id?[e.job.review_id]:[])])];
+      // Retain the removal locally so a server entry cannot reappear on refresh.
+      localStorage.setItem('retail-hidden-history',JSON.stringify(next));
+      setHiddenHistory(next);
+      if(e.snapshot){await historyDelete(e.id);setHistory(await historyList());}
+      setToast('Removed from history in this browser. Uploaded files and downloaded copies are unchanged.');
+    });
   }
   async function ask(q: string) {
     if (!consent || asking || !liveContext || !q.trim()) return;
@@ -1198,7 +1233,7 @@ export default function App() {
       </button>
       {drawer && (
         <Drawer
-          title={drawer === "help" ? "Ask about your data" : "Your history"}
+          title={drawer === "help" ? "Ask about your data" : "Past analyses"}
           onClose={() => setDrawer(null)}
         >
           {drawer === "help" ? (
@@ -1336,94 +1371,7 @@ export default function App() {
             </>
           ) : (
             <>
-              <p>Pick a file to revisit your results.</p>
-              <details className="quiet-details"><summary>How history is saved</summary><p>Your last 10 results stay in this browser. Download a copy to keep them on another device or after clearing browser data.</p></details>
-              {!history.length && <p>No saved results yet.</p>}
-              {history.map((s) => (
-                <section className="history-item" key={s.id}>
-                  <strong>{s.name}</strong>
-                  <p>
-                    {s.result.products.length} products · Forecast from {friendlyDate(s.result.forecast_start)}
-                  </p>
-                  <div className="inline-actions">
-                    <Button variant="secondary" onClick={() => openSaved(s)}>
-                      Open
-                    </Button>
-                    <details className="history-options"><summary>More options</summary>
-                    <Button
-                      variant="text"
-                      onClick={() =>
-                        download(
-                          "store.retailplan.json",
-                          backup(s),
-                          "application/json",
-                        )
-                      }
-                    >
-                      Download
-                    </Button>
-                    <Button
-                      variant="text"
-                      onClick={() =>
-                        run(async () => {
-                          await historyDelete(s.id);
-                          setHistory(await historyList());
-                          setToast(
-                            "Removed from this browser’s history. Your uploaded file has not been deleted.",
-                          );
-                        })
-                      }
-                    >
-                      Remove from history
-                    </Button>
-                    </details>
-                  </div>
-                </section>
-              ))}
-              <details className="quiet-details">
-              <summary>Recent uploads</summary>
-              <p className="muted">Reopen an upload to continue using AI. Uploads and chats are temporary and may disappear within 7 days. Downloaded copies and browser history are kept separately.</p>
-              {!jobs.length && <p>No recent uploads available.</p>}
-              {jobs.map((j) => (
-                <section className="history-item" key={j.id}>
-                  <strong>
-                    {j.kind === "forecast" ? "Forecast" : "Data check"} ·{" "}
-                    {j.state}
-                  </strong>
-                  <p>{new Date(j.created * 1000).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</p>
-                  <div className="inline-actions">
-                    <Button
-                      variant="secondary"
-                      onClick={() => {
-                        setDrawer(null);
-                        start(j.id);
-                      }}
-                    >
-                      Open
-                    </Button>
-                    <Button
-                      variant="text"
-                      onClick={() =>
-                        run(async () => {
-                          await api(`/uploads/${j.upload}`, {
-                            method: "DELETE",
-                          });
-                          setJobs(jobs.filter((x) => x.upload !== j.upload));
-                          if (job?.upload === j.upload) {
-                            reset();
-                          }
-                          setToast(
-                            "Source file and associated server analyses deleted. Downloaded and local copies remain.",
-                          );
-                        })
-                      }
-                    >
-                      Delete uploaded file
-                    </Button>
-                  </div>
-                </section>
-              ))}
-              </details>
+              <PastAnalyses onDeleteUpload={deleteHistoryUpload} entries={pastAnalyses(history,jobs,hiddenHistory)} onOpen={openHistoryEntry} onRemove={removeHistoryEntry} onDownload={e=>{if(e.snapshot)download(`retail-planner-${e.title.toLowerCase().replace(/[^a-z0-9]+/g,'-').slice(0,60)}-${e.snapshot.result.forecast_start}.retailplan.json`,backup(e.snapshot),'application/json');}}/>
             </>
           )}
         </Drawer>

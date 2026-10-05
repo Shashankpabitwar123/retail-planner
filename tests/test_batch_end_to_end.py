@@ -44,6 +44,7 @@ def test_real_upload_review_forecast_matches_known_sales(tmp_path,count,mixed):
     jid=response.json()['id']; store.run_one()
     review=c.get('/api/jobs/'+jid).json()
     assert review['state']=='completed',review
+    assert review['source_files']==[s['name'] for s in reversed(sources)]
     q=review['result']
     assert q['coverage_start']=='2025-01-01'
     assert q['coverage_end']==max(x[0] for x in expected)
@@ -56,6 +57,10 @@ def test_real_upload_review_forecast_matches_known_sales(tmp_path,count,mixed):
     store.run_one()
     result=c.get('/api/jobs/'+f.json()['id']).json()
     assert result['state']=='completed',result
+    listing=c.get('/api/jobs').json()
+    listed=next(j for j in listing if j['id']==f.json()['id'])
+    assert listed['review_id']==jid
+    assert listed['source_files']==review['source_files']
     # Baseline: the same known records in a single canonical daily file.
     stream=io.StringIO(); w=csv.writer(stream); w.writerow(['date','sku','units_sold']); w.writerows(expected)
     raw=stream.getvalue().encode()
