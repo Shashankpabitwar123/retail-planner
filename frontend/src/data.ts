@@ -149,6 +149,8 @@ export type StockDay = {
   closing_units: number;
 };
 export type Plan = {
+  stock_before_new_order_on_arrival?: number;
+  protection_units?: number;
   daily_stock?: StockDay[];
   planning_date: string;
   arrival_date: string;

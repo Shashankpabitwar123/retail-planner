@@ -23,7 +23,7 @@ test('store-wide calculation keeps missing stock blank and isolates product fail
   await act(async()=>calculate.click());
   assert.deepEqual(calls,['P0','P1'],'Blank stock must not become zero or be sent');
   const rows=[...w.document.querySelectorAll('tbody tr')];
-  assert.match(rows.find(r=>r.textContent?.includes('Product 0'))!.textContent!,/Order more/);
+  assert.match(rows.find(r=>r.textContent?.includes('Product 0'))!.textContent!,/10 units/);
   assert.match(rows.find(r=>r.textContent?.includes('Product 1'))!.textContent!,/Test unavailable/);
   assert.match(rows.find(r=>r.textContent?.includes('Product 2'))!.textContent!,/Add stock count/);
   assert.match(w.document.body.textContent!,/1 products calculated/);

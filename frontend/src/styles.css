@@ -2363,3 +2363,12 @@ details summary {
 .sales-update-card p { margin:6px 0 0; font-size:.85rem; line-height:1.55; color:var(--muted); }
 .sales-update-card .button { flex-shrink:0; }
 @media(max-width:650px) { .sales-update-card { flex-direction:column; align-items:flex-start; gap:14px; } }
+
+.restock-table .buy-quantity { background:#edf5ef; }
+.restock-table .buy-number { font-size:1.1rem; display:block; }
+.restock-table .product-settings { margin-top:12px; font-size:.8rem; }
+.restock-table .order-explanation { margin-top:12px; font-size:.8rem; max-width:340px; line-height:1.6; }
+.restock-table .order-explanation summary { color:var(--green); cursor:pointer; }
+.restock-table .order-explanation p { margin:10px 0; }
+.restock-table .stock-shortage { margin:12px 0 0; padding:10px; background:#fff4de; color:#805719; font-size:.8rem; max-width:300px; }
+@media print { .restock-table .buy-quantity { background:white; } }
